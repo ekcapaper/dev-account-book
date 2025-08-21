@@ -42,3 +42,6 @@ class RelationOut(BaseModel):
 class RelationList(BaseModel):
     outgoing: List[RelationOut] = []
     incoming: List[RelationOut] = []
+
+class CountOut(BaseModel):
+    total: int

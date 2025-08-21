@@ -10,10 +10,12 @@ class AccountEntryService:
         self.repo.bootstrap()
 
     # 전체
-    def list(self, *, limit: int = 50, offset: int = 0) -> tuple[list[dict], int]:
+    def list(self, *, limit: int = 50, offset: int = 0) -> list[dict]:
         items = self.repo.list_all(limit=limit, offset=offset)
-        total = self.repo.count_all()
-        return items, total
+        return items
+
+    def count(self) -> int:
+        return self.repo.count_all()
 
     # CRUD
     def create(self, p: AccountEntryCreate) -> str: return self.repo.create(p.title, p.desc, p.tags)

@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.openapi.models import Response
 from fastapi.params import Query
 
-from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, AccountEntryOut
+from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, AccountEntryOut, \
+    CountOut
 from devaccountbook_backend.services.account_entry_service import AccountEntryService, get_account_entry_service
 # 서비스 생략 버전: repo를 가져오려면 아래를 사용
 # from devaccountbook_backend.repositories.item_repo import ItemRepository
@@ -28,9 +29,14 @@ def list_account_entries(
     offset: int = Query(0, ge=0),
     service: AccountEntryService = Depends(get_account_entry_service),
 ):
-    items, total = service.list(limit=limit, offset=offset)
+    items = service.list(limit=limit, offset=offset)
     return [AccountEntryOut(**it) for it in items]
 
+@router.get("/count", response_model=CountOut)
+def count_account_entries(
+    service: AccountEntryService = Depends(get_account_entry_service),
+):
+    return CountOut(total=service.count())
 
 # CRUD
 @router.post("", response_model=AccountEntryOut, status_code=status.HTTP_201_CREATED)
