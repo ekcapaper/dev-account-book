@@ -24,13 +24,11 @@ router = APIRouter(prefix="/account-entries", tags=["items"])
 # GET /v1/account-entries?limit=50&offset=0
 @router.get("", response_model=List[AccountEntryOut])
 def list_account_entries(
-    response: Response,
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
     service: AccountEntryService = Depends(get_account_entry_service),
 ):
     items, total = service.list(limit=limit, offset=offset)
-    response.headers["X-Total-Count"] = str(total)
     return [AccountEntryOut(**it) for it in items]
 
 
