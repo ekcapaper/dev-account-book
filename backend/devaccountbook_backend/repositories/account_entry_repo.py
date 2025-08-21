@@ -5,6 +5,8 @@ from neo4j import Session
 import re
 from typing import Dict, Any, List
 from neo4j import Session
+
+from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -29,7 +31,7 @@ class AccountEntryRepository:
     def get(self, account_entry_id: str) -> Dict[str, Any] | None:
         q = "MATCH (n:AccountEntry {id:$id}) RETURN n"
         rec = self.s.execute_read(lambda tx: tx.run(q, id=account_entry_id).single())
-        return dict(rec["n"]) if rec else None
+        return normalize_neo(dict(rec["n"])) if rec else None
 
     def patch(self, account_entry_id: str, props: Dict[str, Any]) -> bool:
         safe = {k: v for k, v in props.items() if k in ALLOWED_KEYS and v is not None}
@@ -85,7 +87,7 @@ class AccountEntryRepository:
                 "kind": row["kind"],
                 "from_id": row["from_id"],
                 "to_id": row["to_id"],
-                "props": row["props"] or {}
+                "props": normalize_neo(row["props"] or {})
             }
             for row in rows
         ]
