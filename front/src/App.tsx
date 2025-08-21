@@ -35,7 +35,7 @@ const App: React.FC = () => {
     } = theme.useToken();
 
     return (
-        <Layout>
+        <Layout style={{ minHeight: '100vh' }}>
             <Header style={{ display: 'flex', alignItems: 'center' }}>
                 <div className="demo-logo" />
                 <UserOutlined></UserOutlined>
