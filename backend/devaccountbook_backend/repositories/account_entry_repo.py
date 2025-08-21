@@ -2,6 +2,11 @@ import uuid
 from typing import Optional, Dict, Any
 from neo4j import Session
 
+import re
+from typing import Dict, Any, List
+from neo4j import Session
+from devaccountbook_backend.schemas.account_entry_schemas import RelKind
+
 ALLOWED_KEYS = {"title", "desc", "tags"}
 
 class AccountEntryRepository:
@@ -42,6 +47,62 @@ class AccountEntryRepository:
         q = "MATCH (n:Item {id:$id}) DETACH DELETE n RETURN 1 AS ok"
         rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id).single())
         return rec is not None
+
+    # --- 관계 생성 ---
+    def create_relation(
+            self, from_id: str, to_id: str, kind: RelKind, props: Dict[str, Any] | None = None
+    ) -> str:
+        # 관계 타입은 파라미터 바인딩 불가 → Enum 기반 f-string 삽입(화이트리스트)
+        q = f"""
+        MATCH (a:AccountEntry {{id:$from_id}}), (b:AccountEntry {{id:$to_id}})
+        MERGE (a)-[r:{kind.value}]->(b)
+        ON CREATE SET r.createdAt = datetime()
+        SET r += $props
+        RETURN type(r) AS kind
+        """
+        rec = self.s.execute_write(lambda tx: tx.run(
+            q, from_id=from_id, to_id=to_id, props=props or {}
+        ).single())
+        return rec["kind"]
+
+    # --- 관계 목록 조회 (outgoing / incoming) ---
+    def list_relations(self, entry_id: str) -> Dict[str, List[Dict[str, Any]]]:
+        q_out = """
+        MATCH (a:AccountEntry {id:$id})-[r]->(b:AccountEntry)
+        RETURN type(r) AS kind, a.id AS from_id, b.id AS to_id, properties(r) AS props
+        ORDER BY kind, to_id
+        """
+        q_in = """
+        MATCH (a:AccountEntry)-[r]->(b:AccountEntry {id:$id})
+        RETURN type(r) AS kind, a.id AS from_id, b.id AS to_id, properties(r) AS props
+        ORDER BY kind, from_id
+        """
+        rows_out = self.s.execute_read(lambda tx: list(tx.run(q_out, id=entry_id)))
+        rows_in = self.s.execute_read(lambda tx: list(tx.run(q_in, id=entry_id)))
+
+        to_dicts = lambda rows: [
+            {
+                "kind": row["kind"],
+                "from_id": row["from_id"],
+                "to_id": row["to_id"],
+                "props": row["props"] or {}
+            }
+            for row in rows
+        ]
+        return {"outgoing": to_dicts(rows_out), "incoming": to_dicts(rows_in)}
+
+    # --- 관계 삭제 ---
+    def delete_relation(self, from_id: str, to_id: str, kind: RelKind) -> int:
+        q = f"""
+        MATCH (a:AccountEntry {{id:$from_id}})-[r:{kind.value}]->(b:AccountEntry {{id:$to_id}})
+        DELETE r
+        RETURN count(*) AS cnt
+        """
+        rec = self.s.execute_write(lambda tx: tx.run(
+            q, from_id=from_id, to_id=to_id
+        ).single())
+        return rec["cnt"]
+
 
 # Depends 팩토리
 from fastapi import Depends
