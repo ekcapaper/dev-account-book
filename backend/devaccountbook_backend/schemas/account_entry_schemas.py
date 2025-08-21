@@ -17,3 +17,28 @@ class AccountEntryOut(BaseModel):
     title: str
     desc: str | None = None
     tags: list[str] = []
+
+from enum import Enum
+from typing import Optional, Dict, Any, List
+from pydantic import BaseModel
+
+class RelKind(str, Enum):
+    RELATES_TO = "RELATES_TO"
+    INFLUENCES = "INFLUENCES"
+    BLOCKS = "BLOCKS"
+    DUPLICATES = "DUPLICATES"
+
+class RelationCreate(BaseModel):
+    to_id: str
+    kind: RelKind
+    props: Optional[Dict[str, Any]] = None  # 필요 없으면 생략 가능
+
+class RelationOut(BaseModel):
+    from_id: str
+    to_id: str
+    kind: RelKind
+    props: Dict[str, Any] = {}
+
+class RelationList(BaseModel):
+    outgoing: List[RelationOut] = []
+    incoming: List[RelationOut] = []
