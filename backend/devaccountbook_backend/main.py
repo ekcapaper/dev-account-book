@@ -26,9 +26,6 @@ app.include_router(items_router, prefix="/v1")
 @app.get("/healthz")
 def healthz(): return {"ok": True}
 
-app = FastAPI()
-
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
