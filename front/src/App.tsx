@@ -37,7 +37,7 @@ const App: React.FC = () => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Header style={{ display: 'flex', alignItems: 'center' }}>
-                <div className="demo-logo" />
+                <div className="demo-logo" style={{ height: 32, marginLeft: 150 }} />
                 <UserOutlined></UserOutlined>
                 <Menu
                     theme="dark"
