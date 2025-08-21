@@ -12,3 +12,9 @@ def close_driver():
     if driver:
         driver.close()
         driver = None
+
+def get_driver() -> Driver:
+    global driver
+    if driver is None:
+        raise RuntimeError("Neo4j driver not initialized")
+    return driver
