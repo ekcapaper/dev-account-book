@@ -2,6 +2,7 @@ import React from 'react';
 import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import {Outlet} from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
 
@@ -71,7 +72,7 @@ const App: React.FC = () => {
                             borderRadius: borderRadiusLG,
                         }}
                     >
-                        Content
+                        <Outlet/>
                     </Content>
                 </Layout>
             </Layout>
