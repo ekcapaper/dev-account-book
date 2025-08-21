@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from devaccountbook_backend.core.config import settings
 from devaccountbook_backend.db.driver import init_driver, close_driver
-from devaccountbook_backend.api.v1.items_router import router as items_router
+from devaccountbook_backend.api.v1.account_entries_router import router as items_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
