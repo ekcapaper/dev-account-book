@@ -18,6 +18,23 @@ class AccountEntryRepository:
     def bootstrap(self) -> None:
         q = "CREATE CONSTRAINT IF NOT EXISTS FOR (n:AccountEntry) REQUIRE n.id IS UNIQUE"
         self.s.execute_write(lambda tx: tx.run(q))
+    
+    # 집계 함수
+    def list_all(self, *, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+        q = """
+        MATCH (n:AccountEntry)
+        RETURN n
+        ORDER BY coalesce(n.createdAt, datetime({epochSeconds:0})) DESC
+        SKIP $offset
+        LIMIT $limit
+        """
+        rows = self.s.execute_read(lambda tx: list(tx.run(q, offset=offset, limit=limit)))
+        return [normalize_neo(dict(row["n"])) for row in rows]
+
+    def count_all(self) -> int:
+        q = "MATCH (n:AccountEntry) RETURN count(n) AS cnt"
+        rec = self.s.execute_read(lambda tx: tx.run(q).single())
+        return int(rec["cnt"])
 
     def create(self, title: str, desc: Optional[str], tags: list[str]) -> str:
         nid = str(uuid.uuid4())

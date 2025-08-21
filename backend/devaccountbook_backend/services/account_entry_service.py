@@ -9,6 +9,13 @@ class AccountEntryService:
         self.repo = repo
         self.repo.bootstrap()
 
+    # 전체
+    def list(self, *, limit: int = 50, offset: int = 0) -> tuple[list[dict], int]:
+        items = self.repo.list_all(limit=limit, offset=offset)
+        total = self.repo.count_all()
+        return items, total
+
+    # CRUD
     def create(self, p: AccountEntryCreate) -> str: return self.repo.create(p.title, p.desc, p.tags)
     def get(self, account_entry_id: str) -> Dict[str, Any] | None: return self.repo.get(account_entry_id)
     def patch(self, account_entry_id: str, p: AccountEntryPatch) -> bool: return self.repo.patch(account_entry_id, p.model_dump(exclude_none=True))
