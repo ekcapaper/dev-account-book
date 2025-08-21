@@ -4,7 +4,7 @@ from neo4j import Session
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
 
-class ItemRepository:
+class AccountEntryRepository:
     def __init__(self, session: Session):
         self.s = session
 
@@ -47,6 +47,6 @@ class ItemRepository:
 from fastapi import Depends
 from devaccountbook_backend.db.neo import get_neo4j_session
 
-def get_item_repo(session: Session = Depends(get_neo4j_session)) -> ItemRepository:
-    repo = ItemRepository(session)
+def get_item_repo(session: Session = Depends(get_neo4j_session)) -> AccountEntryRepository:
+    repo = AccountEntryRepository(session)
     return repo
