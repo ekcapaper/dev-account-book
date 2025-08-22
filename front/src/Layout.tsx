@@ -2,7 +2,7 @@ import React from 'react';
 import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import {Outlet} from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
 
@@ -11,24 +11,20 @@ const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
     label: `nav ${key}`,
 }));
 
-const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-    (icon, index) => {
-        const key = String(index + 1);
-
-        return {
-            key: `sub${key}`,
-            icon: React.createElement(icon),
-            label: `subnav ${key}`,
-            children: Array.from({ length: 4 }).map((_, j) => {
-                const subKey = index * 4 + j + 1;
-                return {
-                    key: subKey,
-                    label: `option${subKey}`,
-                };
-            }),
-        };
-    },
-);
+const items2: MenuProps['items'] = [
+    {
+        key: `menu-data-crud`,
+        icon: React.createElement(LaptopOutlined),
+        label: `Data`,
+        children: [
+            {
+                key: `sub`,
+                icon: React.createElement(NotificationOutlined),
+                label: <Link to={"/about"}>ddd</Link>
+            }
+        ]
+    }
+]
 
 const App: React.FC = () => {
     const {
