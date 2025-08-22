@@ -13,21 +13,26 @@ const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
 
 const items2: MenuProps['items'] = [
     {
+        key: `menu-home`,
+        icon: React.createElement(LaptopOutlined),
+        label: <Link to={"/"}>Home</Link>,
+    },
+    {
         key: `menu-data-crud`,
         icon: React.createElement(LaptopOutlined),
-        label: `항목`,
+        label: `데이터`,
         children: [
             {
                 key: `sub`,
                 icon: React.createElement(NotificationOutlined),
-                label: <Link to={"/tech-entry-sheet"}>추가/삭제</Link>
+                label: <Link to={"/tech-entry-sheet"}>Tech Sheet</Link>
             }
         ]
     },
     {
         key: `menu-about`,
         icon: React.createElement(LaptopOutlined),
-        label: `정보`,
+        label: <Link to={"/about"}>`정보`</Link>,
     }
 ]
 
