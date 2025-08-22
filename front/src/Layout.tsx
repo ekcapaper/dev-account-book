@@ -15,14 +15,19 @@ const items2: MenuProps['items'] = [
     {
         key: `menu-data-crud`,
         icon: React.createElement(LaptopOutlined),
-        label: `Data`,
+        label: `항목`,
         children: [
             {
                 key: `sub`,
                 icon: React.createElement(NotificationOutlined),
-                label: <Link to={"/about"}>ddd</Link>
+                label: <Link to={"/tech-entry-sheet"}>추가/삭제</Link>
             }
         ]
+    },
+    {
+        key: `menu-about`,
+        icon: React.createElement(LaptopOutlined),
+        label: `정보`,
     }
 ]
 
