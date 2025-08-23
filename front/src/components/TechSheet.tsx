@@ -81,7 +81,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
             <Form.Item
                 style={{ margin: 0 }}
                 name={dataIndex}
-                rules={[{ required: true, message: `${title} is required.` }]}
+                rules={[{ required: false, message: `${title} is required.` }]}
             >
                 <Input.TextArea
                     id={`${record.key}_${dataIndex}`}
@@ -145,9 +145,14 @@ const TechSheet: React.FC = () => {
             node_title: ``,
             connected_node_title: '32',
         };
+        console.log(record)
         let dataSourceNew = [];
-        for (const item of record) {
+        for (const item of dataSource) {
             dataSourceNew.push(item);
+
+            if (item.node_title === record.node_title) {
+                dataSourceNew.push(newData);
+            }
         }
 
         setDataSource(dataSourceNew);
@@ -173,7 +178,7 @@ const TechSheet: React.FC = () => {
                 dataSource.length >= 1 ? (
                     <div>
                         <Space split={"|"}>
-                            <a onClick={() => handleAddConnectedNode(record.key)}>연결된 항목 추가</a>
+                            <a onClick={() => handleAddConnectedNode(record)}>연결된 항목 추가</a>
                             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
                                 <a>삭제</a>
                             </Popconfirm>
