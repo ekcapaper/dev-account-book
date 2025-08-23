@@ -108,6 +108,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
+const shouldHideNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
+const shouldHideConnectedNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Node;
+
+
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
         { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: '' , row_data_type: DataTypeKind.Node},
@@ -145,13 +149,36 @@ const TechSheet: React.FC = () => {
         editable?: boolean;
         dataIndex: keyof DataType;
     })[] = [
-        { title: 'node_title', dataIndex: 'node_title', width: '30%', editable: true },
+        {
+            title: 'node_title',
+            dataIndex: 'node_title',
+            width: '30%',
+            editable: true,
+            render: (value, record) => {
+                if(shouldHideNodeTitle(record)){
+                    return value
+                } else{
+                    return null
+                }
+            }
+        },
         {
             title: 'connected_node_title',
             dataIndex: 'connected_node_title',
             editable: false,
+            render: (value, record) => {
+                if(shouldHideConnectedNodeTitle(record)){
+                    return value
+                } else{
+                    return null
+                }
+            }
         },
-        { title: 'row_data_type', dataIndex: 'row_data_type', editable: false },
+        {
+            title: 'row_data_type',
+            dataIndex: 'row_data_type',
+            editable: false
+        },
         {
             title: 'operation',
             dataIndex: 'operation' as any,
