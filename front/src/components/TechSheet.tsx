@@ -83,12 +83,26 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                 name={dataIndex}
                 rules={[{ required: true, message: `${title} is required.` }]}
             >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                <Input.TextArea
+                    id={`${record.key}_${dataIndex}`}
+                    onPressEnter={save}
+                    onBlur={save}
+                    autoSize={{ minRows: 1, maxRows: 6 }} // 글자수에 맞춰 행 높이 자동 조정
+                    style={{
+                        width: '100%',
+                        margin: 0,
+                        borderRadius: 0,
+                        boxShadow: 'none',
+                        padding: '0 8px',
+                        minHeight: '100%',
+                        background: 'transparent',
+                        resize: 'none', // 사용자가 수동으로 크기 조정 못 하게
+                    }}
+                />
             </Form.Item>
         )
     }
-
-    return <td {...restProps}>{childNode}</td>;
+    return <td  {...restProps}>{childNode}</td>;
 };
 
 
