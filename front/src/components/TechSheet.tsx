@@ -45,6 +45,9 @@ interface EditableCellProps {
     handleSave: (record: DataType) => void;
 }
 
+const shouldShowNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Node;
+const shouldShowConnectedNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
+
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                                                                                 title,
                                                                                 editable,
@@ -72,7 +75,15 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     };
 
     let childNode = children;
-    console.log(record)
+
+    if(dataIndex == "node_title" && (record.row_data_type === DataTypeKind.Linked)) {
+        return <td></td>;
+    }
+
+    if(dataIndex == "connected_node_title" && (record.row_data_type === DataTypeKind.Node)) {
+        return <td></td>;
+    }
+
 
     if (editable) {
         childNode = (
@@ -108,10 +119,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 };
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
-
-const shouldShowNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Node;
-const shouldShowConnectedNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
-
 
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
@@ -181,9 +188,9 @@ const TechSheet: React.FC = () => {
             editable: false,
             onCell: (record: DataType) => ({
                 record,
-                editable: record.row_data_type === DataTypeKind.Linked,
-                dataIndex: 'connected_node_title',
-                title: 'connected_node_title',
+                editable: false,
+                dataIndex: 'row_data_type',
+                title: 'row_data_type',
                 handleSave,
             }),
         },
@@ -192,9 +199,9 @@ const TechSheet: React.FC = () => {
             dataIndex: 'operation' as any,
             onCell: (record: DataType) => ({
                 record,
-                editable: record.row_data_type === DataTypeKind.Linked,
-                dataIndex: 'connected_node_title',
-                title: 'connected_node_title',
+                editable: false,
+                dataIndex: 'operation',
+                title: 'operation',
                 handleSave,
             }),
             render: (_, record) => (
