@@ -4,14 +4,8 @@ import { Button, Form, Input, Popconfirm, Table } from 'antd';
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
+// Editable Row
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-interface Item {
-    key: string;
-    name: string;
-    age: string;
-    address: string;
-}
 
 interface EditableRowProps {
     index: number;
@@ -27,6 +21,13 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
         </Form>
     );
 };
+
+// Editable Cell
+interface Item {
+    key: string;
+    node_title: string;
+    connected_node_title: string;
+}
 
 interface EditableCellProps {
     title: React.ReactNode;
@@ -96,11 +97,12 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     return <td {...restProps}>{childNode}</td>;
 };
 
+
+// Tech Sheet
 interface DataType {
     key: React.Key;
-    name: string;
-    age: string;
-    address: string;
+    node_title: string;
+    connected_node_title: string;
 }
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
@@ -109,15 +111,13 @@ const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
         {
             key: '0',
-            name: 'Edward King 0',
-            age: '32',
-            address: 'London, Park Lane no. 0',
+            node_title: 'Edwargfgd King 0',
+            connected_node_title: '32',
         },
         {
             key: '1',
-            name: 'Edward King 1',
-            age: '32',
-            address: 'London, Park Lane no. 1',
+            node_title: 'Edward King 1',
+            connected_node_title: '32',
         },
     ]);
 
@@ -130,18 +130,15 @@ const TechSheet: React.FC = () => {
 
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
         {
-            title: 'name',
-            dataIndex: 'name',
+            title: 'node_title',
+            dataIndex: 'node_title',
             width: '30%',
             editable: true,
         },
         {
-            title: 'age',
-            dataIndex: 'age',
-        },
-        {
-            title: 'address',
-            dataIndex: 'address',
+            title: 'connected_node_title',
+            dataIndex: 'connected_node_title',
+            editable: true,
         },
         {
             title: 'operation',
@@ -158,9 +155,8 @@ const TechSheet: React.FC = () => {
     const handleAdd = () => {
         const newData: DataType = {
             key: count,
-            name: `Edward King ${count}`,
-            age: '32',
-            address: `London, Park Lane no. ${count}`,
+            node_title: `Edward King ${count}`,
+            connected_node_title: '32',
         };
         setDataSource([...dataSource, newData]);
         setCount(count + 1);
