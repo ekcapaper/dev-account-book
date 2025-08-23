@@ -228,7 +228,8 @@ const TechSheet: React.FC = () => {
         },
     };
 
-    const columns = defaultColumns.map((col) =>
+    const columns = defaultColumns.map((col) => col
+        /*
         !col.editable
             ? col
             : {
@@ -241,6 +242,8 @@ const TechSheet: React.FC = () => {
                     handleSave,
                 }),
             }
+
+         */
     );
 
     return (
