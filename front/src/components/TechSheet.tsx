@@ -108,8 +108,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
-const shouldHideNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
-
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
         { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: '' , row_data_type: DataTypeKind.Node},
@@ -194,6 +192,7 @@ const TechSheet: React.FC = () => {
             key: count,
             node_title: `Edward King ${count}`,
             connected_node_title: '32',
+            row_data_type: DataTypeKind.Node,
         };
         setDataSource((prev) => [...prev, newData]);
         setCount((c) => c + 1);
