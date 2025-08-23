@@ -1,18 +1,32 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import {type GetRef, type InputRef, Space, type TableProps} from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { type GetRef, Space, type TableProps } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
-// Editable Row
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
+export enum DataTypeKind {
+    Node = 'node',
+    Linked = 'linked',
+}
 
+// 행 타입 단일화
+interface DataType {
+    key: React.Key;
+    node_title: string;
+    connected_node_title: string;
+    row_data_type: DataTypeKind;
+}
+
+// Context도 행 타입으로
+const EditableContext = React.createContext<FormInstance<DataType> | null>(null);
+
+// Editable Row
 interface EditableRowProps {
     index: number;
 }
 
 const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-    const [form] = Form.useForm();
+    const [form] = Form.useForm<DataType>();
     return (
         <Form form={form} component={false}>
             <EditableContext.Provider value={form}>
@@ -23,18 +37,12 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
 };
 
 // Editable Cell
-interface Item {
-    key: string;
-    node_title: string;
-    connected_node_title: string;
-}
-
 interface EditableCellProps {
     title: React.ReactNode;
     editable: boolean;
-    dataIndex: keyof Item;
-    record: Item;
-    handleSave: (record: Item) => void;
+    dataIndex: keyof DataType;
+    record: DataType;
+    handleSave: (record: DataType) => void;
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
@@ -46,28 +54,17 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                                                                                 handleSave,
                                                                                 ...restProps
                                                                             }) => {
-    const [editing, setEditing] = useState(false);
-    const inputRef = useRef<InputRef>(null);
     const form = useContext(EditableContext)!;
-    
-    // 항상 열린 셀: 마운트/레코드 변경 시 기본값 주입
+
     useEffect(() => {
-        if(editable) {
-            form.setFieldsValue({[dataIndex]: record[dataIndex]});
+        if (editable) {
+            form.setFieldsValue({ [dataIndex]: record[dataIndex] } as any);
         }
     }, [form, dataIndex, record, editable]);
-
-
-    const toggleEdit = () => {
-        setEditing(!editing);
-        form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-    };
 
     const save = async () => {
         try {
             const values = await form.validateFields();
-
-            toggleEdit();
             handleSave({ ...record, ...values });
         } catch (errInfo) {
             console.log('Save failed:', errInfo);
@@ -80,14 +77,17 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
         childNode = (
             <Form.Item
                 style={{ margin: 0 }}
-                name={dataIndex}
+                name={dataIndex as string}
                 rules={[{ required: false, message: `${title} is required.` }]}
             >
                 <Input.TextArea
-                    id={`${record.key}_${dataIndex}`}
-                    onPressEnter={save}
+                    id={`${record.key}_${String(dataIndex)}`}
+                    onPressEnter={(e) => {
+                        e.preventDefault(); // 줄바꿈 방지
+                        save();
+                    }}
                     onBlur={save}
-                    autoSize={{ minRows: 1, maxRows: 6 }} // 글자수에 맞춰 행 높이 자동 조정
+                    autoSize={{ minRows: 1, maxRows: 6 }}
                     style={{
                         width: '100%',
                         margin: 0,
@@ -97,94 +97,95 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                         padding: '0 8px',
                         minHeight: '100%',
                         background: 'transparent',
-                        resize: 'none', // 사용자가 수동으로 크기 조정 못 하게
+                        resize: 'none',
                     }}
-
                 />
             </Form.Item>
-        )
+        );
     }
-    return <td  {...restProps}>{childNode}</td>;
+    return <td {...restProps}>{childNode}</td>;
 };
-
-
-// Tech Sheet
-interface DataType {
-    key: React.Key;
-    node_title: string;
-    connected_node_title: string;
-}
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
+const shouldHideNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
+
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
-        {
-            key: '0',
-            node_title: 'Edwargfgd King 0',
-            connected_node_title: '',
-        },
-        {
-            key: '1',
-            node_title: 'Edward King 1',
-            connected_node_title: '',
-        },
+        { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: '' , row_data_type: DataTypeKind.Node},
+        { key: '1', node_title: 'Edward King 1', connected_node_title: '' , row_data_type: DataTypeKind.Node},
     ]);
-
     const [count, setCount] = useState(2);
 
     const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key);
-        setDataSource(newData);
+        setDataSource((prev) => prev.filter((item) => item.key !== key));
     };
 
-    // temp code
-    const handleAddConnectedNode = (record) => {
-        const newData: DataType = {
-            key: count,
-            node_title: ``,
+    // 특정 행(record) 아래에 연결 노드 추가
+    const handleAddConnectedNode = (record: DataType) => {
+        const newRow: DataType = {
+            key: count, // React.Key 허용이라 number도 OK
+            node_title: '',
             connected_node_title: '32',
+            row_data_type: DataTypeKind.Linked,
         };
-        console.log(record)
-        let dataSourceNew = [];
-        for (const item of dataSource) {
-            dataSourceNew.push(item);
 
-            if (item.node_title === record.node_title) {
-                dataSourceNew.push(newData);
+        setDataSource((prev) => {
+            const result: DataType[] = [];
+            for (const item of prev) {
+                result.push(item);
+                if (item.key === record.key) {
+                    result.push(newRow);
+                }
             }
-        }
-
-        setDataSource(dataSourceNew);
-        setCount(count + 1);
+            return result;
+        });
+        setCount((c) => c + 1);
     };
 
-    const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
-        {
-            title: 'node_title',
-            dataIndex: 'node_title',
-            width: '30%',
-            editable: true,
-        },
+    const defaultColumns: (ColumnTypes[number] & {
+        editable?: boolean;
+        dataIndex: keyof DataType;
+    })[] = [
+        { title: 'node_title', dataIndex: 'node_title', width: '30%', editable: true },
         {
             title: 'connected_node_title',
             dataIndex: 'connected_node_title',
-            editable: true,
+            editable: false,
         },
+        { title: 'row_data_type', dataIndex: 'row_data_type', editable: false },
         {
             title: 'operation',
-            dataIndex: 'operation',
-            render: (_, record) =>
-                dataSource.length >= 1 ? (
-                    <div>
-                        <Space split={"|"}>
-                            <a onClick={() => handleAddConnectedNode(record)}>연결된 항목 추가</a>
-                            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
-                                <a>삭제</a>
-                            </Popconfirm>
-                        </Space>
-                    </div>
-                ) : null,
+            dataIndex: 'operation' as any,
+            render: (_, record) => (
+                <div>
+                    {(() => {
+                        if (record.row_data_type === DataTypeKind.Node) {
+                            return (
+                                <Space split="|">
+                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                                        <a>항목 삭제</a>
+                                    </Popconfirm>
+                                    <a onClick={() => handleAddConnectedNode(record)}>
+                                        연결된 항목 추가
+                                    </a>
+                                </Space>
+                            );
+                        }
+                        else if(record.row_data_type === DataTypeKind.Linked){
+                            return (
+                                <Space split="|">
+                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                                        <a>링크 삭제</a>
+                                    </Popconfirm>
+                                </Space>
+                            );
+                        }
+                        return null;
+                    })()}
+
+                </div>
+            ),
         },
     ];
 
@@ -194,19 +195,18 @@ const TechSheet: React.FC = () => {
             node_title: `Edward King ${count}`,
             connected_node_title: '32',
         };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
+        setDataSource((prev) => [...prev, newData]);
+        setCount((c) => c + 1);
     };
 
     const handleSave = (row: DataType) => {
-        const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, {
-            ...item,
-            ...row,
+        setDataSource((prev) => {
+            const idx = prev.findIndex((item) => item.key === row.key);
+            if (idx === -1) return prev;
+            const next = prev.slice();
+            next.splice(idx, 1, { ...prev[idx], ...row });
+            return next;
         });
-        setDataSource(newData);
     };
 
     const components = {
@@ -216,21 +216,20 @@ const TechSheet: React.FC = () => {
         },
     };
 
-    const columns = defaultColumns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: (record: DataType) => ({
-                record,
-                editable: col.editable,
-                dataIndex: col.dataIndex,
-                title: col.title,
-                handleSave,
-            }),
-        };
-    });
+    const columns = defaultColumns.map((col) =>
+        !col.editable
+            ? col
+            : {
+                ...col,
+                onCell: (record: DataType) => ({
+                    record,
+                    editable: col.editable!,
+                    dataIndex: col.dataIndex,
+                    title: col.title,
+                    handleSave,
+                }),
+            }
+    );
 
     return (
         <div>
