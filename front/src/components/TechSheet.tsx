@@ -91,6 +91,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                     style={{
                         width: '100%',
                         margin: 0,
+                        border: 'none',
                         borderRadius: 0,
                         boxShadow: 'none',
                         padding: '0 8px',
