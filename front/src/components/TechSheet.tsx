@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef, InputRef, TableProps } from 'antd';
+import {type GetRef, type InputRef, Space, type TableProps} from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
@@ -99,6 +99,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                         background: 'transparent',
                         resize: 'none', // 사용자가 수동으로 크기 조정 못 하게
                     }}
+
                 />
             </Form.Item>
         )
@@ -121,12 +122,12 @@ const TechSheet: React.FC = () => {
         {
             key: '0',
             node_title: 'Edwargfgd King 0',
-            connected_node_title: '32',
+            connected_node_title: '',
         },
         {
             key: '1',
             node_title: 'Edward King 1',
-            connected_node_title: '32',
+            connected_node_title: '',
         },
     ]);
 
@@ -135,6 +136,22 @@ const TechSheet: React.FC = () => {
     const handleDelete = (key: React.Key) => {
         const newData = dataSource.filter((item) => item.key !== key);
         setDataSource(newData);
+    };
+
+    // temp code
+    const handleAddConnectedNode = (record) => {
+        const newData: DataType = {
+            key: count,
+            node_title: ``,
+            connected_node_title: '32',
+        };
+        let dataSourceNew = [];
+        for (const item of record) {
+            dataSourceNew.push(item);
+        }
+
+        setDataSource([dataSourceNew]);
+        setCount(count + 1);
     };
 
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -154,9 +171,14 @@ const TechSheet: React.FC = () => {
             dataIndex: 'operation',
             render: (_, record) =>
                 dataSource.length >= 1 ? (
-                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
-                        <a>Delete</a>
-                    </Popconfirm>
+                    <div>
+                        <Space split={"|"}>
+                            <a onClick={() => handleAddConnectedNode(record.key)}>연결된 항목 추가</a>
+                            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
+                                <a>삭제</a>
+                            </Popconfirm>
+                        </Space>
+                    </div>
                 ) : null,
         },
     ];
@@ -208,7 +230,7 @@ const TechSheet: React.FC = () => {
     return (
         <div>
             <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                Add a row
+                노드 항목 추가
             </Button>
             <Table<DataType>
                 components={components}
