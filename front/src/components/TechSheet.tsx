@@ -165,7 +165,7 @@ const TechSheet: React.FC = () => {
         {
             title: 'connected_node_title',
             dataIndex: 'connected_node_title',
-            editable: false,
+            editable: true,s
             render: (value, record) => {
                 if(shouldShowConnectedNodeTitle(record)){
                     return value
