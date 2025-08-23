@@ -154,25 +154,11 @@ const TechSheet: React.FC = () => {
             dataIndex: 'node_title',
             width: '30%',
             editable: true,
-            render: (value, record) => {
-                if(shouldShowNodeTitle(record)){
-                    return value
-                } else{
-                    return null
-                }
-            }
         },
         {
             title: 'connected_node_title',
             dataIndex: 'connected_node_title',
-            editable: true,s
-            render: (value, record) => {
-                if(shouldShowConnectedNodeTitle(record)){
-                    return value
-                } else{
-                    return null
-                }
-            }
+            editable: true,
         },
         {
             title: 'row_data_type',
