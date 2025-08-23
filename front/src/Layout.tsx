@@ -11,7 +11,7 @@ const items2: MenuProps['items'] = [
     {
         key: `menu-home`,
         icon: React.createElement(LaptopOutlined),
-        label: <Link to={"/"}>Home</Link>,
+        label: <Link to={"/"}>홈 화면</Link>,
     },
     {
         key: `menu-data-crud`,
