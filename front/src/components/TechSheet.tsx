@@ -72,6 +72,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     };
 
     let childNode = children;
+    console.log(record)
 
     if (editable) {
         childNode = (
@@ -154,20 +155,48 @@ const TechSheet: React.FC = () => {
             dataIndex: 'node_title',
             width: '30%',
             editable: true,
+            onCell: (record: DataType) => ({
+                record,
+                editable: record.row_data_type === DataTypeKind.Node, // 행 조건에 따른 편집 여부
+                dataIndex: 'node_title',
+                title: 'node_title',
+                handleSave, // 상위의 저장 핸들러
+            }),
         },
         {
             title: 'connected_node_title',
             dataIndex: 'connected_node_title',
             editable: true,
+            onCell: (record: DataType) => ({
+                record,
+                editable: record.row_data_type === DataTypeKind.Linked,
+                dataIndex: 'connected_node_title',
+                title: 'connected_node_title',
+                handleSave,
+            }),
         },
         {
             title: 'row_data_type',
             dataIndex: 'row_data_type',
-            editable: false
+            editable: false,
+            onCell: (record: DataType) => ({
+                record,
+                editable: record.row_data_type === DataTypeKind.Linked,
+                dataIndex: 'connected_node_title',
+                title: 'connected_node_title',
+                handleSave,
+            }),
         },
         {
             title: 'operation',
             dataIndex: 'operation' as any,
+            onCell: (record: DataType) => ({
+                record,
+                editable: record.row_data_type === DataTypeKind.Linked,
+                dataIndex: 'connected_node_title',
+                title: 'connected_node_title',
+                handleSave,
+            }),
             render: (_, record) => (
                 <div>
                     {(() => {
@@ -228,23 +257,7 @@ const TechSheet: React.FC = () => {
         },
     };
 
-    const columns = defaultColumns.map((col) => col
-        /*
-        !col.editable
-            ? col
-            : {
-                ...col,
-                onCell: (record: DataType) => ({
-                    record,
-                    editable: col.editable!,
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    handleSave,
-                }),
-            }
-
-         */
-    );
+    const columns = defaultColumns
 
     return (
         <div>
