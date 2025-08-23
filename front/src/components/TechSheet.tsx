@@ -108,14 +108,14 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
-const shouldHideNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
-const shouldHideConnectedNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Node;
+const shouldShowNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Node;
+const shouldShowConnectedNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
 
 
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
-        { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: '' , row_data_type: DataTypeKind.Node},
-        { key: '1', node_title: 'Edward King 1', connected_node_title: '' , row_data_type: DataTypeKind.Node},
+        { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
+        { key: '1', node_title: 'Edward King 1', connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
     ]);
     const [count, setCount] = useState(2);
 
@@ -127,7 +127,7 @@ const TechSheet: React.FC = () => {
     const handleAddConnectedNode = (record: DataType) => {
         const newRow: DataType = {
             key: count, // React.Key 허용이라 number도 OK
-            node_title: '',
+            node_title: 'ABCD',
             connected_node_title: '32',
             row_data_type: DataTypeKind.Linked,
         };
@@ -155,7 +155,7 @@ const TechSheet: React.FC = () => {
             width: '30%',
             editable: true,
             render: (value, record) => {
-                if(shouldHideNodeTitle(record)){
+                if(shouldShowNodeTitle(record)){
                     return value
                 } else{
                     return null
@@ -167,7 +167,7 @@ const TechSheet: React.FC = () => {
             dataIndex: 'connected_node_title',
             editable: false,
             render: (value, record) => {
-                if(shouldHideConnectedNodeTitle(record)){
+                if(shouldShowConnectedNodeTitle(record)){
                     return value
                 } else{
                     return null
