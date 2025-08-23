@@ -1,15 +1,11 @@
 import React from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
+import {type MenuProps} from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import {Link, Outlet} from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
 
-const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-    key,
-    label: `nav ${key}`,
-}));
 
 const items2: MenuProps['items'] = [
     {
@@ -43,16 +39,8 @@ const App: React.FC = () => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Header style={{ display: 'flex', alignItems: 'center' }}>
-                <div className="demo-logo" style={{ height: 32, marginLeft: 150 }} />
-                <UserOutlined></UserOutlined>
-                <Menu
-                    theme="dark"
-                    mode="horizontal"
-                    defaultSelectedKeys={['2']}
-                    items={items1}
-                    style={{ flex: 1, minWidth: 0 }}
-                />
+            <Header style={{ display: 'flex', alignItems: 'center', padding: 15, }}>
+                <h2 style={{color: 'white'}}>DevAccountBook</h2>
             </Header>
 
             <Layout>
@@ -66,10 +54,6 @@ const App: React.FC = () => {
                     />
                 </Sider>
                 <Layout style={{ padding: '0 24px 24px' }}>
-                    <Breadcrumb
-                        items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
-                        style={{ margin: '16px 0' }}
-                    />
                     <Content
                         style={{
                             padding: 24,
