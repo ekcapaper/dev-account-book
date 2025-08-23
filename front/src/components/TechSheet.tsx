@@ -150,7 +150,7 @@ const TechSheet: React.FC = () => {
             dataSourceNew.push(item);
         }
 
-        setDataSource([dataSourceNew]);
+        setDataSource(dataSourceNew);
         setCount(count + 1);
     };
 
