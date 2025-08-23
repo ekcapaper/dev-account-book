@@ -49,12 +49,14 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     const [editing, setEditing] = useState(false);
     const inputRef = useRef<InputRef>(null);
     const form = useContext(EditableContext)!;
-
+    
+    // 항상 열린 셀: 마운트/레코드 변경 시 기본값 주입
     useEffect(() => {
-        if (editing) {
-            inputRef.current?.focus();
+        if(editable) {
+            form.setFieldsValue({[dataIndex]: record[dataIndex]});
         }
-    }, [editing]);
+    }, [form, dataIndex, record, editable]);
+
 
     const toggleEdit = () => {
         setEditing(!editing);
@@ -75,7 +77,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     let childNode = children;
 
     if (editable) {
-        childNode = editing ? (
+        childNode = (
             <Form.Item
                 style={{ margin: 0 }}
                 name={dataIndex}
@@ -83,15 +85,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
             >
                 <Input ref={inputRef} onPressEnter={save} onBlur={save} />
             </Form.Item>
-        ) : (
-            <div
-                className="editable-cell-value-wrap"
-                style={{ paddingInlineEnd: 24 }}
-                onClick={toggleEdit}
-            >
-                {children}
-            </div>
-        );
+        )
     }
 
     return <td {...restProps}>{childNode}</td>;
