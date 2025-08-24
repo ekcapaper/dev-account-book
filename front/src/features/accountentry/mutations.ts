@@ -27,3 +27,18 @@ export function useDeleteAccountEntry() {
     });
 }
 
+export function useUpdateAccountEntry(limit = 50, offset = 0) {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, body }: { id: string; body: Partial<Omit<AccountEntry, "id">> }) =>
+            updateAccountEntry(id, body),
+
+        onSuccess: (_data, { id }) => {
+            // 1) 목록 무효화 → 자동 새로고침
+            qc.invalidateQueries({ queryKey: accountKeys.list(limit, offset) });
+            // 2) 단건 쿼리 캐시도 쓰고 있다면 같이 갱신
+            qc.invalidateQueries({ queryKey: ["account-entry", id] });
+        },
+    });
+}

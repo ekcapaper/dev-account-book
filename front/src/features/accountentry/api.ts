@@ -75,3 +75,16 @@ export async function deleteAccountEntry(id: string) {
         return null;
     }
 }
+
+export async function updateAccountEntry(
+    accountEntryId: string,
+    body: Partial<Omit<AccountEntry, "id">> // 일부 필드만 수정 가능
+): Promise<AccountEntry> {
+    const res = await fetch(`http://127.0.0.1:8000/v1/account-entries/${accountEntryId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+}
