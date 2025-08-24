@@ -138,7 +138,6 @@ const TechSheet: React.FC = () => {
 
     useEffect(() => {
         if(data) {
-            console.log(data);
             setDataSource(data)
         }
     }, [data]);
