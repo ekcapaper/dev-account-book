@@ -7,7 +7,7 @@ import {
 } from "../features/accountentry/api.ts";
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {DataTypeKind} from "../features/accountentry/types.ts";
-import {useCreateAccountEntry} from "../features/accountentry/mutations.ts";
+import {useCreateAccountEntry, useDeleteAccountEntry} from "../features/accountentry/mutations.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -134,6 +134,7 @@ const TechSheet: React.FC = () => {
     });
 
     const createAccountEntry = useCreateAccountEntry();
+    const deleteAccountEntry = useDeleteAccountEntry();
 
     useEffect(() => {
         if(data) {
@@ -145,9 +146,11 @@ const TechSheet: React.FC = () => {
     if (error) return <p>에러 발생!</p>;
 
 
-    const handleDelete = (key: React.Key) => {
-        setDataSource((prev) => prev.filter((item) => item.key !== key));
+    const handleDelete = (id: string) => {
+        deleteAccountEntry.mutate(id);
     };
+
+
 
     // 특정 행(record) 아래에 연결 노드 추가
     const handleAddConnectedNode = (record: DataType) => {
@@ -229,7 +232,7 @@ const TechSheet: React.FC = () => {
                         if (record.row_data_type === DataTypeKind.Node) {
                             return (
                                 <Space split="|">
-                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
                                         <a>항목 삭제</a>
                                     </Popconfirm>
                                     <a onClick={() => handleAddConnectedNode(record)}>
@@ -241,7 +244,7 @@ const TechSheet: React.FC = () => {
                         else if(record.row_data_type === DataTypeKind.Linked){
                             return (
                                 <Space split="|">
-                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
                                         <a>링크 삭제</a>
                                     </Popconfirm>
                                 </Space>
