@@ -69,6 +69,11 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     const save = async () => {
         try {
             const values = await form.validateFields();
+            console.log("values");
+            console.log(values)
+            console.log("record");
+            console.log(record);
+
             handleSave({ ...record, ...values });
         } catch (errInfo) {
             console.log('Save failed:', errInfo);
