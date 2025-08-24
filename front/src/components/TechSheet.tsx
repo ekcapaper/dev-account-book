@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { type GetRef, Space, type TableProps } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
-import {QueryClient, useQueryClient} from "@tanstack/react-query";
+import {QueryClient, useQuery, useQueryClient} from "@tanstack/react-query";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -128,16 +128,20 @@ async function fetchAllTechEntry() {
 }
 
 const TechSheet: React.FC = () => {
-    const queryClient = useQueryClient();
-
-
-
-
     const [dataSource, setDataSource] = useState<DataType[]>([
         { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
         { key: '1', node_title: 'Edward King 1', connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
     ]);
     const [count, setCount] = useState(2);
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ["todos"],     // 캐싱 키
+        queryFn: fetchAllTechEntry,     // 실제 호출 함수
+    });
+    if (isLoading) return <p>로딩중...</p>;
+    if (error) return <p>에러 발생!</p>;
+
+
 
     const handleDelete = (key: React.Key) => {
         setDataSource((prev) => prev.filter((item) => item.key !== key));
