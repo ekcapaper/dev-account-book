@@ -91,7 +91,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
         return <td></td>;
     }
 
-
     if (editable) {
         childNode = (
             <Form.Item
