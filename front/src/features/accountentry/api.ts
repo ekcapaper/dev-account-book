@@ -42,8 +42,8 @@ export const getConvertedFullAccountEntriesAndRelationships = async () =>{
             //console.log(targetEntry)
             result.push({
                 key: connectedEntry.id + DataTypeKind.Linked,
-                node_title: connectedEntry.title,
-                connected_node_title: "",
+                node_title: "",
+                connected_node_title: connectedEntry.title,
                 row_data_type: DataTypeKind.Linked
             });
         }
