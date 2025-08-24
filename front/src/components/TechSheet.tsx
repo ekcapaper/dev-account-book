@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { type GetRef, Space, type TableProps } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import {QueryClient, useQuery, useQueryClient} from "@tanstack/react-query";
+import {getAccountEntry} from "../features/accountentry/api.ts";
+import {techEntryKeys} from "../features/accountentry/keys.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -121,12 +123,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
-// API
-async function fetchAllTechEntry() {
-    const res = await fetch("https://jsonplaceholder.typicode.com/todos");
-    return res.json();
-}
-
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
         { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
@@ -135,11 +131,13 @@ const TechSheet: React.FC = () => {
     const [count, setCount] = useState(2);
 
     const { data, isLoading, error } = useQuery({
-        queryKey: ["todos"],     // 캐싱 키
-        queryFn: fetchAllTechEntry,     // 실제 호출 함수
+        queryKey: [techEntryKeys.all],     // 캐싱 키
+        queryFn: getAccountEntry,     // 실제 호출 함수
     });
     if (isLoading) return <p>로딩중...</p>;
     if (error) return <p>에러 발생!</p>;
+
+    console.log(data)
 
 
 

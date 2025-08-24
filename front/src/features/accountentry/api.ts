@@ -1,7 +1,7 @@
 import { http } from "../../lib/fetch";
 
 
-export type AccountEntry = { id: string; title: string; done: boolean };
+export type AccountEntry = { id: string; title: string; desc:string; tags: string[] };
 
 
 export const getAccountEntry = () =>{
