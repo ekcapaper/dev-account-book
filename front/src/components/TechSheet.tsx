@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { type GetRef, Space, type TableProps } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
-import {QueryClient, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import {
     getConvertedFullAccountEntriesAndRelationships
 } from "../features/accountentry/api.ts";
