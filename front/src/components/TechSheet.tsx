@@ -8,7 +8,7 @@ import {
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {DataTypeKind} from "../features/accountentry/types.ts";
 import {
-    useCreateAccountEntry,
+    useCreateAccountEntry, useCreateAccountEntryRelationship,
     useDeleteAccountEntry,
     useUpdateAccountEntry
 } from "../features/accountentry/mutations.ts";
@@ -143,6 +143,8 @@ const TechSheet: React.FC = () => {
     const deleteAccountEntry = useDeleteAccountEntry();
     const patchAccountEntry = useUpdateAccountEntry();
 
+    const createAccountEntryRelationship = useCreateAccountEntryRelationship();
+
     useEffect(() => {
         if(data) {
             setDataSource(data)
@@ -169,6 +171,10 @@ const TechSheet: React.FC = () => {
             if(nodeData.node_title == connectedNodeTitleValue) {
                 console.log(record.id)
                 console.log(nodeData.id)
+                createAccountEntryRelationship.mutate({
+                    from_id: record.id,
+                    to_id: nodeData.id
+                })
             }
         }
 

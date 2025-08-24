@@ -49,7 +49,7 @@ export function useUpdateAccountEntry() {
 type Vars = { from_id: string; to_id: string };
 export function useCreateAccountEntryRelationship() {
     const qc = useQueryClient();
-    
+
     return useMutation({
         mutationFn: ({from_id, to_id}:Vars) =>
             createAccountEntryRelationship(from_id, to_id),
