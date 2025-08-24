@@ -26,6 +26,19 @@ export const getAccountRelationships = (id: string) => {
 
 export const getConvertedFullAccountEntriesAndRelationships = async () =>{
     const data = await getAccountEntries();
+    for (const entry of data){
+        console.log(entry)
+        const entry_relationships = await getAccountRelationships(entry.id)
+        console.log(entry_relationships)
+        for (const relationship of entry_relationships.outgoing){
+            console.log(relationship)
+            const targetEntry = await getAccountEntry(relationship.to_id);
+            console.log(targetEntry)
+        }
+
+    }
+
+
     const convertedData = data.map(entry => {
         return {
             key: entry.id,

@@ -45,18 +45,18 @@ def create_account_entry(payload: AccountEntryCreate, svc: AccountEntryService =
     data = svc.get(new_id)
     return AccountEntryOut(**data)  # type: ignore[arg-type]
 
-@router.get("/{item_id}", response_model=AccountEntryOut)
+@router.get("/{account_entry_id}", response_model=AccountEntryOut)
 def get_account_entry(account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
     data = svc.get(account_entry_id)
     if not data: raise HTTPException(404, "Item not found")
     return AccountEntryOut(**data)  # type: ignore[arg-type]
 
-@router.patch("/{item_id}", response_model=AccountEntryOut)
+@router.patch("/{account_entry_id}", response_model=AccountEntryOut)
 def patch_account_entry(account_entry_id: str, patch: AccountEntryPatch, svc: AccountEntryService = Depends(get_account_entry_service)):
     if not svc.patch(account_entry_id, patch): raise HTTPException(400, "No valid fields to update")
     return AccountEntryOut(**svc.get(account_entry_id))  # type: ignore[arg-type]
 
-@router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{account_entry_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_account_entry(account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
     if not svc.delete(account_entry_id): raise HTTPException(404, "Item not found")
 
