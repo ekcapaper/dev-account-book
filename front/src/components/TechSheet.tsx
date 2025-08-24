@@ -2,7 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { type GetRef, Space, type TableProps } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import {QueryClient, useQuery, useQueryClient} from "@tanstack/react-query";
-import {getAccountEntry} from "../features/accountentry/api.ts";
+import {
+    getAccountEntries,
+    getAccountEntry,
+    getConvertedFullAccountEntriesAndRelationships
+} from "../features/accountentry/api.ts";
 import {techEntryKeys} from "../features/accountentry/keys.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
@@ -132,7 +136,7 @@ const TechSheet: React.FC = () => {
 
     const { data, isLoading, error } = useQuery({
         queryKey: techEntryKeys.all,     // 캐싱 키
-        queryFn: getAccountEntry,     // 실제 호출 함수
+        queryFn: getConvertedFullAccountEntriesAndRelationships,     // 실제 호출 함수
     });
 
     useEffect(() => {
