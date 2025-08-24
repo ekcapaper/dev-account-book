@@ -89,7 +89,7 @@ export async function updateAccountEntry(
     return res.json();
 }
 
-export async function createAccountEntryRelationship(from_id:string , to_id: string) {
+export async function createAccountEntryRelationship(from_id:string , to_id: string):Promise<AccountRelationship> {
     const res = await fetch(`http://127.0.0.1:8000/v1/account-entries/${from_id}/relations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
