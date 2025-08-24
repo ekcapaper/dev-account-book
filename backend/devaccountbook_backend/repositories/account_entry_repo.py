@@ -63,7 +63,8 @@ class AccountEntryRepository:
         return rec is not None
 
     def delete(self, account_entry_id: str) -> bool:
-        q = "MATCH (n:Item {id:$id}) DETACH DELETE n RETURN 1 AS ok"
+        print(account_entry_id)
+        q = "MATCH (n:Item {id:'$id'}) DETACH DELETE n RETURN 1 AS ok"
         rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id).single())
         return rec is not None
 
