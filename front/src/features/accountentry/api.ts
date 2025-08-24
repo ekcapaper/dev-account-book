@@ -88,3 +88,16 @@ export async function updateAccountEntry(
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
 }
+
+export async function createAccountEntryRelationship(from_id:string , to_id: string) {
+    const res = await fetch(`http://127.0.0.1:8000/v1/account-entries/${from_id}/relations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            "to_id": `${to_id}`,
+            "kind": "RELATES_TO",
+        }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<AccountEntry>;
+}
