@@ -29,6 +29,7 @@ export const getConvertedFullAccountEntriesAndRelationships = async () =>{
         //console.log(entry)
         result.push({
             key: entry.id,
+            id: entry.id,
             node_title: entry.title,
             connected_node_title: "",
             row_data_type: DataTypeKind.Node
@@ -42,6 +43,7 @@ export const getConvertedFullAccountEntriesAndRelationships = async () =>{
             //console.log(targetEntry)
             result.push({
                 key: connectedEntry.id + DataTypeKind.Linked,
+                id: connectedEntry.id,
                 node_title: "",
                 connected_node_title: connectedEntry.title,
                 row_data_type: DataTypeKind.Linked

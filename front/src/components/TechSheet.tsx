@@ -15,6 +15,7 @@ type FormInstance<T> = GetRef<typeof Form<T>>;
 // 행 타입 단일화
 interface DataType {
     key: React.Key;
+    id: string;
     node_title: string;
     connected_node_title: string;
     row_data_type: DataTypeKind;
@@ -122,8 +123,8 @@ type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
-        { key: '0', node_title: 'Edwargfgd King 0', connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
-        { key: '1', node_title: 'Edward King 1', connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
+        { key: '0', id:"0", node_title: 'Edwargfgd King 0', connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
+        { key: '1', id:"0", node_title: 'Edward King 1', connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
     ]);
     const [count, setCount] = useState(2);
 
@@ -256,6 +257,7 @@ const TechSheet: React.FC = () => {
     const handleAdd = () => {
         const newData: DataType = {
             key: count,
+            id: count.toString(),
             node_title: `Edward King ${count}`,
             connected_node_title: '32',
             row_data_type: DataTypeKind.Node,
