@@ -7,7 +7,11 @@ import {
 } from "../features/accountentry/api.ts";
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {DataTypeKind} from "../features/accountentry/types.ts";
-import {useCreateAccountEntry, useDeleteAccountEntry} from "../features/accountentry/mutations.ts";
+import {
+    useCreateAccountEntry,
+    useDeleteAccountEntry,
+    useUpdateAccountEntry
+} from "../features/accountentry/mutations.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -67,13 +71,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     }, [form, dataIndex, record, editable]);
 
     const save = async () => {
+
+
         try {
             const values = await form.validateFields();
-            console.log("values");
-            console.log(values)
-            console.log("record");
-            console.log(record);
-
             handleSave({ ...record, ...values });
         } catch (errInfo) {
             console.log('Save failed:', errInfo);
@@ -140,6 +141,7 @@ const TechSheet: React.FC = () => {
 
     const createAccountEntry = useCreateAccountEntry();
     const deleteAccountEntry = useDeleteAccountEntry();
+    const patchAccountEntry = useUpdateAccountEntry();
 
     useEffect(() => {
         if(data) {
@@ -285,6 +287,21 @@ const TechSheet: React.FC = () => {
 
     const handleSave = (row: DataType) => {
         setDataSource((prev) => {
+            //console.log("values");
+            //console.log(row)
+
+            if(row.row_data_type == DataTypeKind.Node) {
+                patchAccountEntry.mutate({
+                    "id": row.id,
+                    "body" : {
+                        "title": row.node_title,
+                    }
+                })
+            }
+
+
+
+
             const idx = prev.findIndex((item) => item.key === row.key);
             if (idx === -1) return prev;
             const next = prev.slice();
