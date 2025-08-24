@@ -3,8 +3,6 @@ import { type GetRef, Space, type TableProps } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import {QueryClient, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
-    getAccountEntries,
-    getAccountEntry,
     getConvertedFullAccountEntriesAndRelationships
 } from "../features/accountentry/api.ts";
 import {techEntryKeys} from "../features/accountentry/keys.ts";
@@ -48,9 +46,6 @@ interface EditableCellProps {
     record: DataType;
     handleSave: (record: DataType) => void;
 }
-
-const shouldShowNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Node;
-const shouldShowConnectedNodeTitle = (r: DataType) => r.row_data_type === DataTypeKind.Linked;
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                                                                                 title,
