@@ -131,14 +131,29 @@ const TechSheet: React.FC = () => {
     const [count, setCount] = useState(2);
 
     const { data, isLoading, error } = useQuery({
-        queryKey: [techEntryKeys.all],     // 캐싱 키
+        queryKey: techEntryKeys.all,     // 캐싱 키
         queryFn: getAccountEntry,     // 실제 호출 함수
     });
+
+    console.log(data);
+    useEffect(() => {
+        if(data) {
+            console.log(data);
+            const convertedData = data.map(entry => {
+                return {
+                    key: entry.id,
+                    node_title: entry.title,
+                    connected_node_title: "",
+                    row_data_type: DataTypeKind.Node,
+                }
+            })
+            setDataSource(convertedData)
+        }
+    }, [data]);
+
+
     if (isLoading) return <p>로딩중...</p>;
     if (error) return <p>에러 발생!</p>;
-
-    console.log(data)
-
 
 
     const handleDelete = (key: React.Key) => {
