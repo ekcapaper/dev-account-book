@@ -63,3 +63,15 @@ export async function createAccountEntry(body: Omit<AccountEntry, "id">) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<AccountEntry>;
 }
+
+export async function deleteAccountEntry(id: string) {
+    const res = await fetch(`http://127.0.0.1:8000/v1/account-entries/${id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    try {
+        return await res.json();
+    } catch {
+        return null;
+    }
+}
