@@ -53,7 +53,7 @@ export const getConvertedFullAccountEntriesAndRelationships = async () =>{
 }
 
 export async function createAccountEntry(body: Omit<AccountEntry, "id">) {
-    const res = await fetch(`/v1/account-entries`, {
+    const res = await fetch(`http://127.0.0.1:8000/v1/account-entries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
