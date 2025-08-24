@@ -142,7 +142,6 @@ const TechSheet: React.FC = () => {
         }
     }, [data]);
 
-
     if (isLoading) return <p>로딩중...</p>;
     if (error) return <p>에러 발생!</p>;
 

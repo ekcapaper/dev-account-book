@@ -22,30 +22,32 @@ export const getAccountRelationships = (id: string) => {
     return http<AccountEntryRelationship>(`http://127.0.0.1:8000/v1/account-entries/${id}/relations`);
 }
 
-
-
 export const getConvertedFullAccountEntriesAndRelationships = async () =>{
+    const result = []
     const data = await getAccountEntries();
     for (const entry of data){
-        console.log(entry)
-        const entry_relationships = await getAccountRelationships(entry.id)
-        console.log(entry_relationships)
-        for (const relationship of entry_relationships.outgoing){
-            console.log(relationship)
-            const targetEntry = await getAccountEntry(relationship.to_id);
-            console.log(targetEntry)
-        }
-
-    }
-
-
-    const convertedData = data.map(entry => {
-        return {
+        //console.log(entry)
+        result.push({
             key: entry.id,
             node_title: entry.title,
             connected_node_title: "",
-            row_data_type: DataTypeKind.Node,
+            row_data_type: DataTypeKind.Node
+        });
+
+        const entry_relationships = await getAccountRelationships(entry.id)
+        //console.log(entry_relationships)
+        for (const relationship of entry_relationships.outgoing){
+            //console.log(relationship)
+            const connectedEntry = await getAccountEntry(relationship.to_id);
+            //console.log(targetEntry)
+            result.push({
+                key: connectedEntry.id + DataTypeKind.Linked,
+                node_title: connectedEntry.title,
+                connected_node_title: "",
+                row_data_type: DataTypeKind.Linked
+            });
         }
-    })
-    return convertedData;
+    }
+
+    return result;
 }
