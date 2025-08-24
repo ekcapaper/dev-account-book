@@ -273,6 +273,7 @@ const TechSheet: React.FC = () => {
                                 </Space>
                             );
                         }
+                        // TODO 여기 링크 삭제하도록 기능 수정 필요 지금은 그냥 항목 삭제함
                         else if(record.row_data_type === DataTypeKind.Linked){
                             return (
                                 <Space split="|">
