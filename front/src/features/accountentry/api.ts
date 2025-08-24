@@ -99,5 +99,5 @@ export async function createAccountEntryRelationship(from_id:string , to_id: str
         }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<AccountEntry>;
+    return res.json() as Promise<AccountRelationship>;
 }
