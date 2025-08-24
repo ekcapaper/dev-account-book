@@ -1,4 +1,5 @@
 import { http } from "../../lib/fetch";
+import {DataTypeKind} from "./types.ts";
 
 
 export type AccountEntry = { id: string; title: string; desc:string; tags: string[] };
@@ -21,10 +22,7 @@ export const getAccountRelationships = (id: string) => {
     return http<AccountEntryRelationship>(`http://127.0.0.1:8000/v1/account-entries/${id}/relations`);
 }
 
-export enum DataTypeKind {
-    Node = 'node',
-    Linked = 'linked',
-}
+
 
 export const getConvertedFullAccountEntriesAndRelationships = async () =>{
     const data = await getAccountEntries();

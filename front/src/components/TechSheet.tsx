@@ -8,13 +8,10 @@ import {
     getConvertedFullAccountEntriesAndRelationships
 } from "../features/accountentry/api.ts";
 import {techEntryKeys} from "../features/accountentry/keys.ts";
+import {DataTypeKind} from "../features/accountentry/types.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
-export enum DataTypeKind {
-    Node = 'node',
-    Linked = 'linked',
-}
 
 // 행 타입 단일화
 interface DataType {
