@@ -21,6 +21,20 @@ export const getAccountRelationships = (id: string) => {
     return http<AccountEntryRelationship>(`http://127.0.0.1:8000/v1/account-entries/${id}/relations`);
 }
 
+export enum DataTypeKind {
+    Node = 'node',
+    Linked = 'linked',
+}
+
 export const getConvertedFullAccountEntriesAndRelationships = async () =>{
-    return await getAccountEntries();
+    const data = await getAccountEntries();
+    const convertedData = data.map(entry => {
+        return {
+            key: entry.id,
+            node_title: entry.title,
+            connected_node_title: "",
+            row_data_type: DataTypeKind.Node,
+        }
+    })
+    return convertedData;
 }

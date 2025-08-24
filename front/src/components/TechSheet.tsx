@@ -142,15 +142,7 @@ const TechSheet: React.FC = () => {
     useEffect(() => {
         if(data) {
             console.log(data);
-            const convertedData = data.map(entry => {
-                return {
-                    key: entry.id,
-                    node_title: entry.title,
-                    connected_node_title: "",
-                    row_data_type: DataTypeKind.Node,
-                }
-            })
-            setDataSource(convertedData)
+            setDataSource(data)
         }
     }, [data]);
 
