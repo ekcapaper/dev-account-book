@@ -5,7 +5,7 @@ import {QueryClient, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     getConvertedFullAccountEntriesAndRelationships
 } from "../features/accountentry/api.ts";
-import {techEntryKeys} from "../features/accountentry/keys.ts";
+import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {DataTypeKind} from "../features/accountentry/types.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
@@ -127,7 +127,7 @@ const TechSheet: React.FC = () => {
     const [count, setCount] = useState(2);
 
     const { data, isLoading, error } = useQuery({
-        queryKey: techEntryKeys.all,     // 캐싱 키
+        queryKey: accountEntryKeys.all,     // 캐싱 키
         queryFn: getConvertedFullAccountEntriesAndRelationships,     // 실제 호출 함수
     });
 
@@ -257,6 +257,7 @@ const TechSheet: React.FC = () => {
             connected_node_title: '32',
             row_data_type: DataTypeKind.Node,
         };
+
         setDataSource((prev) => [...prev, newData]);
         setCount((c) => c + 1);
     };
