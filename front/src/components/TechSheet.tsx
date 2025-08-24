@@ -135,7 +135,6 @@ const TechSheet: React.FC = () => {
         queryFn: getAccountEntry,     // 실제 호출 함수
     });
 
-    console.log(data);
     useEffect(() => {
         if(data) {
             console.log(data);
