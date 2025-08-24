@@ -1,7 +1,7 @@
 // features/account/mutations.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { accountEntryKeys } from "./keys";
-import {type AccountEntry, createAccountEntry, deleteAccountEntry} from "./api.ts";
+import {type AccountEntry, createAccountEntry, deleteAccountEntry, updateAccountEntry} from "./api.ts";
 
 export function useCreateAccountEntry() {
     const qc = useQueryClient();
@@ -27,7 +27,7 @@ export function useDeleteAccountEntry() {
     });
 }
 
-export function useUpdateAccountEntry(limit = 50, offset = 0) {
+export function useUpdateAccountEntry() {
     const qc = useQueryClient();
 
     return useMutation({
@@ -35,10 +35,7 @@ export function useUpdateAccountEntry(limit = 50, offset = 0) {
             updateAccountEntry(id, body),
 
         onSuccess: (_data, { id }) => {
-            // 1) 목록 무효화 → 자동 새로고침
-            qc.invalidateQueries({ queryKey: accountKeys.list(limit, offset) });
-            // 2) 단건 쿼리 캐시도 쓰고 있다면 같이 갱신
-            qc.invalidateQueries({ queryKey: ["account-entry", id] });
+            qc.invalidateQueries({ queryKey: accountEntryKeys.all });
         },
     });
 }
