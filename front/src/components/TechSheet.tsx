@@ -153,6 +153,7 @@ const TechSheet: React.FC = () => {
     const handleAddConnectedNode = (record: DataType) => {
         const newRow: DataType = {
             key: count, // React.Key 허용이라 number도 OK
+            id: count.toString(),
             node_title: 'ABCD',
             connected_node_title: '32',
             row_data_type: DataTypeKind.Linked,
