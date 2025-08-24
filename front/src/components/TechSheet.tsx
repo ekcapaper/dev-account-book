@@ -306,10 +306,7 @@ const TechSheet: React.FC = () => {
                     }
                 })
             }
-
-
-
-
+            
             const idx = prev.findIndex((item) => item.key === row.key);
             if (idx === -1) return prev;
             const next = prev.slice();
