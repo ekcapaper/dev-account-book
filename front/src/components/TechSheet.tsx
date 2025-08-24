@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { type GetRef, Space, type TableProps } from 'antd';
+import {type GetRef, Modal, Space, type TableProps} from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import {useQuery} from "@tanstack/react-query";
 import {
@@ -132,6 +132,7 @@ const TechSheet: React.FC = () => {
         { key: '1', id:"0", node_title: 'Edward King 1', connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
     ]);
     const [count, setCount] = useState(2);
+    const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
 
     const { data, isLoading, error } = useQuery({
         queryKey: accountEntryKeys.all,     // 캐싱 키
@@ -160,6 +161,20 @@ const TechSheet: React.FC = () => {
 
     // 특정 행(record) 아래에 연결 노드 추가
     const handleAddConnectedNode = (record: DataType) => {
+        console.log(data);
+        console.log(connectedNodeTitleValue)
+
+        for (const nodeData of data) {
+            //console.log(nodeData);
+            if(nodeData.node_title == connectedNodeTitleValue) {
+                console.log(record.id)
+                console.log(nodeData.id)
+            }
+        }
+
+
+
+
         const newRow: DataType = {
             key: count, // React.Key 허용이라 number도 OK
             id: count.toString(),
@@ -241,9 +256,14 @@ const TechSheet: React.FC = () => {
                                     <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
                                         <a>항목 삭제</a>
                                     </Popconfirm>
-                                    <a onClick={() => handleAddConnectedNode(record)}>
-                                        연결된 항목 추가
-                                    </a>
+                                    <div>
+                                        <Space>
+                                            <Input value={connectedNodeTitleValue} onChange={(e) => setConnectedNodeTitleValue(e.target.value)}></Input>
+                                            <a onClick={() => handleAddConnectedNode(record)}>
+                                                연결된 항목 추가
+                                            </a>
+                                        </Space>
+                                    </div>
                                 </Space>
                             );
                         }
