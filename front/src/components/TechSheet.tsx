@@ -298,6 +298,14 @@ const TechSheet: React.FC = () => {
                     }
                 })
             }
+            else if(row.row_data_type === DataTypeKind.Linked) {
+                patchAccountEntry.mutate({
+                    "id": row.id,
+                    "body" : {
+                        "title": row.connected_node_title,
+                    }
+                })
+            }
 
 
 
