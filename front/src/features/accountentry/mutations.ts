@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { accountEntryKeys } from "./keys";
 import {type AccountEntry, createAccountEntry} from "./api.ts";
 
-export function useCreateAccountEntry(limit = 50, offset = 0) {
+export function useCreateAccountEntry() {
     const qc = useQueryClient();
 
     return useMutation({

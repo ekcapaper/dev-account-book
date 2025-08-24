@@ -7,6 +7,7 @@ import {
 } from "../features/accountentry/api.ts";
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {DataTypeKind} from "../features/accountentry/types.ts";
+import {useCreateAccountEntry} from "../features/accountentry/mutations.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -130,6 +131,8 @@ const TechSheet: React.FC = () => {
         queryKey: accountEntryKeys.all,     // 캐싱 키
         queryFn: getConvertedFullAccountEntriesAndRelationships,     // 실제 호출 함수
     });
+
+    const createAccountEntry = useCreateAccountEntry();
 
     useEffect(() => {
         if(data) {
@@ -257,6 +260,13 @@ const TechSheet: React.FC = () => {
             connected_node_title: '32',
             row_data_type: DataTypeKind.Node,
         };
+
+        createAccountEntry.mutate({
+            title: newData.node_title,
+            desc: "",
+            tags: ["TAG"]
+        })
+
 
         setDataSource((prev) => [...prev, newData]);
         setCount((c) => c + 1);
