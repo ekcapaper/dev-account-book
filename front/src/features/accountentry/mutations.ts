@@ -1,7 +1,7 @@
 // features/account/mutations.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { accountEntryKeys } from "./keys";
-import {type AccountEntry, createAccountEntry} from "./api.ts";
+import {type AccountEntry, createAccountEntry, deleteAccountEntry} from "./api.ts";
 
 export function useCreateAccountEntry() {
     const qc = useQueryClient();
@@ -16,3 +16,14 @@ export function useCreateAccountEntry() {
         },
     });
 }
+
+export function useDeleteAccountEntry() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => deleteAccountEntry(id),
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: accountEntryKeys.all }); // 목록 갱신
+        },
+    });
+}
+
