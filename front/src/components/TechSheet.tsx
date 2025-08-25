@@ -161,6 +161,10 @@ const TechSheet: React.FC = () => {
         deleteAccountEntry.mutate(id);
     };
 
+    const handleLinkDelete = (from_id: string, to_id: string) => {
+        deleteAccountEntryRelationship.mutate({from_id, to_id});
+    }
+
 
 
     // 특정 행(record) 아래에 연결 노드 추가
@@ -276,7 +280,7 @@ const TechSheet: React.FC = () => {
                         else if(record.row_data_type === DataTypeKind.Linked){
                             return (
                                 <Space split="|">
-                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
+                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleLinkDelete(record)}>
                                         <a>링크 삭제</a>
                                     </Popconfirm>
                                 </Space>
