@@ -16,8 +16,6 @@ const data = {
 export default function TechGraph() {
     return (
         <div>
-            
-
             <div style={{ width: '400px', height: '200px', border: '1px solid black' }}>
                 <ForceGraph2D
                     graphData={data}
