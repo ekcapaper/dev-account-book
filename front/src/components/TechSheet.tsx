@@ -164,6 +164,7 @@ const TechSheet: React.FC = () => {
     };
 
     const handleLinkDelete = (from_id: string, to_id: string) => {
+        console.log(from_id, to_id);
         deleteAccountEntryRelationship.mutate({from_id, to_id});
     }
 
