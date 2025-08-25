@@ -284,7 +284,7 @@ const TechSheet: React.FC = () => {
                         else if(record.row_data_type === DataTypeKind.Linked){
                             return (
                                 <Space split="|">
-                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleLinkDelete(record)}>
+                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleLinkDelete(record.node_id, record.connected_node_id)}>
                                         <a>링크 삭제</a>
                                     </Popconfirm>
                                 </Space>
