@@ -21,7 +21,6 @@ interface DataType {
     key: React.Key;
     id: string;
     node_title: string;
-    relationship_id: string | null;
     connected_node_title: string;
     row_data_type: DataTypeKind;
 }
@@ -129,8 +128,8 @@ type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
-        { key: '0', id:"0", node_title: 'Edwargfgd King 0', relationship_id: null, connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
-        { key: '1', id:"0", node_title: 'Edward King 1', relationship_id: null, connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
+        { key: '0', id:"0", node_title: 'Edwargfgd King 0', connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
+        { key: '1', id:"0", node_title: 'Edward King 1', connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
     ]);
     const [count, setCount] = useState(2);
     const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
@@ -184,7 +183,6 @@ const TechSheet: React.FC = () => {
             id: count.toString(),
             node_title: 'ABCD',
             connected_node_title: '32',
-            relationship_id: null,
             row_data_type: DataTypeKind.Linked,
         };
 
@@ -296,7 +294,6 @@ const TechSheet: React.FC = () => {
             id: count.toString(),
             node_title: `Edward King ${count}`,
             connected_node_title: '32',
-            relationship_id: null,
             row_data_type: DataTypeKind.Node,
         };
 
