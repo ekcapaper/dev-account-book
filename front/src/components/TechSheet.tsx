@@ -296,7 +296,7 @@ const TechSheet: React.FC = () => {
             id: count.toString(),
             node_title: `Edward King ${count}`,
             connected_node_title: '32',
-            relationship_id: null,s
+            relationship_id: null,
             row_data_type: DataTypeKind.Node,
         };
 
