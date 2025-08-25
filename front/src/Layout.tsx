@@ -27,7 +27,12 @@ const items2: MenuProps['items'] = [
                 key: `sub-tech-entry-graph`,
                 icon: React.createElement(NotificationOutlined),
                 label: <Link to={"/tech-entry-graph"}>Tech Graph</Link>
-            }
+            },
+            {
+                key: `sub-tech-entry-explore`,
+                icon: React.createElement(NotificationOutlined),
+                label: <Link to={"/tech-entry-explore"}>Tech Graph</Link>
+            },
         ]
     },
     {

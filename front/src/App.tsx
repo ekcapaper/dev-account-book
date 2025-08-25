@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import TechEntrySheetPage from "./pages/TechEntrySheetPage.tsx";
 import TechEntryGraphPage from "./pages/TechEntryGraphPage.tsx";
+import TechEntryExplorePage from "./pages/TechEntryExplorePage.tsx";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Route index element={<Home />} />          {/* "/" */}
                     <Route path={"tech-entry-sheet"} element={<TechEntrySheetPage/>}/>
                     <Route path={"tech-entry-graph"} element={<TechEntryGraphPage/>}/>
+                    <Route path={"tech-entry-explore"} element={<TechEntryExplorePage/>}/>
                     <Route path="about" element={<About />} />  {/* "/about" */}
                 </Route>
             </Routes>
