@@ -28,7 +28,7 @@ export const getConvertedFullAccountEntriesAndRelationships = async () =>{
     for (const entry of data){
         //console.log(entry)
         result.push({
-            key: entry.id,
+            key: entry.id + DataTypeKind.Node,
             id: entry.id,
             node_id: entry.id,
             node_title: entry.title,
@@ -44,7 +44,7 @@ export const getConvertedFullAccountEntriesAndRelationships = async () =>{
             const connectedEntry = await getAccountEntry(relationship.to_id);
             //console.log(targetEntry)
             result.push({
-                key: connectedEntry.id + DataTypeKind.Linked,
+                key: entry.title + connectedEntry.id + DataTypeKind.Linked,
                 id: connectedEntry.id,
                 node_id: entry.id,
                 node_title: entry.title,
