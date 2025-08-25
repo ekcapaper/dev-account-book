@@ -5,7 +5,7 @@ import {
     type AccountEntry,
     createAccountEntry,
     createAccountEntryRelationshipApi,
-    deleteAccountEntry,
+    deleteAccountEntry, deleteAccountEntryRelationshipApi,
     updateAccountEntry
 } from "./api.ts";
 
@@ -53,6 +53,20 @@ export function useCreateAccountEntryRelationship() {
     return useMutation({
         mutationFn: ({from_id, to_id}:Vars) =>
             createAccountEntryRelationshipApi(from_id, to_id),
+
+        onSuccess: () => {
+            // 새로 생성된 뒤 목록을 갱신하기 위해 invalidate
+            qc.invalidateQueries({ queryKey: accountEntryKeys.all });
+        },
+    });
+}
+
+export function useDeleteAccountEntryRelationshipApi() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({from_id, to_id}:Vars) =>
+            deleteAccountEntryRelationshipApi(from_id, to_id),
 
         onSuccess: () => {
             // 새로 생성된 뒤 목록을 갱신하기 위해 invalidate
