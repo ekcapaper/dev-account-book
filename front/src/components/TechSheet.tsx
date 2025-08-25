@@ -3,13 +3,14 @@ import {type GetRef, Modal, Space, type TableProps} from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import {useQuery} from "@tanstack/react-query";
 import {
+    deleteAccountEntryRelationshipApi,
     getConvertedFullAccountEntriesAndRelationships
 } from "../features/accountentry/api.ts";
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {DataTypeKind} from "../features/accountentry/types.ts";
 import {
     useCreateAccountEntry, useCreateAccountEntryRelationship,
-    useDeleteAccountEntry,
+    useDeleteAccountEntry, useDeleteAccountEntryRelationship,
     useUpdateAccountEntry
 } from "../features/accountentry/mutations.ts";
 
@@ -144,6 +145,7 @@ const TechSheet: React.FC = () => {
     const patchAccountEntry = useUpdateAccountEntry();
 
     const createAccountEntryRelationship = useCreateAccountEntryRelationship();
+    const deleteAccountEntryRelationship = useDeleteAccountEntryRelationship();
 
     useEffect(() => {
         if(data) {

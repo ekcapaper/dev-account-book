@@ -61,7 +61,7 @@ export function useCreateAccountEntryRelationship() {
     });
 }
 
-export function useDeleteAccountEntryRelationshipApi() {
+export function useDeleteAccountEntryRelationship() {
     const qc = useQueryClient();
 
     return useMutation({
