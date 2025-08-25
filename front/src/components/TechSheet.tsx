@@ -131,8 +131,6 @@ type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
 const TechSheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([
-        { key: '0', id:"0", node_title: 'Edwargfgd King 0', node_id: "0", connected_node_id: "", connected_node_title: 'ABCD' , row_data_type: DataTypeKind.Node},
-        { key: '1', id:"0", node_title: 'Edward King 1', node_id:"0", connected_node_id: "", connected_node_title: 'EFGH' , row_data_type: DataTypeKind.Node},
     ]);
     const [count, setCount] = useState(2);
     const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
