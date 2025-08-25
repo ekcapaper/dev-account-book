@@ -21,6 +21,7 @@ interface DataType {
     key: React.Key;
     id: string;
     node_title: string;
+    relationship_id: string;
     connected_node_title: string;
     row_data_type: DataTypeKind;
 }
