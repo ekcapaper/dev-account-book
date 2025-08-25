@@ -3,6 +3,7 @@ import Layout from "./Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import TechEntrySheetPage from "./pages/TechEntrySheetPage.tsx";
+import TechEntryGraphPage from "./pages/TechEntryGraphPage.tsx";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                     {/* Outlet 안에 표시될 것들 */}
                     <Route index element={<Home />} />          {/* "/" */}
                     <Route path={"tech-entry-sheet"} element={<TechEntrySheetPage/>}/>
+                    <Route path={"tech-entry-graph"} element={<TechEntryGraphPage/>}/>
                     <Route path="about" element={<About />} />  {/* "/about" */}
                 </Route>
             </Routes>

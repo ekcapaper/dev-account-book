@@ -19,9 +19,14 @@ const items2: MenuProps['items'] = [
         label: `데이터`,
         children: [
             {
-                key: `sub`,
+                key: `sub-tech-entry-sheet`,
                 icon: React.createElement(NotificationOutlined),
                 label: <Link to={"/tech-entry-sheet"}>Tech Sheet</Link>
+            },
+            {
+                key: `sub-tech-entry-graph`,
+                icon: React.createElement(NotificationOutlined),
+                label: <Link to={"/tech-entry-graph"}>Tech Graph</Link>
             }
         ]
     },
