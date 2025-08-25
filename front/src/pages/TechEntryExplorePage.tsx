@@ -1,6 +1,3 @@
-import TechGraph from "../components/TechGraph.tsx";
-import TechSelectTable from "../components/TechSelectTable.tsx";
-import {Space} from "antd";
 import TechExplorerTable from "../components/TechExplorerTable.tsx";
 
 function TechEntrySheetPage() {
