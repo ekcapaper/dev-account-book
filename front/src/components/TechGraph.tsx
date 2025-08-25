@@ -15,12 +15,18 @@ const data = {
 
 export default function TechGraph() {
     return (
-        <div style={{ width: '600px', height: '400px' }}>
-            <ForceGraph2D
-                graphData={data}
-                nodeLabel="name"           // 마우스 올렸을 때 라벨 표시
-                nodeAutoColorBy="id"       // 노드마다 자동 색상
-            />
+        <div>
+            
+
+            <div style={{ width: '400px', height: '200px', border: '1px solid black' }}>
+                <ForceGraph2D
+                    graphData={data}
+                    nodeLabel="name"           // 마우스 올렸을 때 라벨 표시
+                    nodeAutoColorBy="id"       // 노드마다 자동 색상
+                    width={400}
+                    height={200}
+                />
+            </div>
         </div>
     );
 }
