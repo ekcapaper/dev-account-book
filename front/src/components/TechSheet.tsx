@@ -190,6 +190,8 @@ const TechSheet: React.FC = () => {
             key: count, // React.Key 허용이라 number도 OK
             id: count.toString(),
             node_title: 'ABCD',
+            node_id: "",
+            connected_node_id: "",
             connected_node_title: '32',
             row_data_type: DataTypeKind.Linked,
         };
@@ -300,7 +302,9 @@ const TechSheet: React.FC = () => {
         const newData: DataType = {
             key: count,
             id: count.toString(),
+            node_id: count.toString(),
             node_title: `Edward King ${count}`,
+            connected_node_id: count.toString(),
             connected_node_title: '32',
             row_data_type: DataTypeKind.Node,
         };
