@@ -101,3 +101,16 @@ export async function createAccountEntryRelationshipApi(from_id:string , to_id: 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json()
 }
+
+export async function deleteAccountEntryRelationshipApi(from_id: string, to_id: string, kind: string) {
+    const res = await fetch(`http://127.0.0.1:8000/v1/account-entries/{from_id}/relations/{kind}/{to_id}`, {
+        method: "DELETE",
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    try {
+        return await res.json();
+    } catch {
+        return null;
+    }
+}
+
