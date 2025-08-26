@@ -43,7 +43,7 @@ class AccountEntryRepository:
         rec = self.s.execute_read(lambda tx: tx.run(q).single())
         return int(rec["cnt"])
 
-    def create(self, title: str, desc: Optional[str], tags: list[str]) -> str:
+    def create_entry(self, title: str, desc: Optional[str], tags: list[str]) -> str:
         nid = str(uuid.uuid4())
         q = """
         CREATE (n:AccountEntry {id:$id, title:$title, desc:$desc, tags:$tags, createdAt:datetime()})
@@ -52,7 +52,7 @@ class AccountEntryRepository:
         rec = self.s.execute_write(lambda tx: tx.run(q, id=nid, title=title, desc=desc, tags=tags).single())
         return rec["id"]
 
-    def get(self, account_entry_id: str) -> Dict[str, Any] | None:
+    def get_entry(self, account_entry_id: str) -> Dict[str, Any] | None:
         q = "MATCH (n:AccountEntry {id:$id}) RETURN n"
         rec = self.s.execute_read(lambda tx: tx.run(q, id=account_entry_id).single())
         return normalize_neo(dict(rec["n"])) if rec else None

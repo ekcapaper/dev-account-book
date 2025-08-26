@@ -18,8 +18,8 @@ class AccountEntryService:
         return self.repo.count_entries()
 
     # CRUD
-    def create(self, p: AccountEntryCreate) -> str: return self.repo.create(p.title, p.desc, p.tags)
-    def get(self, account_entry_id: str) -> Dict[str, Any] | None: return self.repo.get(account_entry_id)
+    def create(self, p: AccountEntryCreate) -> str: return self.repo.create_entry(p.title, p.desc, p.tags)
+    def get(self, account_entry_id: str) -> Dict[str, Any] | None: return self.repo.get_entry(account_entry_id)
     def patch(self, account_entry_id: str, p: AccountEntryPatch) -> bool: return self.repo.patch(account_entry_id, p.model_dump(exclude_none=True))
     def delete(self, account_entry_id: str) -> bool: return self.repo.delete(account_entry_id)
 
