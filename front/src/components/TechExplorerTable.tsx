@@ -123,25 +123,6 @@ const rowSelection: TableRowSelection<DataType> = {
 };
 
 
-function normalizeToChildren(obj: any): any {
-    if (Array.isArray(obj)) {
-        return obj.map(normalizeToChildren)
-    } else if (obj && typeof obj === "object") {
-        const result: any = {}
-        for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) && value.every(v => typeof v === "object" && v !== null)) {
-                // 이 키가 자식 노드 배열이면 전부 children으로 병합
-                result.children = (result.children ?? []).concat(normalizeToChildren(value))
-            } else {
-                result[key] = normalizeToChildren(value)
-            }
-        }
-        return result
-    }
-    return obj
-}
-
-
 const TechExplorerTable: React.FC = () => {
     const [checkStrictly, setCheckStrictly] = useState(false);
 
@@ -156,7 +137,7 @@ const TechExplorerTable: React.FC = () => {
     if(error){
         return <p>{error.message}</p>;
     }
-    
+
     console.log(data2);
 
     return (
