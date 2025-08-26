@@ -120,6 +120,8 @@ const rowSelection: TableRowSelection<DataType> = {
 const TechExplorerTable: React.FC = () => {
     const [checkStrictly, setCheckStrictly] = useState(false);
 
+
+
     return (
         <>
             <Space align="center" style={{ marginBottom: 16 }}>
