@@ -27,7 +27,7 @@ class AccountEntryRepository:
         self._ensure_constraints()
 
     # 집계 함수
-    def list_all(self, *, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+    def get_entries(self, *, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
         q = """
         MATCH (n:AccountEntry)
         RETURN n

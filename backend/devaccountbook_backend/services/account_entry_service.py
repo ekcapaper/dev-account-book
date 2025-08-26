@@ -11,7 +11,7 @@ class AccountEntryService:
 
     # 전체
     def list(self, *, limit: int = 50, offset: int = 0) -> list[dict]:
-        items = self.repo.list_all(limit=limit, offset=offset)
+        items = self.repo.get_entries(limit=limit, offset=offset)
         return items
 
     def count(self) -> int:
