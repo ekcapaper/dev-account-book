@@ -76,7 +76,7 @@ class AccountEntryRepository:
         return True
 
     # Relation
-    def create_relation(
+    def add_relation(
             self, from_id: str, to_id: str, kind: RelKind, props: Dict[str, Any] | None = None
     ) -> str:
         # 관계 타입은 파라미터 바인딩 불가 → Enum 기반 f-string 삽입(화이트리스트)
@@ -93,7 +93,7 @@ class AccountEntryRepository:
         return rec["kind"]
 
     # --- 관계 목록 조회 (outgoing / incoming) ---
-    def list_relations(self, entry_id: str) -> Dict[str, List[Dict[str, Any]]]:
+    def get_relations(self, entry_id: str) -> Dict[str, List[Dict[str, Any]]]:
         q_out = """
         MATCH (a:AccountEntry {id:$id})-[r]->(b:AccountEntry)
         RETURN type(r) AS kind, a.id AS from_id, b.id AS to_id, properties(r) AS props
@@ -130,7 +130,8 @@ class AccountEntryRepository:
         ).single())
         return rec["cnt"]
 
-    def get_start_to_end_node(self, start_id):
+    # Function
+    def get_entry_tree(self, start_id):
         q = Q_TREE = """
         MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
         WITH collect(p) AS paths
