@@ -4,7 +4,7 @@ from neo4j import GraphDatabase
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j","neo4jneo4j"))
 
 Q_TREE = """
-MATCH p = (root:AccountEntry {id:$id})-[*0..]->(n:AccountEntry)
+MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
 WITH collect(p) AS paths
 CALL apoc.paths.toJsonTree(paths) YIELD value
 RETURN value
