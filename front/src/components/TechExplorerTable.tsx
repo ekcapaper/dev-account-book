@@ -3,6 +3,7 @@ import { Space, Switch, Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {useQuery} from "@tanstack/react-query";
+import {explorerAccountEntryStartLeaf} from "../features/accountentry/api.ts";
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
@@ -123,8 +124,8 @@ const TechExplorerTable: React.FC = () => {
     const [checkStrictly, setCheckStrictly] = useState(false);
 
     const { data, isLoading, error } = useQuery({
-        queryKey: accountEntryKeys.tree_key,     // 캐싱 키
-        queryFn: getConvertedFullAccountEntriesAndRelationships,     // 실제 호출 함수
+        queryKey: accountEntryKeys.tree_all,     // 캐싱 키
+        queryFn: explorerAccountEntryStartLeaf,     // 실제 호출 함수
     });
 
     return (

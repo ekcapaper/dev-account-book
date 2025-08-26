@@ -118,6 +118,7 @@ export async function deleteAccountEntryRelationshipApi(from_id: string, to_id: 
     }
 }
 
-export async function explorerAccountEntryStartLeaf(start_id: string) {
+export async function explorerAccountEntryStartLeaf() {
+    const start_id = "3c2d3b6a-48c7-4ab9-a99e-417e3f3fb7a4";
     return http<AccountEntryTree>(`http://127.0.0.1:8000/v1/account-entries/${start_id}/explore-start-leaf`);
 }
