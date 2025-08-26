@@ -123,7 +123,7 @@ const rowSelection: TableRowSelection<DataType> = {
 const TechExplorerTable: React.FC = () => {
     const [checkStrictly, setCheckStrictly] = useState(false);
 
-    const { data, isLoading, error } = useQuery({
+    const { data2, isLoading, error } = useQuery({
         queryKey: accountEntryKeys.tree_all,     // 캐싱 키
         queryFn: explorerAccountEntryStartLeaf,     // 실제 호출 함수
     });
@@ -135,14 +135,12 @@ const TechExplorerTable: React.FC = () => {
         return <p>{error.message}</p>;
     }
 
+    console.log(data2);
+
     return (
         <>
-            <Space align="center" style={{ marginBottom: 16 }}>
-                CheckStrictly: <Switch checked={checkStrictly} onChange={setCheckStrictly} />
-            </Space>
             <Table<DataType>
                 columns={columns}
-                rowSelection={{ ...rowSelection, checkStrictly }}
                 dataSource={data}
             />
         </>
