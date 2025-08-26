@@ -11,6 +11,29 @@ from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
 
+# temp code
+def normalize_to_children(obj):
+    """
+    APOC toJsonTree 결과를 받아서 모든 관계 타입 키를 children으로 합치기
+    """
+    if isinstance(obj, list):
+        return [normalize_to_children(x) for x in obj]
+
+    if isinstance(obj, dict):
+        out = {}
+        children = []
+        for k, v in obj.items():
+            if isinstance(v, list) and all(isinstance(x, dict) for x in v):
+                # 이 키는 관계 배열 → children에 합치기
+                children.extend(normalize_to_children(v))
+            else:
+                out[k] = normalize_to_children(v)
+        if children:
+            out["children"] = children
+        return out
+
+    return obj
+
 class AccountEntryRepository:
     def __init__(self, session: Session):
         self.s = session
@@ -130,7 +153,7 @@ class AccountEntryRepository:
         RETURN value
         """
         rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
-        return rec["value"] if rec else None
+        return normalize_to_children(rec["value"]) if rec else None
 
 
 # Depends 팩토리
