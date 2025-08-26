@@ -22,6 +22,16 @@ const columns: TableColumnsType<DataType> = [
         title: 'title',
         dataIndex: 'title',
         key: 'title',
+    },
+    {
+        title: 'desc',
+        dataIndex: 'desc',
+        key: 'desc'
+    },
+    {
+        title: 'tags',
+        dataIndex: 'tags',
+        key: 'tags',
     }
 ];
 
