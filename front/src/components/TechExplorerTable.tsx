@@ -143,6 +143,9 @@ const TechExplorerTable: React.FC = () => {
             <Table<DataType>
                 columns={columns}
                 dataSource={[data2]}
+                expandable={{
+                    defaultExpandAllRows: true,   // ← 여기로 이동
+                }}
             />
         </>
     );
