@@ -128,6 +128,13 @@ const TechExplorerTable: React.FC = () => {
         queryFn: explorerAccountEntryStartLeaf,     // 실제 호출 함수
     });
 
+    if(isLoading){
+        return <p>Loading...</p>;
+    }
+    if(error){
+        return <p>{error.message}</p>;
+    }
+
     return (
         <>
             <Space align="center" style={{ marginBottom: 16 }}>
