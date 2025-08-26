@@ -122,7 +122,7 @@ class AccountEntryRepository:
         ).single())
         return rec["cnt"]
 
-    def get_start_to_end_node(self, start_id) -> List[Dict[str, Any]]:
+    def get_start_to_end_node(self, start_id):
         q = Q_TREE = """
         MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
         WITH collect(p) AS paths
