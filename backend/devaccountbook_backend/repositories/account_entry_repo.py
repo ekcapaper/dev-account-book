@@ -123,17 +123,14 @@ class AccountEntryRepository:
         return rec["cnt"]
 
     def get_start_to_end_node(self, start_id) -> List[Dict[str, Any]]:
-        q = """
-            MATCH p = (start:AccountEntry {id:$id})-[*1..]->(leaf:AccountEntry)
-            WHERE NOT (leaf)-[]->(:AccountEntry)
-            UNWIND nodes(p) AS n
-            WITH DISTINCT n
-            RETURN collect(n{.*}) AS nodes
-            """
-        rec = self.s.execute_read(lambda tx: tx.run(q, id=start_id).single())
-        if not rec:
-            return None
-        return rec["nodes"]
+        q = Q_TREE = """
+        MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
+        WITH collect(p) AS paths
+        CALL apoc.paths.toJsonTree(paths) YIELD value
+        RETURN value
+        """
+        rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
+        return rec["value"] if rec else None
 
 
 # Depends 팩토리
