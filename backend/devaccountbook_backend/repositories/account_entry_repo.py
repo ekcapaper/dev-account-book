@@ -26,7 +26,7 @@ class AccountEntryRepository:
     def bootstrap(self) -> None:
         self._ensure_constraints()
 
-    # 집계 함수
+    #  집계 함수
     def get_entries(self, *, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
         q = """
         MATCH (n:AccountEntry)
@@ -43,6 +43,7 @@ class AccountEntryRepository:
         rec = self.s.execute_read(lambda tx: tx.run(q).single())
         return int(rec["cnt"])
 
+    # CRUD
     def create_entry(self, title: str, desc: Optional[str], tags: list[str]) -> str:
         nid = str(uuid.uuid4())
         q = """
@@ -57,7 +58,7 @@ class AccountEntryRepository:
         rec = self.s.execute_read(lambda tx: tx.run(q, id=account_entry_id).single())
         return normalize_neo(dict(rec["n"])) if rec else None
 
-    def patch(self, account_entry_id: str, props: Dict[str, Any]) -> bool:
+    def update_entry(self, account_entry_id: str, props: Dict[str, Any]) -> bool:
         safe = {k: v for k, v in props.items() if k in ALLOWED_KEYS and v is not None}
         if not safe:
             return False
@@ -69,12 +70,12 @@ class AccountEntryRepository:
         rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id, props=safe).single())
         return rec is not None
 
-    def delete(self, account_entry_id: str) -> bool:
+    def delete_entry(self, account_entry_id: str) -> bool:
         q = "MATCH (n:AccountEntry {id:$id}) DETACH DELETE n"
         rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id).single())
         return True
 
-    # --- 관계 생성 ---
+    # Relation
     def create_relation(
             self, from_id: str, to_id: str, kind: RelKind, props: Dict[str, Any] | None = None
     ) -> str:
