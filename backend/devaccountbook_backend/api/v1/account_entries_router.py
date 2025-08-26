@@ -32,6 +32,10 @@ def list_account_entries(
     items = service.list(limit=limit, offset=offset)
     return [AccountEntryOut(**it) for it in items]
 
+@router.get("/{start_account_entry_id}/explore-start-leaf")
+def get_start_to_end_node(start_account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
+    return svc.get_start_to_end_node(start_account_entry_id)
+
 @router.get("/count", response_model=CountOut)
 def count_account_entries(
     service: AccountEntryService = Depends(get_account_entry_service),

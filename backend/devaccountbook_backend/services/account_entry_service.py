@@ -40,5 +40,11 @@ class AccountEntryService:
     def unlink(self, from_id: str, to_id: str, kind: RelKind) -> int:
         return self.repo.delete_relation(from_id, to_id, kind)
 
+    # 처음부터 끝까지 조회
+    def get_start_to_end_node(self, start_id):
+        return self.repo.get_start_to_end_node(start_id)
+
+
+
 def get_account_entry_service(session = Depends(get_neo4j_session)) -> AccountEntryService:
     return AccountEntryService(AccountEntryRepository(session))
