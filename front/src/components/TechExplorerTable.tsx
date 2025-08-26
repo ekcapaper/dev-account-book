@@ -19,22 +19,10 @@ interface DataType {
 
 const columns: TableColumnsType<DataType> = [
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-        width: '12%',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-        width: '30%',
-        key: 'address',
-    },
+        title: 'title',
+        dataIndex: 'title',
+        key: 'title',
+    }
 ];
 
 const data: DataType[] = [
@@ -144,7 +132,7 @@ const TechExplorerTable: React.FC = () => {
         <>
             <Table<DataType>
                 columns={columns}
-                dataSource={data}
+                dataSource={[data2]}
             />
         </>
     );
