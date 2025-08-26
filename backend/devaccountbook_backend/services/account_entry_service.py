@@ -15,7 +15,7 @@ class AccountEntryService:
         return items
 
     def count(self) -> int:
-        return self.repo.count_all()
+        return self.repo.count_entries()
 
     # CRUD
     def create(self, p: AccountEntryCreate) -> str: return self.repo.create(p.title, p.desc, p.tags)

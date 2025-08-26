@@ -38,7 +38,7 @@ class AccountEntryRepository:
         rows = self.s.execute_read(lambda tx: list(tx.run(q, offset=offset, limit=limit)))
         return [normalize_neo(dict(row["n"])) for row in rows]
 
-    def count_all(self) -> int:
+    def count_entries(self) -> int:
         q = "MATCH (n:AccountEntry) RETURN count(n) AS cnt"
         rec = self.s.execute_read(lambda tx: tx.run(q).single())
         return int(rec["cnt"])
