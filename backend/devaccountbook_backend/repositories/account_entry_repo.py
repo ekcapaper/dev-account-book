@@ -122,6 +122,19 @@ class AccountEntryRepository:
         ).single())
         return rec["cnt"]
 
+    def get_start_to_end_node(self, start_id) -> List[Dict[str, Any]]:
+        q = """
+            MATCH p = (start:AccountEntry {id:$id})-[*1..]->(leaf:AccountEntry)
+            WHERE NOT (leaf)-[]->(:AccountEntry)
+            UNWIND nodes(p) AS n
+            WITH DISTINCT n
+            RETURN collect(n{.*}) AS nodes
+            """
+        rec = self.s.execute_read(lambda tx: tx.run(q, id=start_id).single())
+        if not rec:
+            return None
+        return rec["nodes"]
+
 
 # Depends 팩토리
 from fastapi import Depends
