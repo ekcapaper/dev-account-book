@@ -1,5 +1,5 @@
 import { http } from "../../lib/fetch";
-import {DataTypeKind} from "./types.ts";
+import {type AccountEntryTree, DataTypeKind} from "./types.ts";
 
 
 export type AccountEntry = { id: string; title: string; desc:string; tags: string[] };
@@ -118,4 +118,6 @@ export async function deleteAccountEntryRelationshipApi(from_id: string, to_id: 
     }
 }
 
-export async function explorerAccountEntryStartLeaf(start_id: string):
+export async function explorerAccountEntryStartLeaf(start_id: string) {
+    return http<AccountEntryTree>(`http://127.0.0.1:8000/v1/account-entries/${start_id}/explore-start-leaf`);
+}
