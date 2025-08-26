@@ -13,19 +13,17 @@ PASSWORD = os.getenv("NEO4J_PASSWORD", "neo4j")
 # --- 드라이버 생성 ---
 driver = GraphDatabase.driver(URI, auth=basic_auth(USER, PASSWORD))
 
+
 def get_start_leaf_items(item_id: str) -> Optional[list[dict]]:
-    q = """
-    MATCH p = (start:AccountEntry {id:$id})-[*1..]->(leaf:AccountEntry)
-    WHERE NOT (leaf)-[]->(:AccountEntry)
-    UNWIND nodes(p) AS n
-    WITH DISTINCT n
-    RETURN collect(n{.*}) AS nodes
-    """
-    with driver.session() as s:
-        rec = s.execute_read(lambda tx: tx.run(q, id=item_id).single())
-        if not rec:
-            return None
-        return rec["nodes"]
+    with driver.session() as session:
+        q = """
+            MATCH p = (root:AccountEntry {id:$id})-[:CHILD*0..]->(n:AccountEntry)
+            WITH collect(p) AS paths
+            CALL apoc.convert.toTree(paths) YIELD value
+            RETURN value;
+        """
+        rec = session.execute_read(lambda tx: tx.run(q, id=item_id).single())
+
 
 if __name__ == '__main__':
     print(get_start_leaf_items(""))
