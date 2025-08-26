@@ -94,6 +94,13 @@ const data: DataType[] = [
         name: 'Joe Black',
         age: 32,
         address: 'Sydney No. 1 Lake Park',
+        children: [
+            {
+                key: 1311,
+                name: 'Jim Green jr.',
+                age: 25,
+                address: 'London No. 3 Lake Park',
+            }]
     },
 ];
 
