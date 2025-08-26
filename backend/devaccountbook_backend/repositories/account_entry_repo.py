@@ -19,10 +19,13 @@ class AccountEntryRepository:
     def __init__(self, session: Session):
         self.s = session
 
-    def bootstrap(self) -> None:
+    def _ensure_constraints(self) -> None:
         q = "CREATE CONSTRAINT IF NOT EXISTS FOR (n:AccountEntry) REQUIRE n.id IS UNIQUE"
         self.s.execute_write(lambda tx: tx.run(q))
-    
+
+    def bootstrap(self) -> None:
+        self._ensure_constraints()
+
     # 집계 함수
     def list_all(self, *, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
         q = """
