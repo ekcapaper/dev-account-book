@@ -119,11 +119,10 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
     ))
     assert deleted_cnt >= 1
 
-    '''
     rels2 = repo.get_relations(a)
-    assert len(rels2["outgoing"]) == 1
-    assert rels2["outgoing"][0]["to_id"] == c
-    '''
+    assert len(rels2.outgoing) == 1
+    assert rels2.outgoing[0].to_id == c
+
 
 def test_get_entry_tree_with_apoc(repo: AccountEntryRepository):
     # 그래프: A -> B, A -> C
