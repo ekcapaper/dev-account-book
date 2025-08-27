@@ -8,7 +8,8 @@ from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch
+from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch, RelationCreate, \
+    RelationProps
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -89,18 +90,18 @@ class AccountEntryRepository:
 
     # Relation
     def add_relation(
-            self, from_id: str, to_id: str, kind: RelKind, props: Dict[str, Any] | None = None
+            self, relation_create: RelationCreate
     ) -> str:
         # 관계 타입은 파라미터 바인딩 불가 → Enum 기반 f-string 삽입(화이트리스트)
         q = f"""
         MATCH (a:AccountEntry {{id:$from_id}}), (b:AccountEntry {{id:$to_id}})
-        MERGE (a)-[r:{kind.value}]->(b)
+        MERGE (a)-[r:{relation_create.kind.value}]->(b)
         ON CREATE SET r.createdAt = datetime()
         SET r += $props
         RETURN type(r) AS kind
         """
         rec = self.s.execute_write(lambda tx: tx.run(
-            q, from_id=from_id, to_id=to_id, props=props or {}
+            q, from_id=relation_create.from_id, to_id=relation_create.to_id, props=RelationProps.model_dump(relation_create.props) or {}
         ).single())
         return rec["kind"]
 
