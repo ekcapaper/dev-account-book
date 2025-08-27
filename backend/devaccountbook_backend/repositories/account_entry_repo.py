@@ -28,7 +28,7 @@ class AccountEntryRepository:
         self._ensure_constraints()
 
     #  집계 함수
-    def get_entries(self, *, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+    def get_entries(self, *, limit: int = 50, offset: int = 0) -> List[AccountEntry]:
         q = """
         MATCH (n:AccountEntry)
         RETURN n
@@ -37,7 +37,7 @@ class AccountEntryRepository:
         LIMIT $limit
         """
         rows = self.s.execute_read(lambda tx: list(tx.run(q, offset=offset, limit=limit)))
-        return [normalize_neo(dict(row["n"])) for row in rows]
+        return [AccountEntry.model_validate(dict(row["n"])) for row in rows]
 
     def count_entries(self) -> int:
         q = "MATCH (n:AccountEntry) RETURN count(n) AS cnt"

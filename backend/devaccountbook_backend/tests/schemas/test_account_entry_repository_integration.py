@@ -30,7 +30,7 @@ def test_get_entries_paging(repo: AccountEntryRepository):
     rows2 = repo.get_entries(limit=3, offset=3)
     assert len(rows2) == 2
     # 최신 createdAt DESC 이므로 첫 페이지와 두 번째 페이지가 겹치지 않아야 함
-    returned_ids = {r["id"] for r in rows} | {r["id"] for r in rows2}
+    returned_ids = {r.id for r in rows} | {r.id for r in rows2}
     assert set(ids) == returned_ids
 
 def test_update_entry(repo: AccountEntryRepository):
