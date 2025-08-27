@@ -132,7 +132,7 @@ def convert_account_entry_tree_node(input_data: dict):
     id_data = input_data.get("id")
     title = input_data.get("title")
     desc = input_data.get("desc")
-    tags = input_data.get("tags")
+    tags = input_data.get("tags") or []
     children = []
     if "relates_to" in input_data.keys():
         for child in input_data["relates_to"]:
