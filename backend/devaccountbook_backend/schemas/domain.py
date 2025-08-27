@@ -128,6 +128,7 @@ class AccountEntryTreeNode(BaseModel):
 AccountEntryTreeNode.model_rebuild()
 
 def convert_account_entry_tree_node(input_data: dict):
+    print(type(input_data))
     id_data = input_data.get("id")
     title = input_data.get("title")
     desc = input_data.get("desc")
@@ -135,7 +136,7 @@ def convert_account_entry_tree_node(input_data: dict):
     children = []
     if "relates_to" in input_data.keys():
         for child in input_data["relates_to"]:
-            children += convert_account_entry_tree_node(child)
+            children.append(convert_account_entry_tree_node(child))
     return (
         AccountEntryTreeNode(
             id=id_data,

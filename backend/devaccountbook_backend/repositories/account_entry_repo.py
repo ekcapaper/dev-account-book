@@ -9,7 +9,7 @@ from neo4j import Session
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch, RelationCreate, \
-    RelationProps, NodeRelations, Relation, RelationDelete, AccountEntryTreeNode
+    RelationProps, NodeRelations, Relation, RelationDelete, AccountEntryTreeNode, convert_account_entry_tree_node
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -154,7 +154,8 @@ class AccountEntryRepository:
         rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
         print(rec["value"])
         #print(type(rec["value"]))
-        return normalize_to_children(rec["value"]) if rec else None
+        #return normalize_to_children(rec["value"]) if rec else None
+        return convert_account_entry_tree_node(rec["value"]) if rec else None
 
 
 # Depends 팩토리
