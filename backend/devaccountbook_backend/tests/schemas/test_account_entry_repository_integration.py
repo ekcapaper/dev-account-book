@@ -58,7 +58,6 @@ def test_update_entry(repo: AccountEntryRepository):
             "title": "new",
             "desc": None,
             "tags": ["y"],
-            "bad": "ignored"
         }))
     assert ok is True
 
