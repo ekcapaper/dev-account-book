@@ -7,20 +7,21 @@ from devaccountbook_backend.db.neo import get_neo4j_session
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 
 @pytest.fixture(scope="session")
-def neo4j_session() -> Generator[Generator[Any, None, None], Any, None]:
+def neo4j_session() -> Generator[Session, None, None]:
     """
     실제 테스트용 Neo4j Session.
     - devaccountbook_backend.db.neo.get_neo4j_session 을 그대로 사용
     - 테스트 세션은 세션 종료 시 close 시도
     """
-    session = get_neo4j_session()
+    gen = get_neo4j_session()  # generator 객체
+    session = next(gen)  # yield된 실제 Session
     try:
-        # 세션이 context manager/generator가 아니라면 그냥 반환
         yield session
     finally:
+        # generator의 종료 부분 실행 (with driver.session() 빠지면서 close)
         try:
-            session.close()
-        except Exception:
+            next(gen)
+        except StopIteration:
             pass
 
 @pytest.fixture(autouse=True)

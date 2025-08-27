@@ -82,8 +82,7 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
     assert len(rels2["outgoing"]) == 1
     assert rels2["outgoing"][0]["to_id"] == c
 
-@pytest.mark.skipif(not pytest.lazy_fixture("has_apoc"), reason="APOC not available")
-def test_get_entry_tree_with_apoc(repo: AccountEntryRepository, has_apoc: bool):
+def test_get_entry_tree_with_apoc(repo: AccountEntryRepository):
     # 그래프: A -> B, A -> C
     a = repo.create_entry("A", None, [])
     b = repo.create_entry("B", None, [])
