@@ -3,7 +3,8 @@ from datetime import datetime
 import pytest
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntryCreate, AccountEntryPatch, RelationCreate, RelationProps
+from devaccountbook_backend.schemas.domain import AccountEntryCreate, AccountEntryPatch, RelationCreate, RelationProps, \
+    RelationDelete
 
 
 def test_bootstrap(repo: AccountEntryRepository):
@@ -109,12 +110,16 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
     assert {r.to_id for r in outgoing} == {b, c}
     assert outgoing[0].props
 
-    '''
 
     # 삭제
-    deleted_cnt = repo.delete_relation(a, b, RelKind.RELATES_TO)
+    deleted_cnt = repo.delete_relation(RelationDelete(
+        from_id = a,
+        to_id=b,
+        kind=RelKind.RELATES_TO
+    ))
     assert deleted_cnt >= 1
 
+    '''
     rels2 = repo.get_relations(a)
     assert len(rels2["outgoing"]) == 1
     assert rels2["outgoing"][0]["to_id"] == c

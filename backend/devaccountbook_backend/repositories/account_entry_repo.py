@@ -9,7 +9,7 @@ from neo4j import Session
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch, RelationCreate, \
-    RelationProps, NodeRelations, Relation
+    RelationProps, NodeRelations, Relation, RelationDelete
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -132,14 +132,14 @@ class AccountEntryRepository:
         return NodeRelations.model_validate({"outgoing": to_relation(rows_out), "incoming": to_relation(rows_in)})
 
     # --- 관계 삭제 ---
-    def delete_relation(self, from_id: str, to_id: str, kind: RelKind) -> int:
+    def delete_relation(self, relation_delete:RelationDelete) -> int:
         q = f"""
-        MATCH (a:AccountEntry {{id:$from_id}})-[r:{kind.value}]->(b:AccountEntry {{id:$to_id}})
+        MATCH (a:AccountEntry {{id:$from_id}})-[r:{relation_delete.kind.value}]->(b:AccountEntry {{id:$to_id}})
         DELETE r
         RETURN count(*) AS cnt
         """
         rec = self.s.execute_write(lambda tx: tx.run(
-            q, from_id=from_id, to_id=to_id
+            q, from_id=relation_delete.from_id, to_id=relation_delete.to_id
         ).single())
         return rec["cnt"]
 
