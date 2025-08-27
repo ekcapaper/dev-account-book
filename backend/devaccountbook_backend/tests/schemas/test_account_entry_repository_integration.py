@@ -31,7 +31,14 @@ def test_create_and_get_and_count(repo: AccountEntryRepository):
     assert cnt == 1
 
 def test_get_entries_paging(repo: AccountEntryRepository):
-    ids = [repo.create_entry(f"title-{i}", None, [f"t{i}"]) for i in range(5)]
+    ids = [repo.create_entry(
+        AccountEntryCreate(
+            title=f"title-{i}",
+            desc=None,
+            tags=[f"t{i}"]
+        )
+    ) for i in range(5)]
+    
     rows = repo.get_entries(limit=3, offset=0)
     assert len(rows) == 3
     rows2 = repo.get_entries(limit=3, offset=3)
