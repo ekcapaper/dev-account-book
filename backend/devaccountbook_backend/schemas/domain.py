@@ -127,7 +127,27 @@ class AccountEntryTreeNode(BaseModel):
 # 재귀 모델 선언 마감
 AccountEntryTreeNode.model_rebuild()
 
-#def convert_account_entry_tree_node(input_data: dict):
+def convert_account_entry_tree_node(input_data: dict):
+    id_data = input_data.get("id")
+    title = input_data.get("title")
+    desc = input_data.get("desc")
+    tags = input_data.get("tags")
+    children = []
+    if "relates_to" in input_data.keys():
+        for child in input_data["relates_to"]:
+            children += convert_account_entry_tree_node(child)
+    return (
+        AccountEntryTreeNode(
+            id=id_data,
+            title=title,
+            desc=desc,
+            tags=tags,
+            children=children,
+        )
+    )
+
+
+
 
 
 
