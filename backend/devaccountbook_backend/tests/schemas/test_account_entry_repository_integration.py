@@ -126,9 +126,9 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
 
 def test_get_entry_tree_with_apoc(repo: AccountEntryRepository):
     # 그래프: A -> B, A -> C
-    a = repo.create_entry("A", None, [])
-    b = repo.create_entry("B", None, [])
-    c = repo.create_entry("C", None, [])
+    a = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
+    b = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
+    c = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
     repo.add_relation(a, b, RelKind.RELATES_TO, {})
     repo.add_relation(a, c, RelKind.RELATES_TO, {})
 
