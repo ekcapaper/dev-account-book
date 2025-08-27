@@ -21,12 +21,8 @@ class AccountEntryOut(BaseModel):
 from enum import Enum
 from typing import Optional, Dict, Any, List
 from pydantic import BaseModel
+from devaccountbook_backend.schemas.common_enum import RelKind
 
-class RelKind(str, Enum):
-    RELATES_TO = "RELATES_TO"
-    INFLUENCES = "INFLUENCES"
-    BLOCKS = "BLOCKS"
-    DUPLICATES = "DUPLICATES"
 
 class RelationCreate(BaseModel):
     to_id: str
