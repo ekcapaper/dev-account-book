@@ -152,8 +152,8 @@ class AccountEntryRepository:
         RETURN value
         """
         rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
-        print(rec["value"])
-        print(type(rec["value"]))
+        #print(rec["value"])
+        #print(type(rec["value"]))
         return normalize_to_children(rec["value"]) if rec else None
 
 
