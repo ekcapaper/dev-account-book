@@ -92,6 +92,12 @@ class Relation(BaseModel):
     kind: RelKind
     props: RelationProps = Field(default_factory=RelationProps)
 
+class RelationDelete(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    from_id: str
+    to_id: str
+    kind: RelKind
+
 
 class NodeRelations(BaseModel):
     """outgoing / incoming 관계 목록 래퍼."""
