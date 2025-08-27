@@ -110,7 +110,7 @@ class NodeRelations(BaseModel):
 # -------------------------------
 # 트리 모델
 # -------------------------------
-class TreeNode(BaseModel):
+class AccountEntryTreeNode(BaseModel):
     """
     Entry 트리 노드 (normalize_to_children 결과를 수용).
     children은 동일 타입의 재귀 구조.
@@ -125,6 +125,6 @@ class TreeNode(BaseModel):
 
 
 # 재귀 모델 선언 마감
-TreeNode.model_rebuild()
+AccountEntryTreeNode.model_rebuild()
 
 

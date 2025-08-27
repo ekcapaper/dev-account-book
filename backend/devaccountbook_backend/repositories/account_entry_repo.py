@@ -144,7 +144,7 @@ class AccountEntryRepository:
         return rec["cnt"]
 
     # Function
-    def get_entry_tree(self, start_id):
+    def get_entry_tree(self, start_id) -> TreeNode:
         q = Q_TREE = """
         MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
         WITH collect(p) AS paths
