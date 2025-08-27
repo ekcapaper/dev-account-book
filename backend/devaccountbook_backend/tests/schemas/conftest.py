@@ -1,11 +1,13 @@
 # tests/conftest.py
+from typing import Any, Generator
+
 import pytest
 from neo4j import Session
 from devaccountbook_backend.db.neo import get_neo4j_session
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 
 @pytest.fixture(scope="session")
-def neo4j_session() -> Session:
+def neo4j_session() -> Generator[Generator[Any, None, None], Any, None]:
     """
     실제 테스트용 Neo4j Session.
     - devaccountbook_backend.db.neo.get_neo4j_session 을 그대로 사용
