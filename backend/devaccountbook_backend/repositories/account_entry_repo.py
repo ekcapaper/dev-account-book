@@ -8,7 +8,7 @@ from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntry
+from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -45,13 +45,19 @@ class AccountEntryRepository:
         return int(rec["cnt"])
 
     # CRUD
-    def create_entry(self, title: str, desc: Optional[str], tags: list[str]) -> str:
+    def create_entry(self, account_entry_create: AccountEntryCreate) -> str:
         nid = str(uuid.uuid4())
         q = """
         CREATE (n:AccountEntry {id:$id, title:$title, desc:$desc, tags:$tags, createdAt:datetime()})
         RETURN n.id AS id
         """
-        rec = self.s.execute_write(lambda tx: tx.run(q, id=nid, title=title, desc=desc, tags=tags).single())
+        rec = self.s.execute_write(lambda tx: tx.run(
+            q,
+            id=nid,
+            title=account_entry_create.title,
+            desc=account_entry_create.desc,
+            tags=account_entry_create.tags
+        ).single())
         return rec["id"]
 
     def get_entry(self, account_entry_id: str) ->  AccountEntry | None:

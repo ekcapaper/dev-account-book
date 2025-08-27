@@ -3,6 +3,8 @@ from datetime import datetime
 import pytest
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
+from devaccountbook_backend.schemas.domain import AccountEntryCreate
+
 
 def test_bootstrap(repo: AccountEntryRepository):
     # 제약 생성 쿼리가 오류 없이 실행되면 OK (별도 검증은 생략)
@@ -10,9 +12,14 @@ def test_bootstrap(repo: AccountEntryRepository):
     repo.bootstrap()
 
 def test_create_and_get_and_count(repo: AccountEntryRepository):
-    new_id = repo.create_entry("t1", "d1", ["a", "b"])
+    new_id = repo.create_entry(
+        account_entry_create=AccountEntryCreate(
+            title="t1",
+            desc="d1",
+            tags=["a", "b"],
+        )
+    )
     assert isinstance(new_id, str)
-
     got = repo.get_entry(new_id)
     assert got is not None
     assert got.id == new_id
