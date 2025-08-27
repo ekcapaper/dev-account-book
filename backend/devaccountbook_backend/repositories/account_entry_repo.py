@@ -162,6 +162,6 @@ class AccountEntryRepository:
 from fastapi import Depends
 from devaccountbook_backend.db.neo import get_neo4j_session
 
-def get_item_repo(session: Session = Depends(get_neo4j_session)) -> AccountEntryRepository:
+def get_account_entry_repo(session: Session = Depends(get_neo4j_session)) -> AccountEntryRepository:
     repo = AccountEntryRepository(session)
     return repo
