@@ -117,7 +117,7 @@ class TreeNode(BaseModel):
     """
     model_config = ConfigDict(extra="forbid")
 
-    id: UUID
+    id: str
     title: str
     desc: Optional[str] = None
     tags: List[str] = Field(default_factory=list)
