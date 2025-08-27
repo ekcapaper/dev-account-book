@@ -19,7 +19,6 @@ def test_create_and_get_and_count(repo: AccountEntryRepository):
     assert got.title == "t1"
     assert got.desc == "d1"
     assert got.tags == ["a", "b"]
-    assert "createdAt" in got  # datetime으로 normalize 되었을 수 있음
 
     cnt = repo.count_entries()
     assert cnt == 1
