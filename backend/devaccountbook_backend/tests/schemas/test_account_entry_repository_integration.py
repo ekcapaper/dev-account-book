@@ -60,7 +60,7 @@ def test_update_entry(repo: AccountEntryRepository):
     assert updated.tags == ["y"]
 
 def test_delete_entry(repo: AccountEntryRepository):
-    new_id = repo.create_entry("will-delete", None, [])
+    new_id = repo.create_entry(AccountEntryCreate(title="delete", desc="delete", tags=["x"]))
     assert repo.get_entry(new_id) is not None
 
     ok = repo.delete_entry(new_id)
