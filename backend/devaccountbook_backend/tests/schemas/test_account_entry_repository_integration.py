@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntryCreate
+from devaccountbook_backend.schemas.domain import AccountEntryCreate, AccountEntryPatch
 
 
 def test_bootstrap(repo: AccountEntryRepository):
@@ -49,10 +49,17 @@ def test_get_entries_paging(repo: AccountEntryRepository):
 
 def test_update_entry(repo: AccountEntryRepository):
     new_id = repo.create_entry(AccountEntryCreate(title="old", desc="old-desc", tags=["x"]))
-    ok_none = repo.update_entry(new_id, {})  # 빈 props → False
+    ok_none = repo.update_entry(new_id, AccountEntryPatch.model_validate({}))  # 빈 props → False
     assert ok_none is False
 
-    ok = repo.update_entry(new_id, {"title": "new", "desc": None, "tags": ["y"], "bad": "ignored"})
+    ok = repo.update_entry(
+        new_id,
+        AccountEntryPatch.model_validate({
+            "title": "new",
+            "desc": None,
+            "tags": ["y"],
+            "bad": "ignored"
+        }))
     assert ok is True
 
     updated = repo.get_entry(new_id)

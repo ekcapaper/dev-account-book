@@ -8,7 +8,7 @@ from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate
+from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -70,16 +70,14 @@ class AccountEntryRepository:
             entry = AccountEntry.model_validate(dict(node))
             return entry
 
-    def update_entry(self, account_entry_id: str, props: Dict[str, Any]) -> bool:
-        safe = {k: v for k, v in props.items() if k in ALLOWED_KEYS and v is not None}
-        if not safe:
-            return False
+    def update_entry(self, account_entry_id: str, account_entry_patch: AccountEntryPatch) -> bool:
+        props = account_entry_patch.model_dump(exclude_unset=True, exclude_none=True)
         q = """
         MATCH (n:AccountEntry {id:$id})
         SET n += $props, n.updatedAt = datetime()
         RETURN n.id AS id
         """
-        rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id, props=safe).single())
+        rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id, props=props).single())
         return rec is not None
 
     def delete_entry(self, account_entry_id: str) -> bool:
