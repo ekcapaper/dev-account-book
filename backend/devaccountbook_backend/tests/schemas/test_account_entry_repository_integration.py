@@ -129,8 +129,8 @@ def test_get_entry_tree_with_apoc(repo: AccountEntryRepository):
     a = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
     b = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
     c = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
-    repo.add_relation(a, b, RelKind.RELATES_TO, {})
-    repo.add_relation(a, c, RelKind.RELATES_TO, {})
+    repo.add_relation(RelationCreate(from_id=a, to_id=b, kind=RelKind.RELATES_TO, props=RelationProps()))
+    repo.add_relation(RelationCreate(from_id=b, to_id=c, kind=RelKind.RELATES_TO, props=RelationProps()))
 
     tree = repo.get_entry_tree(a)
     # normalize_to_children 가 어떤 형태로 변환하든 최소한 값은 존재해야 함
