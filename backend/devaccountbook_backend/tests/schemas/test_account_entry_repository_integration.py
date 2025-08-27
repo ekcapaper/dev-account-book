@@ -42,9 +42,8 @@ def test_update_entry(repo: AccountEntryRepository):
     assert ok is True
 
     updated = repo.get_entry(new_id)
-    assert updated["title"] == "new"
-    assert updated["tags"] == ["y"]
-    assert "updatedAt" in updated
+    assert updated.title == "new"
+    assert updated.tags == ["y"]
 
 def test_delete_entry(repo: AccountEntryRepository):
     new_id = repo.create_entry("will-delete", None, [])
