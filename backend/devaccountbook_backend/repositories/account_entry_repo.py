@@ -8,6 +8,7 @@ from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
+from devaccountbook_backend.schemas.domain import AccountEntry
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -53,10 +54,15 @@ class AccountEntryRepository:
         rec = self.s.execute_write(lambda tx: tx.run(q, id=nid, title=title, desc=desc, tags=tags).single())
         return rec["id"]
 
-    def get_entry(self, account_entry_id: str) -> Dict[str, Any] | None:
+    def get_entry(self, account_entry_id: str) ->  AccountEntry | None:
         q = "MATCH (n:AccountEntry {id:$id}) RETURN n"
         rec = self.s.execute_read(lambda tx: tx.run(q, id=account_entry_id).single())
-        return normalize_neo(dict(rec["n"])) if rec else None
+        if rec is None:
+            return None
+        else:
+            node = rec["n"]
+            entry = AccountEntry.model_validate(dict(node))
+            return entry
 
     def update_entry(self, account_entry_id: str, props: Dict[str, Any]) -> bool:
         safe = {k: v for k, v in props.items() if k in ALLOWED_KEYS and v is not None}
