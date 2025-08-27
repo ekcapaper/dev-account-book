@@ -102,6 +102,8 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
         )
     )
 
+    rels = repo.get_relations(a)
+
     '''
     rels = repo.get_relations(a)
     assert "outgoing" in rels and "incoming" in rels
