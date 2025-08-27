@@ -76,9 +76,9 @@ def test_delete_entry(repo: AccountEntryRepository):
     assert repo.count_entries() == 0
 
 def test_relations_add_get_delete(repo: AccountEntryRepository):
-    a = repo.create_entry("A", None, [])
-    b = repo.create_entry("B", None, [])
-    c = repo.create_entry("C", None, [])
+    a = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
+    b = repo.create_entry(AccountEntryCreate(title="B", desc=None, tags=[]))
+    c = repo.create_entry(AccountEntryCreate(title="C", desc=None, tags=[]))
 
     # RELATES_TO (Enum 화이트리스트)
     kind = repo.add_relation(a, b, RelKind.RELATES_TO, {"weight": 1})
