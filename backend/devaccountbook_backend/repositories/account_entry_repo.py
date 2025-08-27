@@ -72,6 +72,8 @@ class AccountEntryRepository:
 
     def update_entry(self, account_entry_id: str, account_entry_patch: AccountEntryPatch) -> bool:
         props = account_entry_patch.model_dump(exclude_unset=True, exclude_none=True)
+        if len(props.keys()) == 0:
+            return False
         q = """
         MATCH (n:AccountEntry {id:$id})
         SET n += $props, n.updatedAt = datetime()
