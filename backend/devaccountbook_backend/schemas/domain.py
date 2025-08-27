@@ -74,6 +74,14 @@ class RelationProps(BaseModel):
     createdAt: Optional[datetime] = None
     updatedAt: Optional[datetime] = None
 
+class RelationCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    from_id: str
+    to_id: str
+    kind: RelKind
+    props: RelationProps = Field(default_factory=RelationProps)
+
 
 class Relation(BaseModel):
     """단일 관계 레코드."""
