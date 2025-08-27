@@ -127,4 +127,7 @@ class AccountEntryTreeNode(BaseModel):
 # 재귀 모델 선언 마감
 AccountEntryTreeNode.model_rebuild()
 
+#def convert_account_entry_tree_node(input_data: dict):
+
+
 

@@ -2,7 +2,6 @@ import uuid
 
 from devaccountbook_backend.schemas.domain import AccountEntryTreeNode
 
-
 def normalize_to_children(obj):
     """
     APOC toJsonTree 결과를 받아서:
