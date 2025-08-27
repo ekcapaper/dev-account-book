@@ -8,8 +8,7 @@ from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 
 # 이미 프로젝트에 있는 Enum
-from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-
+from devaccountbook_backend.schemas.common_enum import RelKind
 
 # -------------------------------
 # Entry (노드) 모델
