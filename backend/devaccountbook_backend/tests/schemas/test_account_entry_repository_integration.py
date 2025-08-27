@@ -38,7 +38,7 @@ def test_get_entries_paging(repo: AccountEntryRepository):
             tags=[f"t{i}"]
         )
     ) for i in range(5)]
-    
+
     rows = repo.get_entries(limit=3, offset=0)
     assert len(rows) == 3
     rows2 = repo.get_entries(limit=3, offset=3)
@@ -48,7 +48,7 @@ def test_get_entries_paging(repo: AccountEntryRepository):
     assert set(ids) == returned_ids
 
 def test_update_entry(repo: AccountEntryRepository):
-    new_id = repo.create_entry("old", "old-desc", ["x"])
+    new_id = repo.create_entry(AccountEntryCreate(title="old", desc="old-desc", tags=["x"]))
     ok_none = repo.update_entry(new_id, {})  # 빈 props → False
     assert ok_none is False
 
