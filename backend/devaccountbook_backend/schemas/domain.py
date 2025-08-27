@@ -121,7 +121,7 @@ class AccountEntryTreeNode(BaseModel):
     title: str
     desc: Optional[str] = None
     tags: List[str] = Field(default_factory=list)
-    children: List["TreeNode"] = Field(default_factory=list)
+    children: List["AccountEntryTreeNode"] = Field(default_factory=list)
 
 
 # 재귀 모델 선언 마감

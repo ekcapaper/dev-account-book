@@ -9,7 +9,7 @@ from neo4j import Session
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch, RelationCreate, \
-    RelationProps, NodeRelations, Relation, RelationDelete
+    RelationProps, NodeRelations, Relation, RelationDelete, AccountEntryTreeNode
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -144,7 +144,7 @@ class AccountEntryRepository:
         return rec["cnt"]
 
     # Function
-    def get_entry_tree(self, start_id) -> TreeNode:
+    def get_entry_tree(self, start_id) -> AccountEntryTreeNode:
         q = Q_TREE = """
         MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
         WITH collect(p) AS paths
