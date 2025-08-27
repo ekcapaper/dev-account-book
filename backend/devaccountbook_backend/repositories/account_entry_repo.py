@@ -8,8 +8,8 @@ from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch, RelationCreate, \
-    RelationProps, NodeRelations, Relation, RelationDelete, AccountEntryTreeNode, convert_account_entry_tree_node
+from devaccountbook_backend.schemas.domain import AccountEntryNode, AccountEntryNodeCreate, AccountEntryNodePatch, AccountEntryRelationCreate, \
+    AccountEntryRelationProps, AccountEntryRelations, AccountEntryRelation, AccountEntryRelationDelete, AccountEntryTreeNode, convert_account_entry_tree_node
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -29,7 +29,7 @@ class AccountEntryRepository:
         self._ensure_constraints()
 
     #  집계 함수
-    def get_entries(self, *, limit: int = 50, offset: int = 0) -> List[AccountEntry]:
+    def get_entries(self, *, limit: int = 50, offset: int = 0) -> List[AccountEntryNode]:
         q = """
         MATCH (n:AccountEntry)
         RETURN n
@@ -38,7 +38,7 @@ class AccountEntryRepository:
         LIMIT $limit
         """
         rows = self.s.execute_read(lambda tx: list(tx.run(q, offset=offset, limit=limit)))
-        return [AccountEntry.model_validate(dict(row["n"])) for row in rows]
+        return [AccountEntryNode.model_validate(dict(row["n"])) for row in rows]
 
     def count_entries(self) -> int:
         q = "MATCH (n:AccountEntry) RETURN count(n) AS cnt"
@@ -46,7 +46,7 @@ class AccountEntryRepository:
         return int(rec["cnt"])
 
     # CRUD
-    def create_entry(self, account_entry_create: AccountEntryCreate) -> str:
+    def create_entry(self, account_entry_create: AccountEntryNodeCreate) -> str:
         nid = str(uuid.uuid4())
         q = """
         CREATE (n:AccountEntry {id:$id, title:$title, desc:$desc, tags:$tags, createdAt:datetime()})
@@ -61,17 +61,17 @@ class AccountEntryRepository:
         ).single())
         return rec["id"]
 
-    def get_entry(self, account_entry_id: str) ->  AccountEntry | None:
+    def get_entry(self, account_entry_id: str) -> AccountEntryNode | None:
         q = "MATCH (n:AccountEntry {id:$id}) RETURN n"
         rec = self.s.execute_read(lambda tx: tx.run(q, id=account_entry_id).single())
         if rec is None:
             return None
         else:
             node = rec["n"]
-            entry = AccountEntry.model_validate(dict(node))
+            entry = AccountEntryNode.model_validate(dict(node))
             return entry
 
-    def update_entry(self, account_entry_id: str, account_entry_patch: AccountEntryPatch) -> bool:
+    def update_entry(self, account_entry_id: str, account_entry_patch: AccountEntryNodePatch) -> bool:
         props = account_entry_patch.model_dump(exclude_unset=True, exclude_none=True)
         if len(props.keys()) == 0:
             return False
@@ -90,7 +90,7 @@ class AccountEntryRepository:
 
     # Relation
     def add_relation(
-            self, relation_create: RelationCreate
+            self, relation_create: AccountEntryRelationCreate
     ) -> str:
         # 관계 타입은 파라미터 바인딩 불가 → Enum 기반 f-string 삽입(화이트리스트)
         q = f"""
@@ -101,12 +101,12 @@ class AccountEntryRepository:
         RETURN type(r) AS kind
         """
         rec = self.s.execute_write(lambda tx: tx.run(
-            q, from_id=relation_create.from_id, to_id=relation_create.to_id, props=RelationProps.model_dump(relation_create.props) or {}
+            q, from_id=relation_create.from_id, to_id=relation_create.to_id, props=AccountEntryRelationProps.model_dump(relation_create.props) or {}
         ).single())
         return rec["kind"]
 
     # --- 관계 목록 조회 (outgoing / incoming) ---
-    def get_relations(self, entry_id: str) -> NodeRelations:
+    def get_relations(self, entry_id: str) -> AccountEntryRelations:
         q_out = """
         MATCH (a:AccountEntry {id:$id})-[r]->(b:AccountEntry)
         RETURN type(r) AS kind, a.id AS from_id, b.id AS to_id, properties(r) AS props
@@ -121,7 +121,7 @@ class AccountEntryRepository:
         rows_in = self.s.execute_read(lambda tx: list(tx.run(q_in, id=entry_id)))
 
         to_relation = lambda rows: [
-            Relation.model_validate({
+            AccountEntryRelation.model_validate({
                 "kind": row["kind"],
                 "from_id": row["from_id"],
                 "to_id": row["to_id"],
@@ -129,10 +129,10 @@ class AccountEntryRepository:
             })
             for row in rows
         ]
-        return NodeRelations.model_validate({"outgoing": to_relation(rows_out), "incoming": to_relation(rows_in)})
+        return AccountEntryRelations.model_validate({"outgoing": to_relation(rows_out), "incoming": to_relation(rows_in)})
 
     # --- 관계 삭제 ---
-    def delete_relation(self, relation_delete:RelationDelete) -> int:
+    def delete_relation(self, relation_delete:AccountEntryRelationDelete) -> int:
         q = f"""
         MATCH (a:AccountEntry {{id:$from_id}})-[r:{relation_delete.kind.value}]->(b:AccountEntry {{id:$to_id}})
         DELETE r

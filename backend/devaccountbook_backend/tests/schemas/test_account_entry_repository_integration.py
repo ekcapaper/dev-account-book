@@ -3,8 +3,8 @@ from datetime import datetime
 import pytest
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntryCreate, AccountEntryPatch, RelationCreate, RelationProps, \
-    RelationDelete
+from devaccountbook_backend.schemas.domain import AccountEntryNodeCreate, AccountEntryNodePatch, AccountEntryRelationCreate, AccountEntryRelationProps, \
+    AccountEntryRelationDelete
 
 
 def test_bootstrap(repo: AccountEntryRepository):
@@ -14,7 +14,7 @@ def test_bootstrap(repo: AccountEntryRepository):
 
 def test_create_and_get_and_count(repo: AccountEntryRepository):
     new_id = repo.create_entry(
-        account_entry_create=AccountEntryCreate(
+        account_entry_create=AccountEntryNodeCreate(
             title="t1",
             desc="d1",
             tags=["a", "b"],
@@ -33,7 +33,7 @@ def test_create_and_get_and_count(repo: AccountEntryRepository):
 
 def test_get_entries_paging(repo: AccountEntryRepository):
     ids = [repo.create_entry(
-        AccountEntryCreate(
+        AccountEntryNodeCreate(
             title=f"title-{i}",
             desc=None,
             tags=[f"t{i}"]
@@ -49,13 +49,13 @@ def test_get_entries_paging(repo: AccountEntryRepository):
     assert set(ids) == returned_ids
 
 def test_update_entry(repo: AccountEntryRepository):
-    new_id = repo.create_entry(AccountEntryCreate(title="old", desc="old-desc", tags=["x"]))
-    ok_none = repo.update_entry(new_id, AccountEntryPatch.model_validate({}))  # 빈 props → False
+    new_id = repo.create_entry(AccountEntryNodeCreate(title="old", desc="old-desc", tags=["x"]))
+    ok_none = repo.update_entry(new_id, AccountEntryNodePatch.model_validate({}))  # 빈 props → False
     assert ok_none is False
 
     ok = repo.update_entry(
         new_id,
-        AccountEntryPatch.model_validate({
+        AccountEntryNodePatch.model_validate({
             "title": "new",
             "desc": None,
             "tags": ["y"],
@@ -67,7 +67,7 @@ def test_update_entry(repo: AccountEntryRepository):
     assert updated.tags == ["y"]
 
 def test_delete_entry(repo: AccountEntryRepository):
-    new_id = repo.create_entry(AccountEntryCreate(title="delete", desc="delete", tags=["x"]))
+    new_id = repo.create_entry(AccountEntryNodeCreate(title="delete", desc="delete", tags=["x"]))
     assert repo.get_entry(new_id) is not None
 
     ok = repo.delete_entry(new_id)
@@ -77,27 +77,27 @@ def test_delete_entry(repo: AccountEntryRepository):
     assert repo.count_entries() == 0
 
 def test_relations_add_get_delete(repo: AccountEntryRepository):
-    a = repo.create_entry(AccountEntryCreate(title="A", desc=None, tags=[]))
-    b = repo.create_entry(AccountEntryCreate(title="B", desc=None, tags=[]))
-    c = repo.create_entry(AccountEntryCreate(title="C", desc=None, tags=[]))
+    a = repo.create_entry(AccountEntryNodeCreate(title="A", desc=None, tags=[]))
+    b = repo.create_entry(AccountEntryNodeCreate(title="B", desc=None, tags=[]))
+    c = repo.create_entry(AccountEntryNodeCreate(title="C", desc=None, tags=[]))
 
     # RELATES_TO (Enum 화이트리스트)
     kind = repo.add_relation(
-        RelationCreate(
+        AccountEntryRelationCreate(
             from_id=a,
             to_id=b,
             kind=RelKind.RELATES_TO,
-            props=RelationProps(
+            props=AccountEntryRelationProps(
                 note="abcd"
             )
         )
     )
     assert kind == "RELATES_TO"
-    repo.add_relation(RelationCreate(
+    repo.add_relation(AccountEntryRelationCreate(
             from_id=a,
             to_id=c,
             kind=RelKind.RELATES_TO,
-            props=RelationProps(
+            props=AccountEntryRelationProps(
                 note="abcd2"
             )
         )
@@ -112,7 +112,7 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
 
 
     # 삭제
-    deleted_cnt = repo.delete_relation(RelationDelete(
+    deleted_cnt = repo.delete_relation(AccountEntryRelationDelete(
         from_id = a,
         to_id=b,
         kind=RelKind.RELATES_TO
@@ -126,11 +126,11 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
 
 def test_get_entry_tree_with_apoc(repo: AccountEntryRepository):
     # 그래프: A -> B, A -> C
-    a = repo.create_entry(AccountEntryCreate(title="A", desc="abcd", tags=[]))
-    b = repo.create_entry(AccountEntryCreate(title="A", desc="abcd", tags=[]))
-    c = repo.create_entry(AccountEntryCreate(title="A", desc="abcd", tags=[]))
-    repo.add_relation(RelationCreate(from_id=a, to_id=b, kind=RelKind.RELATES_TO, props=RelationProps()))
-    repo.add_relation(RelationCreate(from_id=b, to_id=c, kind=RelKind.RELATES_TO, props=RelationProps()))
+    a = repo.create_entry(AccountEntryNodeCreate(title="A", desc="abcd", tags=[]))
+    b = repo.create_entry(AccountEntryNodeCreate(title="A", desc="abcd", tags=[]))
+    c = repo.create_entry(AccountEntryNodeCreate(title="A", desc="abcd", tags=[]))
+    repo.add_relation(AccountEntryRelationCreate(from_id=a, to_id=b, kind=RelKind.RELATES_TO, props=AccountEntryRelationProps()))
+    repo.add_relation(AccountEntryRelationCreate(from_id=b, to_id=c, kind=RelKind.RELATES_TO, props=AccountEntryRelationProps()))
 
     tree = repo.get_entry_tree(a)
     # normalize_to_children 가 어떤 형태로 변환하든 최소한 값은 존재해야 함

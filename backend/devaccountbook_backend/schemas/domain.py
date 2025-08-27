@@ -13,7 +13,7 @@ from devaccountbook_backend.schemas.common_enum import RelKind
 # -------------------------------
 # Entry (노드) 모델
 # -------------------------------
-class AccountEntry(BaseModel):
+class AccountEntryNode(BaseModel):
     """DB에서 읽어온 AccountEntry 엔티티(정규화된 최종 형태)."""
     model_config = ConfigDict(extra="forbid")
 
@@ -41,7 +41,7 @@ class AccountEntry(BaseModel):
         return v
 
 
-class AccountEntryCreate(BaseModel):
+class AccountEntryNodeCreate(BaseModel):
     """생성용 DTO (입력)."""
     model_config = ConfigDict(extra="forbid")
 
@@ -50,7 +50,7 @@ class AccountEntryCreate(BaseModel):
     tags: List[str] = Field(default_factory=list)
 
 
-class AccountEntryPatch(BaseModel):
+class AccountEntryNodePatch(BaseModel):
     """부분 수정용 DTO (입력). 기존 ALLOWED_KEYS를 대체합니다."""
     model_config = ConfigDict(extra="forbid")
 
@@ -62,7 +62,7 @@ class AccountEntryPatch(BaseModel):
 # -------------------------------
 # Relation(관계) 모델
 # -------------------------------
-class RelationProps(BaseModel):
+class AccountEntryRelationProps(BaseModel):
     """
     관계에 붙는 추가 속성 컨테이너.
     - 프로젝트가 향후 임의 키를 붙일 수 있으므로 extra='allow'로 둡니다.
@@ -74,37 +74,37 @@ class RelationProps(BaseModel):
     createdAt: Optional[datetime] = None
     updatedAt: Optional[datetime] = None
 
-class RelationCreate(BaseModel):
+class AccountEntryRelationCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     from_id: str
     to_id: str
     kind: RelKind
-    props: RelationProps = Field(default_factory=RelationProps)
+    props: AccountEntryRelationProps = Field(default_factory=AccountEntryRelationProps)
 
 
-class Relation(BaseModel):
+class AccountEntryRelation(BaseModel):
     """단일 관계 레코드."""
     model_config = ConfigDict(extra="forbid")
 
     from_id: str
     to_id: str
     kind: RelKind
-    props: RelationProps = Field(default_factory=RelationProps)
+    props: AccountEntryRelationProps = Field(default_factory=AccountEntryRelationProps)
 
-class RelationDelete(BaseModel):
+class AccountEntryRelationDelete(BaseModel):
     model_config = ConfigDict(extra="forbid")
     from_id: str
     to_id: str
     kind: RelKind
 
 
-class NodeRelations(BaseModel):
+class AccountEntryRelations(BaseModel):
     """outgoing / incoming 관계 목록 래퍼."""
     model_config = ConfigDict(extra="forbid")
 
-    outgoing: List[Relation]
-    incoming: List[Relation]
+    outgoing: List[AccountEntryRelation]
+    incoming: List[AccountEntryRelation]
 
 
 # -------------------------------
