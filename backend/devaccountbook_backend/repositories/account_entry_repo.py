@@ -9,7 +9,7 @@ from neo4j import Session
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 from devaccountbook_backend.schemas.domain import AccountEntry, AccountEntryCreate, AccountEntryPatch, RelationCreate, \
-    RelationProps
+    RelationProps, NodeRelations, Relation
 from devaccountbook_backend.utils.normalize_antd import normalize_to_children
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
@@ -106,7 +106,7 @@ class AccountEntryRepository:
         return rec["kind"]
 
     # --- 관계 목록 조회 (outgoing / incoming) ---
-    def get_relations(self, entry_id: str) -> Dict[str, List[Dict[str, Any]]]:
+    def get_relations(self, entry_id: str) -> NodeRelations:
         q_out = """
         MATCH (a:AccountEntry {id:$id})-[r]->(b:AccountEntry)
         RETURN type(r) AS kind, a.id AS from_id, b.id AS to_id, properties(r) AS props
@@ -120,16 +120,16 @@ class AccountEntryRepository:
         rows_out = self.s.execute_read(lambda tx: list(tx.run(q_out, id=entry_id)))
         rows_in = self.s.execute_read(lambda tx: list(tx.run(q_in, id=entry_id)))
 
-        to_dicts = lambda rows: [
-            {
+        to_relation = lambda rows: [
+            Relation.model_validate({
                 "kind": row["kind"],
                 "from_id": row["from_id"],
                 "to_id": row["to_id"],
                 "props": normalize_neo(row["props"] or {})
-            }
+            })
             for row in rows
         ]
-        return {"outgoing": to_dicts(rows_out), "incoming": to_dicts(rows_in)}
+        return NodeRelations.model_validate({"outgoing": to_relation(rows_out), "incoming": to_relation(rows_in)})
 
     # --- 관계 삭제 ---
     def delete_relation(self, from_id: str, to_id: str, kind: RelKind) -> int:

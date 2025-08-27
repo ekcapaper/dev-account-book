@@ -103,14 +103,13 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
     )
 
     rels = repo.get_relations(a)
+    outgoing = rels.outgoing
+    assert len(outgoing) == 2
+
+    assert {r.to_id for r in outgoing} == {b, c}
+    assert outgoing[0].props
 
     '''
-    rels = repo.get_relations(a)
-    assert "outgoing" in rels and "incoming" in rels
-    outgoing = rels["outgoing"]
-    assert len(outgoing) == 2
-    assert {r["to_id"] for r in outgoing} == {b, c}
-    assert outgoing[0]["props"]  # normalize_neo가 dict 유지
 
     # 삭제
     deleted_cnt = repo.delete_relation(a, b, RelKind.RELATES_TO)
