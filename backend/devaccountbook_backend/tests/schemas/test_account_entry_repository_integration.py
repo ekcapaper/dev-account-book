@@ -92,12 +92,17 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
         )
     )
     assert kind == "RELATES_TO"
-    
+    repo.add_relation(RelationCreate(
+            from_id=a,
+            to_id=c,
+            kind=RelKind.RELATES_TO,
+            props=RelationProps(
+                note="abcd2"
+            )
+        )
+    )
 
     '''
-    assert kind == "RELATES_TO"
-    repo.add_relation(a, c, RelKind.RELATES_TO, {"weight": 2})
-
     rels = repo.get_relations(a)
     assert "outgoing" in rels and "incoming" in rels
     outgoing = rels["outgoing"]
