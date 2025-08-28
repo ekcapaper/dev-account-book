@@ -1,7 +1,9 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from fastapi import Depends
 from devaccountbook_backend.db.neo import get_neo4j_session
-from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, RelationCreate, RelKind
+from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO
+from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, RelationCreate, \
+    RelKind, AccountEntryOut
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 
 class AccountEntryService:
@@ -10,18 +12,25 @@ class AccountEntryService:
         self.repo.bootstrap()
 
     # 전체
-    def list(self, *, limit: int = 50, offset: int = 0) -> list[dict]:
-        items = self.repo.get_entries(limit=limit, offset=offset)
-        return items
+    def list(self, *, limit: int = 50, offset: int = 0) -> List[AccountEntryOut]:
+        account_entries = self.repo.get_entries(limit=limit, offset=offset)
+        return list(map(lambda account_entry: AccountEntryOut(**account_entry), account_entries))
 
     def count(self) -> int:
         return self.repo.count_entries()
 
     # CRUD
-    def create(self, p: AccountEntryCreate) -> str: return self.repo.create_entry(p.title, p.desc, p.tags)
-    def get(self, account_entry_id: str) -> Dict[str, Any] | None: return self.repo.get_entry(account_entry_id)
-    def patch(self, account_entry_id: str, p: AccountEntryPatch) -> bool: return self.repo.update_entry(account_entry_id, p.model_dump(exclude_none=True))
-    def delete(self, account_entry_id: str) -> bool: return self.repo.delete_entry(account_entry_id)
+    def create(self, p: AccountEntryCreate) -> str:
+        return self.repo.create_entry(AccountEntryNodeCreateDTO(title=p.title, desc=p.desc, tags=p.tags))
+
+    def get(self, account_entry_id: str) -> AccountEntryOut | None:
+        return AccountEntryOut.model_validate(self.repo.get_entry(account_entry_id).model_dump())
+
+    def patch(self, account_entry_id: str, p: AccountEntryPatch) -> bool:
+        return self.repo.update_entry(account_entry_id, AccountEntryNodePatchDTO.model_validate(p.model_dump(exclude_none=True)))
+
+    def delete(self, account_entry_id: str) -> bool:
+        return self.repo.delete_entry(account_entry_id)
 
     # 관계 생성 (from_id -> to_id)
     def link(self, from_id: str, payload: RelationCreate) -> str:
