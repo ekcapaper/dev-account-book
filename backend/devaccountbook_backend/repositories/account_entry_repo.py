@@ -4,10 +4,10 @@ from typing import List
 from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
-from devaccountbook_backend.models.account_entry_domain import AccountEntryNode, AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
-    AccountEntryRelationCreateDTO, \
-    AccountEntryRelationPropsDTO, AccountEntryRelationsDTO, AccountEntryRelationDTO, AccountEntryRelationDeleteDTO, \
-    AccountEntryTreeNodeDTO, convert_account_entry_tree_node
+from devaccountbook_backend.models.account_entry_domain import AccountEntryNode
+from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
+    AccountEntryRelationPropsDTO, AccountEntryRelationCreateDTO, AccountEntryRelationDTO, AccountEntryRelationDeleteDTO, \
+    AccountEntryRelationsDTO, AccountEntryTreeNodeDTO, convert_account_entry_tree_node
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
 
