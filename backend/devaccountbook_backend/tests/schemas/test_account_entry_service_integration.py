@@ -57,22 +57,18 @@ def test_delete_then_get_none(service: AccountEntryService):
     res = service.get(_id)
     assert res is None
 
-@pytest.mark.xfail(reason="service.link 구현이 from_id/to_id/kind DTO 생성으로 보완되기 전까지 실패할 수 있음", strict=False)
 def test_link_list_unlink(service: AccountEntryService):
-    # RelKind 값은 프로젝트 Enum의 첫 멤버를 사용 (멤버명이 무엇이든 동작)
-    kind = next(iter(RelKind))
-
     a = service.create(AccountEntryCreate(title="A", desc=None, tags=[]))
     b = service.create(AccountEntryCreate(title="B", desc=None, tags=[]))
 
-    rel_id = service.link(a, RelationCreate(to_id=b, kind=kind))
+    rel_id = service.link(a, RelationCreate(to_id=b, kind=RelKind.RELATES_TO))
     assert isinstance(rel_id, str) and rel_id
 
     rels = service.list_links(a)
     assert isinstance(rels, RelationList)
     assert any(r.to_id == b for r in rels.outgoing)
 
-    deleted = service.unlink(a, b, kind)
+    deleted = service.unlink(a, b, RelKind.RELATES_TO)
     assert deleted >= 1
 
 @pytest.mark.skip(reason="프로젝트의 get_start_to_end_node 반환 스펙이 확정되면 기대값을 구체화하세요")

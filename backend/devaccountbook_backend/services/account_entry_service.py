@@ -40,7 +40,11 @@ class AccountEntryService:
     # 관계 생성 (from_id -> to_id)
     def link(self, from_id: str, payload: RelationCreate) -> str:
         return self.repo.add_relation(
-            AccountEntryRelationCreateDTO.model_validate(self.repo.get_entry(from_id).model_dump())
+            AccountEntryRelationCreateDTO(
+                from_id=from_id,
+                to_id=payload.to_id,
+                kind=payload.kind,
+            )
         )
 
     # 관계 목록 조회 (in/out 분리)
