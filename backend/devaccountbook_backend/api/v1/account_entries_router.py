@@ -29,8 +29,8 @@ def list_account_entries(
     offset: int = Query(0, ge=0),
     service: AccountEntryService = Depends(get_account_entry_service),
 ):
-    items = service.list(limit=limit, offset=offset)
-    return [AccountEntryOut(**it) for it in items]
+    account_entry_out_list = service.list(limit=limit, offset=offset)
+    return account_entry_out_list
 
 @router.get("/{start_account_entry_id}/explore-start-leaf")
 def get_start_to_end_node(start_account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
