@@ -46,19 +46,19 @@ def count_account_entries(
 @router.post("", response_model=AccountEntryOut, status_code=status.HTTP_201_CREATED)
 def create_account_entry(payload: AccountEntryCreate, svc: AccountEntryService = Depends(get_account_entry_service)):
     new_id = svc.create(payload)
-    data = svc.get(new_id)
-    return AccountEntryOut(**data)  # type: ignore[arg-type]
+    account_entry_out = svc.get(new_id)
+    return account_entry_out
 
 @router.get("/{account_entry_id}", response_model=AccountEntryOut)
 def get_account_entry(account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
-    data = svc.get(account_entry_id)
-    if not data: raise HTTPException(404, "Item not found")
-    return AccountEntryOut(**data)  # type: ignore[arg-type]
+    account_entry_out = svc.get(account_entry_id)
+    if not account_entry_out: raise HTTPException(404, "Item not found")
+    return account_entry_out
 
 @router.patch("/{account_entry_id}", response_model=AccountEntryOut)
 def patch_account_entry(account_entry_id: str, patch: AccountEntryPatch, svc: AccountEntryService = Depends(get_account_entry_service)):
     if not svc.patch(account_entry_id, patch): raise HTTPException(400, "No valid fields to update")
-    return AccountEntryOut(**svc.get(account_entry_id))  # type: ignore[arg-type]
+    return svc.get(account_entry_id)
 
 @router.delete("/{account_entry_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_account_entry(account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
