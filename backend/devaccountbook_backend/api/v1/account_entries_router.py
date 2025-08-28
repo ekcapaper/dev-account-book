@@ -72,7 +72,7 @@ def create_relation(
     service: AccountEntryService = Depends(get_account_entry_service),
 ):
     service.link(from_id, payload)
-    return RelationOut(from_id=from_id, to_id=payload.to_id, kind=payload.kind, props=payload.props or {})
+    return RelationOut(from_id=from_id, to_id=payload.to_id, kind=payload.kind, props=payload.props)
 
 # 관계 목록: GET /account-entries/{account_entry_id}/relations
 @router.get("/{account_entry_id}/relations", response_model=RelationList)

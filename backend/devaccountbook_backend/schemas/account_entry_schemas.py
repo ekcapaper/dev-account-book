@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AccountEntryCreate(BaseModel):
@@ -46,7 +46,7 @@ class RelationOut(BaseModel):
     from_id: str
     to_id: str
     kind: RelKind
-    props: Dict[str, Any] = {}
+    props: RelationProps = Field(default_factory=RelationProps)
 
 class RelationList(BaseModel):
     outgoing: List[RelationOut] = []
