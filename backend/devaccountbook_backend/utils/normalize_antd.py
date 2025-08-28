@@ -1,6 +1,6 @@
 import uuid
 
-from devaccountbook_backend.schemas.domain import AccountEntryTreeNode
+from devaccountbook_backend.schemas.account_entry_domain import AccountEntryTreeNode
 
 def normalize_to_children(obj):
     """

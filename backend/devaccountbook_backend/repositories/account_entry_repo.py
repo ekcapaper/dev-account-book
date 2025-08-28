@@ -4,7 +4,7 @@ from typing import List
 from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
-from devaccountbook_backend.schemas.domain import AccountEntryNode, AccountEntryNodeCreate, AccountEntryNodePatch, \
+from devaccountbook_backend.schemas.account_entry_domain import AccountEntryNode, AccountEntryNodeCreate, AccountEntryNodePatch, \
     AccountEntryRelationCreate, \
     AccountEntryRelationProps, AccountEntryRelations, AccountEntryRelation, AccountEntryRelationDelete, \
     AccountEntryTreeNode, convert_account_entry_tree_node

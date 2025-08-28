@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntryNodeCreate, AccountEntryNodePatch, AccountEntryRelationCreate, AccountEntryRelationProps, \
+from devaccountbook_backend.schemas.account_entry_domain import AccountEntryNodeCreate, AccountEntryNodePatch, AccountEntryRelationCreate, AccountEntryRelationProps, \
     AccountEntryRelationDelete
 
 
