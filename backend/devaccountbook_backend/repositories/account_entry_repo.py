@@ -1,18 +1,16 @@
 import uuid
-from typing import Optional, Dict, Any
-from neo4j import Session
+from typing import List
 
-import re
-from typing import Dict, Any, List
 from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
-from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.schemas.domain import AccountEntryNode, AccountEntryNodeCreate, AccountEntryNodePatch, AccountEntryRelationCreate, \
-    AccountEntryRelationProps, AccountEntryRelations, AccountEntryRelation, AccountEntryRelationDelete, AccountEntryTreeNode, convert_account_entry_tree_node
-from devaccountbook_backend.utils.normalize_antd import normalize_to_children
+from devaccountbook_backend.schemas.domain import AccountEntryNode, AccountEntryNodeCreate, AccountEntryNodePatch, \
+    AccountEntryRelationCreate, \
+    AccountEntryRelationProps, AccountEntryRelations, AccountEntryRelation, AccountEntryRelationDelete, \
+    AccountEntryTreeNode, convert_account_entry_tree_node
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
+
 
 # temp code
 
@@ -101,7 +99,8 @@ class AccountEntryRepository:
         RETURN type(r) AS kind
         """
         rec = self.s.execute_write(lambda tx: tx.run(
-            q, from_id=relation_create.from_id, to_id=relation_create.to_id, props=AccountEntryRelationProps.model_dump(relation_create.props) or {}
+            q, from_id=relation_create.from_id, to_id=relation_create.to_id,
+            props=AccountEntryRelationProps.model_dump(relation_create.props) or {}
         ).single())
         return rec["kind"]
 
@@ -129,10 +128,11 @@ class AccountEntryRepository:
             })
             for row in rows
         ]
-        return AccountEntryRelations.model_validate({"outgoing": to_relation(rows_out), "incoming": to_relation(rows_in)})
+        return AccountEntryRelations.model_validate(
+            {"outgoing": to_relation(rows_out), "incoming": to_relation(rows_in)})
 
     # --- 관계 삭제 ---
-    def delete_relation(self, relation_delete:AccountEntryRelationDelete) -> int:
+    def delete_relation(self, relation_delete: AccountEntryRelationDelete) -> int:
         q = f"""
         MATCH (a:AccountEntry {{id:$from_id}})-[r:{relation_delete.kind.value}]->(b:AccountEntry {{id:$to_id}})
         DELETE r
@@ -153,14 +153,15 @@ class AccountEntryRepository:
         """
         rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
         print(rec["value"])
-        #print(type(rec["value"]))
-        #return normalize_to_children(rec["value"]) if rec else None
+        # print(type(rec["value"]))
+        # return normalize_to_children(rec["value"]) if rec else None
         return convert_account_entry_tree_node(rec["value"]) if rec else None
 
 
 # Depends 팩토리
 from fastapi import Depends
 from devaccountbook_backend.db.neo import get_neo4j_session
+
 
 def get_account_entry_repo(session: Session = Depends(get_neo4j_session)) -> AccountEntryRepository:
     repo = AccountEntryRepository(session)
