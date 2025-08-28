@@ -79,4 +79,6 @@ def test_get_start_to_end_node(service: AccountEntryService):
     assert result is None
 
     service.link(root, RelationCreate(to_id=child, kind=RelKind.RELATES_TO))
+    result = service.get_start_to_end_node(root)
+    print(result)
 
