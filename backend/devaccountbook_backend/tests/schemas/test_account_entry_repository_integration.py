@@ -1,7 +1,7 @@
 # tests/test_account_entry_repository_integration.py
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import RelKind
-from devaccountbook_backend.models.account_entry_domain import AccountEntryNodeCreate, AccountEntryNodePatch, AccountEntryRelationCreate, AccountEntryRelationProps, \
+from devaccountbook_backend.models.account_entry_model import AccountEntryNodeCreate, AccountEntryNodePatch, AccountEntryRelationCreate, AccountEntryRelationProps, \
     AccountEntryRelationDelete
 
 

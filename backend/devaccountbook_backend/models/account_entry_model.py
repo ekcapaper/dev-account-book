@@ -1,5 +1,5 @@
 
-# devaccountbook_backend/schemas/account_entry_models.py
+# devaccountbook_backend/schemas/account_entry_model.py
 from __future__ import annotations
 
 from typing import List, Optional, Dict, Any
