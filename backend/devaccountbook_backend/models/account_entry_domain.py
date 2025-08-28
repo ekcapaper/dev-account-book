@@ -41,7 +41,7 @@ class AccountEntryNode(BaseModel):
         return v
 
 
-class AccountEntryNodeCreate(BaseModel):
+class AccountEntryNodeCreateDTO(BaseModel):
     """생성용 DTO (입력)."""
     model_config = ConfigDict(extra="forbid")
 
@@ -50,7 +50,7 @@ class AccountEntryNodeCreate(BaseModel):
     tags: List[str] = Field(default_factory=list)
 
 
-class AccountEntryNodePatch(BaseModel):
+class AccountEntryNodePatchDTO(BaseModel):
     """부분 수정용 DTO (입력). 기존 ALLOWED_KEYS를 대체합니다."""
     model_config = ConfigDict(extra="forbid")
 
@@ -62,7 +62,7 @@ class AccountEntryNodePatch(BaseModel):
 # -------------------------------
 # Relation(관계) 모델
 # -------------------------------
-class AccountEntryRelationProps(BaseModel):
+class AccountEntryRelationPropsDTO(BaseModel):
     """
     관계에 붙는 추가 속성 컨테이너.
     - 프로젝트가 향후 임의 키를 붙일 수 있으므로 extra='allow'로 둡니다.
@@ -74,43 +74,43 @@ class AccountEntryRelationProps(BaseModel):
     createdAt: Optional[datetime] = None
     updatedAt: Optional[datetime] = None
 
-class AccountEntryRelationCreate(BaseModel):
+class AccountEntryRelationCreateDTO(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     from_id: str
     to_id: str
     kind: RelKind
-    props: AccountEntryRelationProps = Field(default_factory=AccountEntryRelationProps)
+    props: AccountEntryRelationPropsDTO = Field(default_factory=AccountEntryRelationPropsDTO)
 
 
-class AccountEntryRelation(BaseModel):
+class AccountEntryRelationDTO(BaseModel):
     """단일 관계 레코드."""
     model_config = ConfigDict(extra="forbid")
 
     from_id: str
     to_id: str
     kind: RelKind
-    props: AccountEntryRelationProps = Field(default_factory=AccountEntryRelationProps)
+    props: AccountEntryRelationPropsDTO = Field(default_factory=AccountEntryRelationPropsDTO)
 
-class AccountEntryRelationDelete(BaseModel):
+class AccountEntryRelationDeleteDTO(BaseModel):
     model_config = ConfigDict(extra="forbid")
     from_id: str
     to_id: str
     kind: RelKind
 
 
-class AccountEntryRelations(BaseModel):
+class AccountEntryRelationsDTO(BaseModel):
     """outgoing / incoming 관계 목록 래퍼."""
     model_config = ConfigDict(extra="forbid")
 
-    outgoing: List[AccountEntryRelation]
-    incoming: List[AccountEntryRelation]
+    outgoing: List[AccountEntryRelationDTO]
+    incoming: List[AccountEntryRelationDTO]
 
 
 # -------------------------------
 # 트리 모델
 # -------------------------------
-class AccountEntryTreeNode(BaseModel):
+class AccountEntryTreeNodeDTO(BaseModel):
     """
     Entry 트리 노드 (normalize_to_children 결과를 수용).
     children은 동일 타입의 재귀 구조.
@@ -121,11 +121,11 @@ class AccountEntryTreeNode(BaseModel):
     title: str
     desc: Optional[str] = None
     tags: List[str] = Field(default_factory=list)
-    children: List["AccountEntryTreeNode"] = Field(default_factory=list)
+    children: List["AccountEntryTreeNodeDTO"] = Field(default_factory=list)
 
 
 # 재귀 모델 선언 마감
-AccountEntryTreeNode.model_rebuild()
+AccountEntryTreeNodeDTO.model_rebuild()
 
 def convert_account_entry_tree_node(input_data: dict):
     print(type(input_data))
@@ -138,7 +138,7 @@ def convert_account_entry_tree_node(input_data: dict):
         for child in input_data["relates_to"]:
             children.append(convert_account_entry_tree_node(child))
     return (
-        AccountEntryTreeNode(
+        AccountEntryTreeNodeDTO(
             id=id_data,
             title=title,
             desc=desc,
