@@ -2,7 +2,7 @@ from typing import Dict, Any, List
 from fastapi import Depends
 from devaccountbook_backend.db.neo import get_neo4j_session
 from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
-    AccountEntryRelationCreateDTO
+    AccountEntryRelationCreateDTO, AccountEntryRelationDeleteDTO
 from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, RelationCreate, \
     RelKind, AccountEntryOut
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
@@ -49,7 +49,9 @@ class AccountEntryService:
 
     # 관계 삭제
     def unlink(self, from_id: str, to_id: str, kind: RelKind) -> int:
-        return self.repo.delete_relation(from_id, to_id, kind)
+        return self.repo.delete_relation(AccountEntryRelationDeleteDTO(
+            from_id=from_id, to_id=to_id, kind=kind
+        ))
 
     # 처음부터 끝까지 조회
     def get_start_to_end_node(self, start_id):
