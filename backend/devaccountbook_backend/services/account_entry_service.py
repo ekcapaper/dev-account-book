@@ -4,7 +4,7 @@ from devaccountbook_backend.db.neo import get_neo4j_session
 from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
     AccountEntryRelationCreateDTO, AccountEntryRelationDeleteDTO
 from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, RelationCreate, \
-    RelKind, AccountEntryOut
+    RelKind, AccountEntryOut, RelationList
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 
 class AccountEntryService:
@@ -44,8 +44,8 @@ class AccountEntryService:
         )
 
     # 관계 목록 조회 (in/out 분리)
-    def list_links(self, entry_id: str) -> Dict[str, Any]:
-        return self.repo.get_relations(entry_id)
+    def list_links(self, entry_id: str) -> RelationList:
+        return RelationList.model_validate(self.repo.get_relations(entry_id).model_dump())
 
     # 관계 삭제
     def unlink(self, from_id: str, to_id: str, kind: RelKind) -> int:
