@@ -15,7 +15,7 @@ class AccountEntryService:
     # 전체
     def list(self, *, limit: int = 50, offset: int = 0) -> List[AccountEntryOut]:
         account_entries = self.repo.get_entries(limit=limit, offset=offset)
-        return list(map(lambda account_entry: AccountEntryOut(**account_entry), account_entries))
+        return list(map(lambda account_entry: AccountEntryOut.model_validate(account_entry.model_dump()), account_entries))
 
     def count(self) -> int:
         return self.repo.count_entries()
