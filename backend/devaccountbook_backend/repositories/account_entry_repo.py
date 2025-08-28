@@ -144,7 +144,7 @@ class AccountEntryRepository:
         return rec["cnt"]
 
     # Function
-    def get_entry_tree(self, start_id) -> AccountEntryTreeNodeDTO:
+    def get_entry_tree(self, start_id) -> AccountEntryTreeNodeDTO | None:
         q = Q_TREE = """
         MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
         WITH collect(p) AS paths
@@ -152,10 +152,14 @@ class AccountEntryRepository:
         RETURN value
         """
         rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
-        # print(rec["value"])
-        # print(type(rec["value"]))
+        print(rec["value"])
+        print(type(rec["value"]))
         # return normalize_to_children(rec["value"]) if rec else None
-        return convert_account_entry_tree_node(rec["value"]) if rec else None
+
+        if len(rec["value"].keys()) == 0:
+            return None
+        else:
+            return convert_account_entry_tree_node(rec["value"]) if rec else None
 
 
 # Depends 팩토리

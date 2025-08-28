@@ -71,10 +71,10 @@ def test_link_list_unlink(service: AccountEntryService):
     deleted = service.unlink(a, b, RelKind.RELATES_TO)
     assert deleted >= 1
 
-@pytest.mark.skip(reason="프로젝트의 get_start_to_end_node 반환 스펙이 확정되면 기대값을 구체화하세요")
 def test_get_start_to_end_node(service: AccountEntryService):
     root = service.create(AccountEntryCreate(title="root", desc=None, tags=[]))
     child = service.create(AccountEntryCreate(title="child", desc=None, tags=[]))
     # 필요 시 관계 생성 후 검증
     result = service.get_start_to_end_node(root)
-    assert result is not None
+    assert result is None
+
