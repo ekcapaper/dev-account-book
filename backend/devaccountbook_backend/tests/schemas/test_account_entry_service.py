@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
+from devaccountbook_backend.models.account_entry_domain import AccountEntryNode
 from devaccountbook_backend.services.account_entry_service import AccountEntryService
 from devaccountbook_backend.schemas.account_entry_schemas import (
     AccountEntryCreate, AccountEntryPatch, AccountEntryOut, RelationCreate, RelKind, RelationList
@@ -21,8 +22,11 @@ def service(mock_repo):
     return AccountEntryService(mock_repo)
 
 def test_list_returns_account_entry_out(service, mock_repo):
+    from datetime import datetime
+    from datetime import timezone
     mock_repo.get_entries.return_value = [
-        {"id": "1", "title": "Entry 1", "desc": "Test", "tags": []}
+        AccountEntryNode.model_validate(
+        {"id": "1", "title": "Entry 1", "desc": "Test", "tags": [], "createdAt": datetime.now(timezone.utc),})
     ]
 
     result = service.list(limit=10, offset=0)
