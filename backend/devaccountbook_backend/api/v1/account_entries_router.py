@@ -71,8 +71,8 @@ def create_relation(
     payload: RelationCreate,
     service: AccountEntryService = Depends(get_account_entry_service),
 ):
-    kind = service.link(from_id, payload)
-    return RelationOut(from_id=from_id, to_id=payload.to_id, kind=kind, props=payload.props or {})
+    service.link(from_id, payload)
+    return RelationOut(from_id=from_id, to_id=payload.to_id, kind=payload.kind, props=payload.props or {})
 
 # 관계 목록: GET /account-entries/{account_entry_id}/relations
 @router.get("/{account_entry_id}/relations", response_model=RelationList)
@@ -80,11 +80,8 @@ def list_relations(
     account_entry_id: str,
     service: AccountEntryService = Depends(get_account_entry_service),
 ):
-    rels = service.list_links(account_entry_id)
-    return RelationList(
-        outgoing=[RelationOut(**r) for r in rels["outgoing"]],
-        incoming=[RelationOut(**r) for r in rels["incoming"]],
-    )
+    relation_list = service.list_links(account_entry_id)
+    return relation_list
 
 # 관계 삭제: DELETE /account-entries/{from_id}/relations/{kind}/{to_id}
 @router.delete("/{from_id}/relations/{kind}/{to_id}", status_code=status.HTTP_204_NO_CONTENT)
