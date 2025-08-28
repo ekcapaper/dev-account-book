@@ -1,7 +1,8 @@
 from typing import Dict, Any, List
 from fastapi import Depends
 from devaccountbook_backend.db.neo import get_neo4j_session
-from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO
+from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
+    AccountEntryRelationCreateDTO
 from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, RelationCreate, \
     RelKind, AccountEntryOut
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
@@ -35,10 +36,11 @@ class AccountEntryService:
     # 관계 생성 (from_id -> to_id)
     def link(self, from_id: str, payload: RelationCreate) -> str:
         return self.repo.add_relation(
-            from_id=from_id,
-            to_id=payload.to_id,
-            kind=payload.kind,
-            props=payload.props or {}
+            AccountEntryRelationCreateDTO(
+                from_id=from_id,
+                to_id=payload.to_id,
+                kind=payload.kind
+            )
         )
 
     # 관계 목록 조회 (in/out 분리)
