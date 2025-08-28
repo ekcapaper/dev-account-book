@@ -25,7 +25,11 @@ class AccountEntryService:
         return self.repo.create_entry(AccountEntryNodeCreateDTO(title=p.title, desc=p.desc, tags=p.tags))
 
     def get(self, account_entry_id: str) -> AccountEntryOut | None:
-        return AccountEntryOut.model_validate(self.repo.get_entry(account_entry_id).model_dump())
+        account_entry = self.repo.get_entry(account_entry_id)
+        if account_entry is None:
+            return None
+        else:
+            return AccountEntryOut.model_validate(account_entry.model_dump())
 
     def patch(self, account_entry_id: str, p: AccountEntryPatch) -> bool:
         return self.repo.update_entry(account_entry_id, AccountEntryNodePatchDTO.model_validate(p.model_dump(exclude_none=True)))
