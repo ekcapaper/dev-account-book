@@ -240,7 +240,7 @@ def test_patch_account_entry_ok(client: TestClient):
     body = dump_model(build_sample_model(AccountEntryPatch))
     # 빈 모델이 생성될 수도 있어 방어적으로 필드 하나 넣기
     if not body:
-        body = {"_dummy": "value"}  # 스키마에 없으면 무시될 수 있으니 실제 스키마 필드를 쓰면 더 좋습니다.
+        body = {"title": "value"}  # 스키마에 없으면 무시될 수 있으니 실제 스키마 필드를 쓰면 더 좋습니다.
     resp = client.patch("/account-entries/e1", json=body)
     # FakeService는 e1 존재 & body 비어있지 않으면 True
     assert resp.status_code == 200
