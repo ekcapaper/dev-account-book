@@ -1,58 +1,34 @@
 import uuid
-from typing import Optional, Dict, Any
-from neo4j import Session
+from typing import List
 
-import re
-from typing import Dict, Any, List
 from neo4j import Session
 
 from devaccountbook_backend.repositories.normalize_neo import normalize_neo
-from devaccountbook_backend.schemas.account_entry_schemas import RelKind
+from devaccountbook_backend.models.account_entry_domain import AccountEntryNode
+from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
+    AccountEntryRelationPropsDTO, AccountEntryRelationCreateDTO, AccountEntryRelationDTO, AccountEntryRelationDeleteDTO, \
+    AccountEntryRelationsDTO, AccountEntryTreeNodeDTO, convert_account_entry_tree_node
+from devaccountbook_backend.schemas.common_enum import RelKind
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
 
+
 # temp code
-def normalize_to_children(obj):
-    """
-    APOC toJsonTree 결과를 받아서:
-    - 모든 관계 배열 키를 children으로 통일
-    - 각 노드에 key 필드를 추가 (id 있으면 그걸, 없으면 uuid)
-    """
-    if isinstance(obj, list):
-        return [normalize_to_children(x) for x in obj]
 
-    if isinstance(obj, dict):
-        out = {}
-        children = []
-        for k, v in obj.items():
-            if isinstance(v, list) and all(isinstance(x, dict) for x in v):
-                # 관계 배열 → children에 합치기
-                children.extend(normalize_to_children(v))
-            else:
-                out[k] = normalize_to_children(v)
-
-        # key 필드 강제 추가
-        if "id" in out:
-            out["key"] = str(out["id"])
-        else:
-            out["key"] = str(uuid.uuid4())
-
-        if children:
-            out["children"] = children
-        return out
-
-    return obj
 
 class AccountEntryRepository:
     def __init__(self, session: Session):
         self.s = session
 
-    def bootstrap(self) -> None:
+    def _ensure_constraints(self) -> None:
         q = "CREATE CONSTRAINT IF NOT EXISTS FOR (n:AccountEntry) REQUIRE n.id IS UNIQUE"
         self.s.execute_write(lambda tx: tx.run(q))
-    
-    # 집계 함수
-    def list_all(self, *, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+
+    def bootstrap(self) -> None:
+        self._ensure_constraints()
+
+    #  집계 함수
+    def get_entries(self, *, limit: int = 50, offset: int = 0) -> List[AccountEntryNode]:
         q = """
         MATCH (n:AccountEntry)
         RETURN n
@@ -61,63 +37,76 @@ class AccountEntryRepository:
         LIMIT $limit
         """
         rows = self.s.execute_read(lambda tx: list(tx.run(q, offset=offset, limit=limit)))
-        return [normalize_neo(dict(row["n"])) for row in rows]
+        return [AccountEntryNode.model_validate(dict(row["n"])) for row in rows]
 
-    def count_all(self) -> int:
+    def count_entries(self) -> int:
         q = "MATCH (n:AccountEntry) RETURN count(n) AS cnt"
         rec = self.s.execute_read(lambda tx: tx.run(q).single())
         return int(rec["cnt"])
 
-    def create(self, title: str, desc: Optional[str], tags: list[str]) -> str:
+    # CRUD
+    def create_entry(self, account_entry_create: AccountEntryNodeCreateDTO) -> str:
         nid = str(uuid.uuid4())
         q = """
         CREATE (n:AccountEntry {id:$id, title:$title, desc:$desc, tags:$tags, createdAt:datetime()})
         RETURN n.id AS id
         """
-        rec = self.s.execute_write(lambda tx: tx.run(q, id=nid, title=title, desc=desc, tags=tags).single())
+        rec = self.s.execute_write(lambda tx: tx.run(
+            q,
+            id=nid,
+            title=account_entry_create.title,
+            desc=account_entry_create.desc,
+            tags=account_entry_create.tags
+        ).single())
         return rec["id"]
 
-    def get(self, account_entry_id: str) -> Dict[str, Any] | None:
+    def get_entry(self, account_entry_id: str) -> AccountEntryNode | None:
         q = "MATCH (n:AccountEntry {id:$id}) RETURN n"
         rec = self.s.execute_read(lambda tx: tx.run(q, id=account_entry_id).single())
-        return normalize_neo(dict(rec["n"])) if rec else None
+        if rec is None:
+            return None
+        else:
+            node = rec["n"]
+            entry = AccountEntryNode.model_validate(dict(node))
+            return entry
 
-    def patch(self, account_entry_id: str, props: Dict[str, Any]) -> bool:
-        safe = {k: v for k, v in props.items() if k in ALLOWED_KEYS and v is not None}
-        if not safe:
+    def update_entry(self, account_entry_id: str, account_entry_patch: AccountEntryNodePatchDTO) -> bool:
+        props = account_entry_patch.model_dump(exclude_unset=True, exclude_none=True)
+        if len(props.keys()) == 0:
             return False
         q = """
         MATCH (n:AccountEntry {id:$id})
         SET n += $props, n.updatedAt = datetime()
         RETURN n.id AS id
         """
-        rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id, props=safe).single())
+        rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id, props=props).single())
         return rec is not None
 
-    def delete(self, account_entry_id: str) -> bool:
+    def delete_entry(self, account_entry_id: str) -> bool:
         q = "MATCH (n:AccountEntry {id:$id}) DETACH DELETE n"
         rec = self.s.execute_write(lambda tx: tx.run(q, id=account_entry_id).single())
         return True
 
-    # --- 관계 생성 ---
-    def create_relation(
-            self, from_id: str, to_id: str, kind: RelKind, props: Dict[str, Any] | None = None
-    ) -> str:
+    # Relation
+    def add_relation(
+            self, relation_create: AccountEntryRelationCreateDTO
+    ) -> None:
         # 관계 타입은 파라미터 바인딩 불가 → Enum 기반 f-string 삽입(화이트리스트)
         q = f"""
         MATCH (a:AccountEntry {{id:$from_id}}), (b:AccountEntry {{id:$to_id}})
-        MERGE (a)-[r:{kind.value}]->(b)
+        MERGE (a)-[r:{relation_create.kind.value}]->(b)
         ON CREATE SET r.createdAt = datetime()
         SET r += $props
-        RETURN type(r) AS kind
+        RETURN r
         """
         rec = self.s.execute_write(lambda tx: tx.run(
-            q, from_id=from_id, to_id=to_id, props=props or {}
+            q, from_id=relation_create.from_id, to_id=relation_create.to_id,
+            props=AccountEntryRelationPropsDTO.model_dump(relation_create.props) or {}
         ).single())
-        return rec["kind"]
+
 
     # --- 관계 목록 조회 (outgoing / incoming) ---
-    def list_relations(self, entry_id: str) -> Dict[str, List[Dict[str, Any]]]:
+    def get_relations(self, entry_id: str) -> AccountEntryRelationsDTO:
         q_out = """
         MATCH (a:AccountEntry {id:$id})-[r]->(b:AccountEntry)
         RETURN type(r) AS kind, a.id AS from_id, b.id AS to_id, properties(r) AS props
@@ -131,30 +120,32 @@ class AccountEntryRepository:
         rows_out = self.s.execute_read(lambda tx: list(tx.run(q_out, id=entry_id)))
         rows_in = self.s.execute_read(lambda tx: list(tx.run(q_in, id=entry_id)))
 
-        to_dicts = lambda rows: [
-            {
+        to_relation = lambda rows: [
+            AccountEntryRelationDTO.model_validate({
                 "kind": row["kind"],
                 "from_id": row["from_id"],
                 "to_id": row["to_id"],
                 "props": normalize_neo(row["props"] or {})
-            }
+            })
             for row in rows
         ]
-        return {"outgoing": to_dicts(rows_out), "incoming": to_dicts(rows_in)}
+        return AccountEntryRelationsDTO.model_validate(
+            {"outgoing": to_relation(rows_out), "incoming": to_relation(rows_in)})
 
     # --- 관계 삭제 ---
-    def delete_relation(self, from_id: str, to_id: str, kind: RelKind) -> int:
+    def delete_relation(self, relation_delete: AccountEntryRelationDeleteDTO) -> int:
         q = f"""
-        MATCH (a:AccountEntry {{id:$from_id}})-[r:{kind.value}]->(b:AccountEntry {{id:$to_id}})
+        MATCH (a:AccountEntry {{id:$from_id}})-[r:{relation_delete.kind.value}]->(b:AccountEntry {{id:$to_id}})
         DELETE r
         RETURN count(*) AS cnt
         """
         rec = self.s.execute_write(lambda tx: tx.run(
-            q, from_id=from_id, to_id=to_id
+            q, from_id=relation_delete.from_id, to_id=relation_delete.to_id
         ).single())
         return rec["cnt"]
 
-    def get_start_to_end_node(self, start_id):
+    # Function
+    def get_entry_tree(self, start_id) -> AccountEntryTreeNodeDTO | None:
         q = Q_TREE = """
         MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
         WITH collect(p) AS paths
@@ -162,13 +153,21 @@ class AccountEntryRepository:
         RETURN value
         """
         rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
-        return normalize_to_children(rec["value"]) if rec else None
+        #print(rec["value"])
+        #print(type(rec["value"]))
+        # return normalize_to_children(rec["value"]) if rec else None
+
+        if len(rec["value"].keys()) == 0:
+            return None
+        else:
+            return convert_account_entry_tree_node(rec["value"]) if rec else None
 
 
 # Depends 팩토리
 from fastapi import Depends
 from devaccountbook_backend.db.neo import get_neo4j_session
 
-def get_item_repo(session: Session = Depends(get_neo4j_session)) -> AccountEntryRepository:
+
+def get_account_entry_repo(session: Session = Depends(get_neo4j_session)) -> AccountEntryRepository:
     repo = AccountEntryRepository(session)
     return repo

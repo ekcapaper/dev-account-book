@@ -1,0 +1,135 @@
+# tests/test_account_entry_repository_integration.py
+from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
+from devaccountbook_backend.schemas.account_entry_schemas import RelKind
+from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
+    AccountEntryRelationPropsDTO, AccountEntryRelationCreateDTO, AccountEntryRelationDeleteDTO
+
+
+def test_bootstrap(repo: AccountEntryRepository):
+    # 제약 생성 쿼리가 오류 없이 실행되면 OK (별도 검증은 생략)
+    # 동일 제약 재호출도 IF NOT EXISTS라 문제가 없어야 함
+    repo.bootstrap()
+
+def test_create_and_get_and_count(repo: AccountEntryRepository):
+    new_id = repo.create_entry(
+        account_entry_create=AccountEntryNodeCreateDTO(
+            title="t1",
+            desc="d1",
+            tags=["a", "b"],
+        )
+    )
+    assert isinstance(new_id, str)
+    got = repo.get_entry(new_id)
+    assert got is not None
+    assert got.id == new_id
+    assert got.title == "t1"
+    assert got.desc == "d1"
+    assert got.tags == ["a", "b"]
+
+    cnt = repo.count_entries()
+    assert cnt == 1
+
+def test_get_entries_paging(repo: AccountEntryRepository):
+    ids = [repo.create_entry(
+        AccountEntryNodeCreateDTO(
+            title=f"title-{i}",
+            desc=None,
+            tags=[f"t{i}"]
+        )
+    ) for i in range(5)]
+
+    rows = repo.get_entries(limit=3, offset=0)
+    assert len(rows) == 3
+    rows2 = repo.get_entries(limit=3, offset=3)
+    assert len(rows2) == 2
+    # 최신 createdAt DESC 이므로 첫 페이지와 두 번째 페이지가 겹치지 않아야 함
+    returned_ids = {r.id for r in rows} | {r.id for r in rows2}
+    assert set(ids) == returned_ids
+
+def test_update_entry(repo: AccountEntryRepository):
+    new_id = repo.create_entry(AccountEntryNodeCreateDTO(title="old", desc="old-desc", tags=["x"]))
+    ok_none = repo.update_entry(new_id, AccountEntryNodePatchDTO.model_validate({}))  # 빈 props → False
+    assert ok_none is False
+
+    ok = repo.update_entry(
+        new_id,
+        AccountEntryNodePatchDTO.model_validate({
+            "title": "new",
+            "desc": None,
+            "tags": ["y"],
+        }))
+    assert ok is True
+
+    updated = repo.get_entry(new_id)
+    assert updated.title == "new"
+    assert updated.tags == ["y"]
+
+def test_delete_entry(repo: AccountEntryRepository):
+    new_id = repo.create_entry(AccountEntryNodeCreateDTO(title="delete", desc="delete", tags=["x"]))
+    assert repo.get_entry(new_id) is not None
+
+    ok = repo.delete_entry(new_id)
+    assert ok is True
+
+    assert repo.get_entry(new_id) is None
+    assert repo.count_entries() == 0
+
+def test_relations_add_get_delete(repo: AccountEntryRepository):
+    a = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc=None, tags=[]))
+    b = repo.create_entry(AccountEntryNodeCreateDTO(title="B", desc=None, tags=[]))
+    c = repo.create_entry(AccountEntryNodeCreateDTO(title="C", desc=None, tags=[]))
+
+    # RELATES_TO (Enum 화이트리스트)
+    repo.add_relation(
+        AccountEntryRelationCreateDTO(
+            from_id=a,
+            to_id=b,
+            kind=RelKind.RELATES_TO,
+            props=AccountEntryRelationPropsDTO(
+                note="abcd"
+            )
+        )
+    )
+
+    repo.add_relation(AccountEntryRelationCreateDTO(
+            from_id=a,
+            to_id=c,
+            kind=RelKind.RELATES_TO,
+            props=AccountEntryRelationPropsDTO(
+                note="abcd2"
+            )
+        )
+    )
+
+    rels = repo.get_relations(a)
+    outgoing = rels.outgoing
+    assert len(outgoing) == 2
+
+    assert {r.to_id for r in outgoing} == {b, c}
+    assert outgoing[0].props
+
+
+    # 삭제
+    deleted_cnt = repo.delete_relation(AccountEntryRelationDeleteDTO(
+        from_id = a,
+        to_id=b,
+        kind=RelKind.RELATES_TO
+    ))
+    assert deleted_cnt >= 1
+
+    rels2 = repo.get_relations(a)
+    assert len(rels2.outgoing) == 1
+    assert rels2.outgoing[0].to_id == c
+
+
+def test_get_entry_tree_with_apoc(repo: AccountEntryRepository):
+    # 그래프: A -> B, A -> C
+    a = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc="abcd", tags=[]))
+    b = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc="abcd", tags=[]))
+    c = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc="abcd", tags=[]))
+    repo.add_relation(AccountEntryRelationCreateDTO(from_id=a, to_id=b, kind=RelKind.RELATES_TO, props=AccountEntryRelationPropsDTO()))
+    repo.add_relation(AccountEntryRelationCreateDTO(from_id=b, to_id=c, kind=RelKind.RELATES_TO, props=AccountEntryRelationPropsDTO()))
+
+    tree = repo.get_entry_tree(a)
+    # normalize_to_children 가 어떤 형태로 변환하든 최소한 값은 존재해야 함
+    assert tree is not None
