@@ -10,6 +10,7 @@ from devaccountbook_backend.schemas.account_entry_schemas import (
     RelKind,
     RelationList,
 )
+from devaccountbook_backend.tests.repo.conftest import *
 
 @pytest.fixture
 def service(repo: AccountEntryRepository) -> AccountEntryService:
