@@ -49,8 +49,8 @@ class RelationOut(BaseModel):
     props: RelationProps = Field(default_factory=RelationProps)
 
 class RelationList(BaseModel):
-    outgoing: List[RelationOut] = []
-    incoming: List[RelationOut] = []
+    outgoing: List[RelationOut] = Field(default_factory=list)
+    incoming: List[RelationOut] = Field(default_factory=list)
 
 class CountOut(BaseModel):
     total: int
