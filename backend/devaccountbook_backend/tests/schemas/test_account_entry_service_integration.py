@@ -61,8 +61,7 @@ def test_link_list_unlink(service: AccountEntryService):
     a = service.create(AccountEntryCreate(title="A", desc=None, tags=[]))
     b = service.create(AccountEntryCreate(title="B", desc=None, tags=[]))
 
-    rel_id = service.link(a, RelationCreate(to_id=b, kind=RelKind.RELATES_TO))
-    assert isinstance(rel_id, str) and rel_id
+    service.link(a, RelationCreate(to_id=b, kind=RelKind.RELATES_TO))
 
     rels = service.list_links(a)
     assert isinstance(rels, RelationList)

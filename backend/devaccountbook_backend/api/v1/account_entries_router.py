@@ -5,7 +5,7 @@ from fastapi.openapi.models import Response
 from fastapi.params import Query
 
 from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, AccountEntryOut, \
-    CountOut
+    CountOut, RelationProps
 from devaccountbook_backend.services.account_entry_service import AccountEntryService, get_account_entry_service
 # 서비스 생략 버전: repo를 가져오려면 아래를 사용
 # from devaccountbook_backend.repositories.item_repo import ItemRepository
@@ -72,7 +72,8 @@ def create_relation(
     service: AccountEntryService = Depends(get_account_entry_service),
 ):
     service.link(from_id, payload)
-    return RelationOut(from_id=from_id, to_id=payload.to_id, kind=payload.kind, props=payload.props)
+    # 여기 수정 필요
+    return RelationOut(from_id=from_id, to_id=payload.to_id, kind=RelationCreate.kind, props=RelationProps())
 
 # 관계 목록: GET /account-entries/{account_entry_id}/relations
 @router.get("/{account_entry_id}/relations", response_model=RelationList)

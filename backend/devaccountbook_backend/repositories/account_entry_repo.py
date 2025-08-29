@@ -8,6 +8,7 @@ from devaccountbook_backend.models.account_entry_domain import AccountEntryNode
 from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
     AccountEntryRelationPropsDTO, AccountEntryRelationCreateDTO, AccountEntryRelationDTO, AccountEntryRelationDeleteDTO, \
     AccountEntryRelationsDTO, AccountEntryTreeNodeDTO, convert_account_entry_tree_node
+from devaccountbook_backend.schemas.common_enum import RelKind
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
 
@@ -89,20 +90,20 @@ class AccountEntryRepository:
     # Relation
     def add_relation(
             self, relation_create: AccountEntryRelationCreateDTO
-    ) -> str:
+    ) -> None:
         # 관계 타입은 파라미터 바인딩 불가 → Enum 기반 f-string 삽입(화이트리스트)
         q = f"""
         MATCH (a:AccountEntry {{id:$from_id}}), (b:AccountEntry {{id:$to_id}})
         MERGE (a)-[r:{relation_create.kind.value}]->(b)
         ON CREATE SET r.createdAt = datetime()
         SET r += $props
-        RETURN type(r) AS kind
+        RETURN r
         """
         rec = self.s.execute_write(lambda tx: tx.run(
             q, from_id=relation_create.from_id, to_id=relation_create.to_id,
             props=AccountEntryRelationPropsDTO.model_dump(relation_create.props) or {}
         ).single())
-        return rec["kind"]
+
 
     # --- 관계 목록 조회 (outgoing / incoming) ---
     def get_relations(self, entry_id: str) -> AccountEntryRelationsDTO:

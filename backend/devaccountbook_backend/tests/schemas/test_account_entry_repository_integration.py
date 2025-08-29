@@ -80,7 +80,7 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
     c = repo.create_entry(AccountEntryNodeCreateDTO(title="C", desc=None, tags=[]))
 
     # RELATES_TO (Enum 화이트리스트)
-    kind = repo.add_relation(
+    repo.add_relation(
         AccountEntryRelationCreateDTO(
             from_id=a,
             to_id=b,
@@ -90,7 +90,7 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
             )
         )
     )
-    assert kind == "RELATES_TO"
+
     repo.add_relation(AccountEntryRelationCreateDTO(
             from_id=a,
             to_id=c,

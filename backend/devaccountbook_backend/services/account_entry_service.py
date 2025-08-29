@@ -38,7 +38,7 @@ class AccountEntryService:
         return self.repo.delete_entry(account_entry_id)
 
     # 관계 생성 (from_id -> to_id)
-    def link(self, from_id: str, payload: RelationCreate) -> str:
+    def link(self, from_id: str, payload: RelationCreate) -> None:
         if payload.props is None:
             return self.repo.add_relation(
                 AccountEntryRelationCreateDTO(
