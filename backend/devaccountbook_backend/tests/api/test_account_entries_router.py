@@ -1,8 +1,8 @@
 # tests/test_account_entries_router.py
 import typing
-from typing import Any, get_origin, get_args, List
-from enum import Enum
 from datetime import date, datetime
+from enum import Enum
+from typing import Any, get_origin, get_args, List
 
 import pytest
 from fastapi import FastAPI
@@ -11,11 +11,12 @@ from pydantic import BaseModel
 
 # ---- 프로젝트 경로에 맞게 아래 import 를 수정하세요 ----
 from devaccountbook_backend.api.v1.account_entries_router import router
-from devaccountbook_backend.services.account_entry_service import get_account_entry_service
 from devaccountbook_backend.schemas.account_entry_schemas import (
     AccountEntryCreate, AccountEntryPatch, AccountEntryOut,
-    RelationCreate, RelationOut, RelationList, RelKind
+    RelationCreate, RelationList, RelKind
 )
+from devaccountbook_backend.services.account_entry_service import get_account_entry_service
+
 
 # ---------- 유틸: Pydantic(v1/v2) 모델을 자동으로 채워주는 샘플 빌더 ----------
 
@@ -25,6 +26,7 @@ def _first_enum_member(enum_cls: typing.Type[Enum]):
     except Exception:
         # 비어있을 리 없지만 방어적으로
         return None
+
 
 def _sample_for_type(tp: Any):
     origin = get_origin(tp)
@@ -76,6 +78,7 @@ def _sample_for_type(tp: Any):
     # Dict로 fallback
     return {}
 
+
 def build_sample_model(model_cls: typing.Type[BaseModel], overrides: dict | None = None):
     """
     Pydantic v1/v2 겸용으로, 필수 필드만 자동 채워서 인스턴스를 만듭니다.
@@ -108,6 +111,7 @@ def build_sample_model(model_cls: typing.Type[BaseModel], overrides: dict | None
             anno = getattr(finfo, "outer_type_", finfo.type_)
             values[name] = _sample_for_type(anno)
     return model_cls(**values)
+
 
 def dump_model(instance: BaseModel) -> dict:
     # v2: model_dump / v1: dict
@@ -200,6 +204,7 @@ def app():
     app.dependency_overrides[get_account_entry_service] = _override
     return app
 
+
 @pytest.fixture()
 def client(app: FastAPI):
     return TestClient(app)
@@ -214,19 +219,23 @@ def test_list_account_entries_ok(client: TestClient):
     assert isinstance(data, list)
     assert len(data) >= 2  # e1, e2가 초기 데이터
 
+
 def test_count_account_entries_ok(client: TestClient):
     resp = client.get("/account-entries/count")
     assert resp.status_code == 200
     assert resp.json()["total"] >= 2
+
 
 def test_get_account_entry_ok(client: TestClient):
     resp = client.get("/account-entries/e1")
     assert resp.status_code == 200
     assert resp.json()  # 형태 검증은 스키마에 맡김
 
+
 def test_get_account_entry_404(client: TestClient):
     resp = client.get("/account-entries/does-not-exist")
     assert resp.status_code == 404
+
 
 def test_create_account_entry_ok(client: TestClient):
     # 요청 바디는 모델을 이용해 자동 생성
@@ -234,6 +243,7 @@ def test_create_account_entry_ok(client: TestClient):
     resp = client.post("/account-entries", json=body)
     assert resp.status_code == 201
     assert resp.json()
+
 
 def test_patch_account_entry_ok(client: TestClient):
     # non-empty body => True
@@ -245,9 +255,11 @@ def test_patch_account_entry_ok(client: TestClient):
     # FakeService는 e1 존재 & body 비어있지 않으면 True
     assert resp.status_code == 200
 
+
 def test_patch_account_entry_400_when_empty(client: TestClient):
     resp = client.patch("/account-entries/e1", json={})
     assert resp.status_code == 400
+
 
 def test_delete_account_entry_ok(client: TestClient):
     # 먼저 하나 생성
@@ -257,9 +269,11 @@ def test_delete_account_entry_ok(client: TestClient):
     resp = client.delete(f"/account-entries/{entry_id}")
     assert resp.status_code == 204
 
+
 def test_delete_account_entry_404(client: TestClient):
     resp = client.delete("/account-entries/not-found")
     assert resp.status_code == 404
+
 
 def test_explore_start_leaf_ok(client: TestClient):
     resp = client.get("/account-entries/e1/explore-start-leaf")
@@ -267,6 +281,7 @@ def test_explore_start_leaf_ok(client: TestClient):
     data = resp.json()
     assert data.get("start") == "e1"
     assert isinstance(data.get("leaf_ids"), list)
+
 
 def test_create_relation_ok(client: TestClient):
     # RelKind enum의 첫 멤버 사용
@@ -281,10 +296,12 @@ def test_create_relation_ok(client: TestClient):
     assert out.get("from_id") == "e1"
     assert out.get("to_id") == to_id
 
+
 def test_list_relations_ok(client: TestClient):
     resp = client.get("/account-entries/e1/relations")
     assert resp.status_code == 200
     assert resp.json() is not None
+
 
 def test_delete_relation_404_when_missing(client: TestClient):
     # 존재하지 않는 링크 삭제 시도
@@ -292,6 +309,7 @@ def test_delete_relation_404_when_missing(client: TestClient):
     kind_value = list(RelKind)[0].value if hasattr(RelKind, "__members__") else list(RelKind)[0]
     resp = client.delete(f"/account-entries/e1/relations/{kind_value}/nope")
     assert resp.status_code == 404
+
 
 def test_relation_create_then_delete_ok(client: TestClient):
     # 먼저 relation 생성

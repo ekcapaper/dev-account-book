@@ -3,12 +3,11 @@ from typing import List
 
 from neo4j import Session
 
-from devaccountbook_backend.repositories.normalize_neo import normalize_neo
-from devaccountbook_backend.models.account_entry_domain import AccountEntryNode
 from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
     AccountEntryRelationPropsDTO, AccountEntryRelationCreateDTO, AccountEntryRelationDTO, AccountEntryRelationDeleteDTO, \
     AccountEntryRelationsDTO, AccountEntryTreeNodeDTO, convert_account_entry_tree_node
-from devaccountbook_backend.schemas.common_enum import RelKind
+from devaccountbook_backend.models.account_entry_domain import AccountEntryNode
+from devaccountbook_backend.repositories.normalize_neo import normalize_neo
 
 ALLOWED_KEYS = {"title", "desc", "tags"}
 
@@ -104,7 +103,6 @@ class AccountEntryRepository:
             props=AccountEntryRelationPropsDTO.model_dump(relation_create.props) or {}
         ).single())
 
-
     # --- 관계 목록 조회 (outgoing / incoming) ---
     def get_relations(self, entry_id: str) -> AccountEntryRelationsDTO:
         q_out = """
@@ -153,8 +151,8 @@ class AccountEntryRepository:
         RETURN value
         """
         rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
-        #print(rec["value"])
-        #print(type(rec["value"]))
+        # print(rec["value"])
+        # print(type(rec["value"]))
         # return normalize_to_children(rec["value"]) if rec else None
 
         if len(rec["value"].keys()) == 0:

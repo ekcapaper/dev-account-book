@@ -1,13 +1,14 @@
 # tests/conftest.py
-from typing import Any, Generator
+from typing import Generator
 
 import pytest
 from neo4j import Session
 
-from devaccountbook_backend.db.driver import init_driver
 from devaccountbook_backend.core.config import settings
+from devaccountbook_backend.db.driver import init_driver
 from devaccountbook_backend.db.neo import get_neo4j_session
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
+
 
 @pytest.fixture(scope="session")
 def neo4j_session() -> Generator[Session, None, None]:
@@ -28,6 +29,7 @@ def neo4j_session() -> Generator[Session, None, None]:
         except StopIteration:
             pass
 
+
 @pytest.fixture(autouse=True)
 def _cleanup_db(neo4j_session: Session):
     """
@@ -37,6 +39,7 @@ def _cleanup_db(neo4j_session: Session):
     yield
     neo4j_session.run("MATCH (n) DETACH DELETE n")
 
+
 @pytest.fixture
 def repo(neo4j_session: Session) -> AccountEntryRepository:
     """
@@ -45,6 +48,7 @@ def repo(neo4j_session: Session) -> AccountEntryRepository:
     r = AccountEntryRepository(neo4j_session)
     r.bootstrap()
     return r
+
 
 @pytest.fixture
 def has_apoc(neo4j_session: Session) -> bool:

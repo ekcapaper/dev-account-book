@@ -86,7 +86,9 @@ class AccountEntryTreeNodeDTO(BaseModel):
     tags: List[str] = Field(default_factory=list)
     children: List["AccountEntryTreeNodeDTO"] = Field(default_factory=list)
 
+
 AccountEntryTreeNodeDTO.model_rebuild()
+
 
 def convert_account_entry_tree_node(input_data: dict):
     print(type(input_data))

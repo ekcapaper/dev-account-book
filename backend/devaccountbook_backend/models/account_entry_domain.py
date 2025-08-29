@@ -1,12 +1,10 @@
-
 # devaccountbook_backend/schemas/account_entry_domain.py
 from __future__ import annotations
 
-from typing import List, Optional
 from datetime import datetime
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from typing import List, Optional
 
-from devaccountbook_backend.dtos.account_entry_dto import AccountEntryTreeNodeDTO
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 # 이미 프로젝트에 있는 Enum
@@ -40,9 +38,3 @@ class AccountEntryNode(BaseModel):
         except Exception:
             pass
         return v
-
-
-
-
-
-

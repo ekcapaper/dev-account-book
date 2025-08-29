@@ -1,10 +1,12 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from devaccountbook_backend.api.v1.account_entries_router import router as items_router
 from devaccountbook_backend.core.config import settings
 from devaccountbook_backend.db.driver import init_driver, close_driver
-from devaccountbook_backend.api.v1.account_entries_router import router as items_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -13,6 +15,7 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         close_driver()
+
 
 app = FastAPI(title="DevAccountBook API", version="0.1.0", lifespan=lifespan)
 app.add_middleware(
@@ -23,8 +26,10 @@ app.add_middleware(
 
 app.include_router(items_router, prefix="/v1")
 
+
 @app.get("/healthz")
 def healthz(): return {"ok": True}
+
 
 @app.get("/")
 async def root():

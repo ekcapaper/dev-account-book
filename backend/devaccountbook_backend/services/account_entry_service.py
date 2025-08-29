@@ -1,11 +1,14 @@
-from typing import Dict, Any, List
+from typing import List
+
 from fastapi import Depends
+
 from devaccountbook_backend.db.neo import get_neo4j_session
 from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
     AccountEntryRelationCreateDTO, AccountEntryRelationDeleteDTO, AccountEntryRelationPropsDTO
+from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, RelationCreate, \
     RelKind, AccountEntryOut, RelationList
-from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
+
 
 class AccountEntryService:
     def __init__(self, repo: AccountEntryRepository) -> None:
@@ -15,7 +18,8 @@ class AccountEntryService:
     # 전체
     def list(self, *, limit: int = 50, offset: int = 0) -> List[AccountEntryOut]:
         account_entries = self.repo.get_entries(limit=limit, offset=offset)
-        return list(map(lambda account_entry: AccountEntryOut.model_validate(account_entry.model_dump()), account_entries))
+        return list(
+            map(lambda account_entry: AccountEntryOut.model_validate(account_entry.model_dump()), account_entries))
 
     def count(self) -> int:
         return self.repo.count_entries()
@@ -32,7 +36,8 @@ class AccountEntryService:
             return AccountEntryOut.model_validate(account_entry.model_dump())
 
     def patch(self, account_entry_id: str, p: AccountEntryPatch) -> bool:
-        return self.repo.update_entry(account_entry_id, AccountEntryNodePatchDTO.model_validate(p.model_dump(exclude_none=True)))
+        return self.repo.update_entry(account_entry_id,
+                                      AccountEntryNodePatchDTO.model_validate(p.model_dump(exclude_none=True)))
 
     def delete(self, account_entry_id: str) -> bool:
         return self.repo.delete_entry(account_entry_id)
@@ -72,6 +77,5 @@ class AccountEntryService:
         return self.repo.get_entry_tree(start_id)
 
 
-
-def get_account_entry_service(session = Depends(get_neo4j_session)) -> AccountEntryService:
+def get_account_entry_service(session=Depends(get_neo4j_session)) -> AccountEntryService:
     return AccountEntryService(AccountEntryRepository(session))

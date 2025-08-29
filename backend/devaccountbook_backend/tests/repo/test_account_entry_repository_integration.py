@@ -1,14 +1,15 @@
 # tests/test_account_entry_repository_integration.py
-from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
-from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
     AccountEntryRelationPropsDTO, AccountEntryRelationCreateDTO, AccountEntryRelationDeleteDTO
+from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
+from devaccountbook_backend.schemas.account_entry_schemas import RelKind
 
 
 def test_bootstrap(repo: AccountEntryRepository):
     # 제약 생성 쿼리가 오류 없이 실행되면 OK (별도 검증은 생략)
     # 동일 제약 재호출도 IF NOT EXISTS라 문제가 없어야 함
     repo.bootstrap()
+
 
 def test_create_and_get_and_count(repo: AccountEntryRepository):
     new_id = repo.create_entry(
@@ -29,6 +30,7 @@ def test_create_and_get_and_count(repo: AccountEntryRepository):
     cnt = repo.count_entries()
     assert cnt == 1
 
+
 def test_get_entries_paging(repo: AccountEntryRepository):
     ids = [repo.create_entry(
         AccountEntryNodeCreateDTO(
@@ -45,6 +47,7 @@ def test_get_entries_paging(repo: AccountEntryRepository):
     # 최신 createdAt DESC 이므로 첫 페이지와 두 번째 페이지가 겹치지 않아야 함
     returned_ids = {r.id for r in rows} | {r.id for r in rows2}
     assert set(ids) == returned_ids
+
 
 def test_update_entry(repo: AccountEntryRepository):
     new_id = repo.create_entry(AccountEntryNodeCreateDTO(title="old", desc="old-desc", tags=["x"]))
@@ -64,6 +67,7 @@ def test_update_entry(repo: AccountEntryRepository):
     assert updated.title == "new"
     assert updated.tags == ["y"]
 
+
 def test_delete_entry(repo: AccountEntryRepository):
     new_id = repo.create_entry(AccountEntryNodeCreateDTO(title="delete", desc="delete", tags=["x"]))
     assert repo.get_entry(new_id) is not None
@@ -73,6 +77,7 @@ def test_delete_entry(repo: AccountEntryRepository):
 
     assert repo.get_entry(new_id) is None
     assert repo.count_entries() == 0
+
 
 def test_relations_add_get_delete(repo: AccountEntryRepository):
     a = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc=None, tags=[]))
@@ -92,13 +97,13 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
     )
 
     repo.add_relation(AccountEntryRelationCreateDTO(
-            from_id=a,
-            to_id=c,
-            kind=RelKind.RELATES_TO,
-            props=AccountEntryRelationPropsDTO(
-                note="abcd2"
-            )
+        from_id=a,
+        to_id=c,
+        kind=RelKind.RELATES_TO,
+        props=AccountEntryRelationPropsDTO(
+            note="abcd2"
         )
+    )
     )
 
     rels = repo.get_relations(a)
@@ -108,10 +113,9 @@ def test_relations_add_get_delete(repo: AccountEntryRepository):
     assert {r.to_id for r in outgoing} == {b, c}
     assert outgoing[0].props
 
-
     # 삭제
     deleted_cnt = repo.delete_relation(AccountEntryRelationDeleteDTO(
-        from_id = a,
+        from_id=a,
         to_id=b,
         kind=RelKind.RELATES_TO
     ))
@@ -127,8 +131,10 @@ def test_get_entry_tree_with_apoc(repo: AccountEntryRepository):
     a = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc="abcd", tags=[]))
     b = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc="abcd", tags=[]))
     c = repo.create_entry(AccountEntryNodeCreateDTO(title="A", desc="abcd", tags=[]))
-    repo.add_relation(AccountEntryRelationCreateDTO(from_id=a, to_id=b, kind=RelKind.RELATES_TO, props=AccountEntryRelationPropsDTO()))
-    repo.add_relation(AccountEntryRelationCreateDTO(from_id=b, to_id=c, kind=RelKind.RELATES_TO, props=AccountEntryRelationPropsDTO()))
+    repo.add_relation(AccountEntryRelationCreateDTO(from_id=a, to_id=b, kind=RelKind.RELATES_TO,
+                                                    props=AccountEntryRelationPropsDTO()))
+    repo.add_relation(AccountEntryRelationCreateDTO(from_id=b, to_id=c, kind=RelKind.RELATES_TO,
+                                                    props=AccountEntryRelationPropsDTO()))
 
     tree = repo.get_entry_tree(a)
     # normalize_to_children 가 어떤 형태로 변환하든 최소한 값은 존재해야 함

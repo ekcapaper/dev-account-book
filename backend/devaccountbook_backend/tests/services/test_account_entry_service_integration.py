@@ -1,7 +1,3 @@
-import pytest
-
-from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
-from devaccountbook_backend.services.account_entry_service import AccountEntryService
 from devaccountbook_backend.schemas.account_entry_schemas import (
     AccountEntryCreate,
     AccountEntryPatch,
@@ -10,12 +6,15 @@ from devaccountbook_backend.schemas.account_entry_schemas import (
     RelKind,
     RelationList,
 )
+from devaccountbook_backend.services.account_entry_service import AccountEntryService
 from devaccountbook_backend.tests.repo.conftest import *
+
 
 @pytest.fixture
 def service(repo: AccountEntryRepository) -> AccountEntryService:
     # conftest의 repo(실제 Neo4j 세션 연결)로 서비스 구성
     return AccountEntryService(repo)
+
 
 def test_create_and_get(service: AccountEntryService):
     new_id = service.create(AccountEntryCreate(title="first", desc="hello", tags=["t1"]))
@@ -26,6 +25,7 @@ def test_create_and_get(service: AccountEntryService):
     assert got.id == new_id
     assert got.title == "first"
     assert got.desc == "hello"
+
 
 def test_list_and_count(service: AccountEntryService):
     a = service.create(AccountEntryCreate(title="A", desc=None, tags=[]))
@@ -40,6 +40,7 @@ def test_list_and_count(service: AccountEntryService):
     ids = {x.id for x in rows}
     assert a in ids and b in ids
 
+
 def test_patch(service: AccountEntryService):
     _id = service.create(AccountEntryCreate(title="before", desc=None, tags=[]))
     ok = service.patch(_id, AccountEntryPatch(title="after"))
@@ -47,6 +48,7 @@ def test_patch(service: AccountEntryService):
 
     updated = service.get(_id)
     assert updated.title == "after"
+
 
 def test_delete_then_get_none(service: AccountEntryService):
     _id = service.create(AccountEntryCreate(title="todelete", desc=None, tags=[]))
@@ -57,6 +59,7 @@ def test_delete_then_get_none(service: AccountEntryService):
     # (만약 여기서 예외가 나면 service.get()에서 None 케이스 처리가 누락된 것)
     res = service.get(_id)
     assert res is None
+
 
 def test_link_list_unlink(service: AccountEntryService):
     a = service.create(AccountEntryCreate(title="A", desc=None, tags=[]))
@@ -71,6 +74,7 @@ def test_link_list_unlink(service: AccountEntryService):
     deleted = service.unlink(a, b, RelKind.RELATES_TO)
     assert deleted >= 1
 
+
 def test_get_start_to_end_node(service: AccountEntryService):
     root = service.create(AccountEntryCreate(title="root", desc=None, tags=[]))
     child = service.create(AccountEntryCreate(title="child", desc=None, tags=[]))
@@ -81,4 +85,3 @@ def test_get_start_to_end_node(service: AccountEntryService):
     service.link(root, RelationCreate(to_id=child, kind=RelKind.RELATES_TO))
     result = service.get_start_to_end_node(root)
     print(result)
-
