@@ -214,7 +214,7 @@ const AccountEntrySheet: React.FC = () => {
         dataIndex: keyof AccountEntryTableDataType;
     })[] = [
         {
-            title: 'node_title',
+            title: '항목',
             dataIndex: 'node_title',
             width: '10%',
             editable: true,
@@ -227,7 +227,7 @@ const AccountEntrySheet: React.FC = () => {
             }),
         },
         {
-            title: 'node_desc',
+            title: '항목 설명',
             dataIndex: 'node_desc',
             width: '10%',
             editable: true,
@@ -240,7 +240,7 @@ const AccountEntrySheet: React.FC = () => {
             }),
         },
         {
-            title: 'connected_node_title',
+            title: '연결된 항목',
             dataIndex: 'connected_node_title',
             width: '10%',
             editable: true,
@@ -253,7 +253,7 @@ const AccountEntrySheet: React.FC = () => {
             }),
         },
         {
-            title: 'connected_node_desc',
+            title: '연결된 항목 설명',
             dataIndex: 'connected_node_desc',
             width: '10%',
             editable: true,
@@ -267,7 +267,7 @@ const AccountEntrySheet: React.FC = () => {
         },
 
         {
-            title: 'row_data_type',
+            title: '타입',
             dataIndex: 'row_data_type',
             width: '10%',
             editable: false,
@@ -280,7 +280,7 @@ const AccountEntrySheet: React.FC = () => {
             }),
         },
         {
-            title: 'operation',
+            title: '동작',
             dataIndex: 'operation',
             width: '25%',
             onCell: (record: AccountEntryTableDataType) => ({
