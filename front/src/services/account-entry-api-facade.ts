@@ -39,13 +39,17 @@ export const getConvertedFullAccountEntriesAndRelationships = async () => {
     return result;
 }
 
-export async function explorerAccountEntryStartLeaf(start_id: string) {
-    return http<AccountEntryTree>(`http://127.0.0.1:8000/v1/account-entries/${start_id}/explore-start-leaf`);
+export async function explorerAccountEntryStartLeaf(startId: string) {
+    return http<AccountEntryTree>(`http://127.0.0.1:8000/v1/account-entries/${startId}/explore-start-leaf`);
 }
 
 export async function explorerAllAccountEntryStartLeaf() {
-    const start_id = "557c8810-edbf-46ce-86ac-85c306ac75a6";
-    return explorerAccountEntryStartLeaf(start_id);
+    const startIdList = ["557c8810-edbf-46ce-86ac-85c306ac75a6"];
+    const allStartLeaf = [];
+    for(const startId of startIdList) {
+        allStartLeaf.push(await explorerAccountEntryStartLeaf(startId));
+    }
+    return allStartLeaf;
 }
 
 

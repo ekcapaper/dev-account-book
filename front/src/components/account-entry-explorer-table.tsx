@@ -45,15 +45,15 @@ const AccountEntryExplorerTable: React.FC = () => {
         return <p>{error.message}</p>;
     }
     if (!data) return null;
-    const convert_data = mapToDataType(data)
-
-    console.log(convert_data)
+    //console.log(data)
+    const convert_data = data.map(mapToDataType);
+    //console.log(convert_data)
 
     return (
         <>
             <Table<DataType>
                 columns={columns}
-                dataSource={[convert_data]}
+                dataSource={convert_data}
                 expandable={{
                     defaultExpandAllRows: true,   // ← 여기로 이동
                 }}
