@@ -39,7 +39,9 @@ export const getConvertedFullAccountEntriesAndRelationships = async () => {
     return result;
 }
 
-export async function explorerAccountEntryStartLeaf() {
+export async function explorerAllAccountEntryStartLeaf() {
     const start_id = "557c8810-edbf-46ce-86ac-85c306ac75a6";
     return http<AccountEntryTree>(`http://127.0.0.1:8000/v1/account-entries/${start_id}/explore-start-leaf`);
 }
+
+
