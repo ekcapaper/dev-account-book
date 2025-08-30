@@ -92,7 +92,7 @@ export type RelationList = {
 export type AccountEntry = {
     id: string;
     title: string;
-    desc?: string | null;
+    desc: string;
     tags: string[];
 };
 

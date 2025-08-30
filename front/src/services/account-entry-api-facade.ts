@@ -2,9 +2,10 @@ import {http} from "../lib/fetch.ts";
 import type {AccountEntryTree} from "../types/account-entry.ts";
 import {SheetDataTypeKind} from "../constants/sheet-data-type-kind.ts";
 import {getAccountEntries, getAccountEntry, getAccountRelationships} from "./account-entry-api.ts";
+import type {AccountEntryTableDataType} from "../types/account-entry-table-data-type.ts";
 
-export const getConvertedFullAccountEntriesAndRelationships = async () => {
-    const result = []
+export const getConvertedFullAccountEntriesAndRelationships: () => Promise<AccountEntryTableDataType[]> = async () => {
+    const result : AccountEntryTableDataType[] = [];
     const data = await getAccountEntries();
     for (const entry of data) {
         //console.log(entry)
