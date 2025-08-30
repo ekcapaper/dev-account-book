@@ -73,17 +73,17 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     let childNode = children;
 
     if (dataIndex == "node_title" && (record.row_data_type === SheetDataTypeKind.Linked)) {
-        return <td style={{ padding: 0, margin: 0 }}></td>;
+        return <td style={{ padding: 0, margin: 0 , marginLeft: 4}}></td>;
     }
 
     if (dataIndex == "connected_node_title" && (record.row_data_type === SheetDataTypeKind.Node)) {
-        return <td style={{ padding: 0, margin: 0 }}></td>;
+        return <td style={{ padding: 0, margin: 0 , marginLeft: 4}}></td>;
     }
 
     if (editable) {
         childNode = (
             <Form.Item
-                style={{margin: 0, padding: 0, marginLeft: 4}}
+                style={{margin: 0, padding: 0 , marginLeft: 4}}
                 name={dataIndex as string}
                 rules={[{required: false, message: `${title} is required.`}]}
             >
@@ -110,7 +110,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
             </Form.Item>
         );
     }
-    return <td {...restProps} style={{ padding: 0, margin: 0 }}>{childNode}</td>;
+    return <td {...restProps} style={{ padding: 0, margin: 0, marginLeft: 4 }}>{childNode}</td>;
 };
 
 type ColumnTypes = Exclude<TableProps<AccountEntryTableDataType>['columns'], undefined>;
