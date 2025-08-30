@@ -2,7 +2,7 @@ import {http} from "../../lib/fetch";
 import type {AccountEntry, RelationList, RelationResponseDTO} from "./types.ts";
 
 
-export const getAccountEntries = () =>{
+export const getAccountEntries = () => {
     const params = new URLSearchParams({
         limit: "50",
         offset: "0",
@@ -10,7 +10,7 @@ export const getAccountEntries = () =>{
     return http<AccountEntry[]>(`http://127.0.0.1:8000/v1/account-entries?${params}`);
 }
 
-export const getAccountEntry = (id: string) =>{
+export const getAccountEntry = (id: string) => {
     return http<AccountEntry>(`http://127.0.0.1:8000/v1/account-entries/${id}`);
 }
 
@@ -21,7 +21,7 @@ export const getAccountRelationships = (id: string) => {
 export async function createAccountEntry(body: Omit<AccountEntry, "id">) {
     const res = await fetch(`http://127.0.0.1:8000/v1/account-entries`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -46,17 +46,17 @@ export async function updateAccountEntry(
 ): Promise<AccountEntry> {
     const res = await fetch(`http://127.0.0.1:8000/v1/account-entries/${accountEntryId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
 }
 
-export async function createAccountEntryRelationshipApi(from_id:string , to_id: string):Promise<RelationResponseDTO> {
+export async function createAccountEntryRelationshipApi(from_id: string, to_id: string): Promise<RelationResponseDTO> {
     const res = await fetch(`http://127.0.0.1:8000/v1/account-entries/${from_id}/relations`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             "to_id": `${to_id}`,
             "kind": "RELATES_TO",

@@ -99,7 +99,7 @@ export type AccountEntry = {
 export type AccountEntryTree = {
     id: string;
     title: string;
-    desc:string;
+    desc: string;
     tags: string[];
     relates_to: AccountEntryTree[];
 };

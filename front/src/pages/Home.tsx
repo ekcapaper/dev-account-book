@@ -1,5 +1,3 @@
-import {Typography} from "antd";
-
 function Home() {
     return (
         <div>
@@ -11,4 +9,5 @@ function Home() {
         </div>
     );
 }
+
 export default Home;

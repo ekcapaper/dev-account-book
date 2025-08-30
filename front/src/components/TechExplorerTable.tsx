@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { Space, Switch, Table } from 'antd';
-import type { TableColumnsType, TableProps } from 'antd';
+import React, {useState} from 'react';
+import type {TableColumnsType, TableProps} from 'antd';
+import {Table} from 'antd';
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {useQuery} from "@tanstack/react-query";
-import {http} from "../lib/fetch.ts";
-import type {AccountEntryTree} from "../features/accountentry/types.ts";
 import {explorerAccountEntryStartLeaf} from "../features/accountentry/apiFacade.ts";
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
@@ -124,15 +122,15 @@ const rowSelection: TableRowSelection<DataType> = {
 const TechExplorerTable: React.FC = () => {
     const [checkStrictly, setCheckStrictly] = useState(false);
 
-    const { data:data2, isLoading, error } = useQuery({
+    const {data: data2, isLoading, error} = useQuery({
         queryKey: accountEntryKeys.tree_all,     // 캐싱 키
         queryFn: explorerAccountEntryStartLeaf,     // 실제 호출 함수
     });
 
-    if(isLoading){
+    if (isLoading) {
         return <p>Loading...</p>;
     }
-    if(error){
+    if (error) {
         return <p>{error.message}</p>;
     }
 

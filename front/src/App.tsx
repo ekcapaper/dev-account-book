@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Layout from "./Layout";
 import Home from "./pages/Home";
 import TechEntrySheetPage from "./pages/TechEntrySheetPage.tsx";
@@ -9,9 +9,9 @@ function App() {
         <BrowserRouter>
             <Routes>
                 {/* 공통 레이아웃 */}
-                <Route path="/" element={<Layout />}>
+                <Route path="/" element={<Layout/>}>
                     {/* Outlet 안에 표시될 것들 */}
-                    <Route index element={<Home />} />          {/* "/" */}
+                    <Route index element={<Home/>}/> {/* "/" */}
                     <Route path={"tech-entry-sheet"} element={<TechEntrySheetPage/>}/>
                     <Route path={"tech-entry-explore"} element={<TechEntryExplorePage/>}/>
                 </Route>
