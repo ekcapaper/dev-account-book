@@ -314,10 +314,7 @@ const AccountEntrySheet: React.FC = () => {
                         else if (record.row_data_type === SheetDataTypeKind.Linked) {
                             return (
                                 <Space split="|">
-                                    <Popconfirm title="Sure to delete?"
-                                                onConfirm={() => handleLinkDelete(record.node_id, record.connected_node_id)}>
-                                        <a>링크 삭제</a>
-                                    </Popconfirm>
+                                    <Button onClick={() => handleLinkDelete(record.node_id, record.connected_node_id)}>링크 삭제</Button>
                                 </Space>
                             );
                         }
