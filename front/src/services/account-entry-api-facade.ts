@@ -13,8 +13,12 @@ export const getConvertedFullAccountEntriesAndRelationships = async () => {
             id: entry.id,
             node_id: entry.id,
             node_title: entry.title,
+            node_desc: entry.desc,
+            node_tags: entry.tags,
             connected_node_title: "",
             connected_node_id: "",
+            connected_node_desc: "",
+            connected_node_tags: [],
             row_data_type: SheetDataTypeKind.Node
         });
 
@@ -29,8 +33,12 @@ export const getConvertedFullAccountEntriesAndRelationships = async () => {
                 id: connectedEntry.id,
                 node_id: entry.id,
                 node_title: entry.title,
+                node_desc: entry.desc,
+                node_tags: entry.tags,
                 connected_node_id: connectedEntry.id,
                 connected_node_title: connectedEntry.title,
+                connected_node_desc: connectedEntry.desc,
+                connected_node_tags: connectedEntry.tags,
                 row_data_type: SheetDataTypeKind.Linked
             });
         }

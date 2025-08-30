@@ -150,6 +150,8 @@ const AccountEntrySheet: React.FC = () => {
         }
     }, [data]);
 
+    console.log(data)
+
     if (isLoading) return <p>로딩중...</p>;
     if (error) return <p>에러 발생!</p>;
 
