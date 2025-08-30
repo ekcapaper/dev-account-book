@@ -350,8 +350,6 @@ const AccountEntrySheet: React.FC = () => {
         },
     };
 
-    const columns = defaultColumns
-
     return (
         <div>
             <Button onClick={handleAdd} type="dashed" style={{marginBottom: 16}}>
@@ -362,7 +360,7 @@ const AccountEntrySheet: React.FC = () => {
                 rowClassName={() => 'editable-row'}
                 bordered
                 dataSource={dataSource}
-                columns={columns as ColumnTypes}
+                columns={defaultColumns as ColumnTypes}
                 style={{ borderCollapse: 'collapse' }}
             />
         </div>
