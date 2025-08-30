@@ -26,7 +26,6 @@ interface DataType {
     row_data_type: SheetDataTypeKind;
 }
 
-// Context도 행 타입으로
 const EditableContext = React.createContext<FormInstance<DataType> | null>(null);
 
 // Editable Row
@@ -132,15 +131,16 @@ const AccountEntrySheet: React.FC = () => {
     const [count, setCount] = useState(2);
     const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
 
+    // AccountEntry CRUD
     const {data, isLoading, error} = useQuery({
         queryKey: accountEntryKeys.all,     // 캐싱 키
         queryFn: getConvertedFullAccountEntriesAndRelationships,     // 실제 호출 함수
     });
-
     const createAccountEntry = useCreateAccountEntry();
     const deleteAccountEntry = useDeleteAccountEntry();
     const patchAccountEntry = useUpdateAccountEntry();
 
+    // AccountEntry Relationship
     const createAccountEntryRelationship = useCreateAccountEntryRelationship();
     const deleteAccountEntryRelationship = useDeleteAccountEntryRelationship();
 
@@ -154,6 +154,7 @@ const AccountEntrySheet: React.FC = () => {
     if (error) return <p>에러 발생!</p>;
 
 
+    // handler
     const handleDelete = (id: string) => {
         deleteAccountEntry.mutate(id);
     };
@@ -163,7 +164,6 @@ const AccountEntrySheet: React.FC = () => {
         deleteAccountEntryRelationship.mutate({from_id, to_id});
     }
 
-
     // 특정 행(record) 아래에 연결 노드 추가
     const handleAddConnectedNode = (record: DataType) => {
         console.log(data);
@@ -172,37 +172,66 @@ const AccountEntrySheet: React.FC = () => {
         for (const nodeData of data) {
             //console.log(nodeData);
             if (nodeData.node_title == connectedNodeTitleValue) {
-                console.log(record.id)
-                console.log(nodeData.id)
                 createAccountEntryRelationship.mutate({
                     from_id: record.id,
                     to_id: nodeData.id
                 })
             }
         }
+    };
 
-        const newRow: DataType = {
-            key: count, // React.Key 허용이라 number도 OK
+
+    const handleAdd = () => {
+        const newData: DataType = {
+            key: count,
             id: count.toString(),
-            node_title: 'ABCD',
-            node_id: "",
-            connected_node_id: "",
+            node_id: count.toString(),
+            node_title: `Edward King ${count}`,
+            connected_node_id: count.toString(),
             connected_node_title: '32',
-            row_data_type: SheetDataTypeKind.Linked,
+            row_data_type: SheetDataTypeKind.Node,
         };
 
-        setDataSource((prev) => {
-            const result: DataType[] = [];
-            for (const item of prev) {
-                result.push(item);
-                if (item.key === record.key) {
-                    result.push(newRow);
-                }
-            }
-            return result;
-        });
+        createAccountEntry.mutate({
+            title: newData.node_title,
+            desc: "",
+            tags: ["TAG"]
+        })
+
+
+        setDataSource((prev) => [...prev, newData]);
         setCount((c) => c + 1);
     };
+
+    const handleSave = (row: DataType) => {
+        setDataSource((prev) => {
+            //console.log("values");
+            //console.log(row)
+
+            if (row.row_data_type == SheetDataTypeKind.Node) {
+                patchAccountEntry.mutate({
+                    "id": row.id,
+                    "body": {
+                        "title": row.node_title,
+                    }
+                })
+            } else if (row.row_data_type === SheetDataTypeKind.Linked) {
+                patchAccountEntry.mutate({
+                    "id": row.id,
+                    "body": {
+                        "title": row.connected_node_title,
+                    }
+                })
+            }
+
+            const idx = prev.findIndex((item) => item.key === row.key);
+            if (idx === -1) return prev;
+            const next = prev.slice();
+            next.splice(idx, 1, {...prev[idx], ...row});
+            return next;
+        });
+    };
+
 
     const defaultColumns: (ColumnTypes[number] & {
         editable?: boolean;
@@ -294,57 +323,6 @@ const AccountEntrySheet: React.FC = () => {
             ),
         },
     ];
-
-    const handleAdd = () => {
-        const newData: DataType = {
-            key: count,
-            id: count.toString(),
-            node_id: count.toString(),
-            node_title: `Edward King ${count}`,
-            connected_node_id: count.toString(),
-            connected_node_title: '32',
-            row_data_type: SheetDataTypeKind.Node,
-        };
-
-        createAccountEntry.mutate({
-            title: newData.node_title,
-            desc: "",
-            tags: ["TAG"]
-        })
-
-
-        setDataSource((prev) => [...prev, newData]);
-        setCount((c) => c + 1);
-    };
-
-    const handleSave = (row: DataType) => {
-        setDataSource((prev) => {
-            //console.log("values");
-            //console.log(row)
-
-            if (row.row_data_type == SheetDataTypeKind.Node) {
-                patchAccountEntry.mutate({
-                    "id": row.id,
-                    "body": {
-                        "title": row.node_title,
-                    }
-                })
-            } else if (row.row_data_type === SheetDataTypeKind.Linked) {
-                patchAccountEntry.mutate({
-                    "id": row.id,
-                    "body": {
-                        "title": row.connected_node_title,
-                    }
-                })
-            }
-
-            const idx = prev.findIndex((item) => item.key === row.key);
-            if (idx === -1) return prev;
-            const next = prev.slice();
-            next.splice(idx, 1, {...prev[idx], ...row});
-            return next;
-        });
-    };
 
     const components = {
         body: {
