@@ -70,7 +70,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
     useEffect(() => {
         if (editable) {
-            form.setFieldsValue({[dataIndex]: record[dataIndex]} as any);
+            form.setFieldsValue({[dataIndex]: record[dataIndex]});
         }
     }, [form, dataIndex, record, editable]);
 
