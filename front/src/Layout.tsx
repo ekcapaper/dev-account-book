@@ -23,26 +23,13 @@ const items2: MenuProps['items'] = [
                 icon: React.createElement(NotificationOutlined),
                 label: <Link to={"/tech-entry-sheet"}>Tech Sheet</Link>
             },
-            /*
-            {
-                key: `sub-tech-entry-graph`,
-                icon: React.createElement(NotificationOutlined),
-                label: <Link to={"/tech-entry-graph"}>Tech Graph</Link>
-            },
-            */
             {
                 key: `sub-tech-entry-explore`,
                 icon: React.createElement(NotificationOutlined),
                 label: <Link to={"/tech-entry-explore"}>Tech Explorer</Link>
             },
         ]
-    },
-    {
-        key: `menu-about`,
-        icon: React.createElement(LaptopOutlined),
-        label: <Link to={"/about"}>`정보`</Link>,
-    }
-]
+    }]
 
 const App: React.FC = () => {
     const {
