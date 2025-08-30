@@ -9,7 +9,7 @@ import {
     useDeleteAccountEntryRelationship,
     useUpdateAccountEntry
 } from "../hooks/mutations.ts";
-import {DataTypeKind} from "../constants/data-type-kind.ts";
+import {SheetDataTypeKind} from "../constants/sheet-data-type-kind.ts";
 import {getConvertedFullAccountEntriesAndRelationships} from "../services/apiFacade.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
@@ -23,7 +23,7 @@ interface DataType {
     node_title: string;
     connected_node_id: string;
     connected_node_title: string;
-    row_data_type: DataTypeKind;
+    row_data_type: SheetDataTypeKind;
 }
 
 // Context도 행 타입으로
@@ -84,11 +84,11 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
     let childNode = children;
 
-    if (dataIndex == "node_title" && (record.row_data_type === DataTypeKind.Linked)) {
+    if (dataIndex == "node_title" && (record.row_data_type === SheetDataTypeKind.Linked)) {
         return <td></td>;
     }
 
-    if (dataIndex == "connected_node_title" && (record.row_data_type === DataTypeKind.Node)) {
+    if (dataIndex == "connected_node_title" && (record.row_data_type === SheetDataTypeKind.Node)) {
         return <td></td>;
     }
 
@@ -188,7 +188,7 @@ const AccountEntrySheet: React.FC = () => {
             node_id: "",
             connected_node_id: "",
             connected_node_title: '32',
-            row_data_type: DataTypeKind.Linked,
+            row_data_type: SheetDataTypeKind.Linked,
         };
 
         setDataSource((prev) => {
@@ -215,7 +215,7 @@ const AccountEntrySheet: React.FC = () => {
             editable: true,
             onCell: (record: DataType) => ({
                 record,
-                editable: record.row_data_type === DataTypeKind.Node, // 행 조건에 따른 편집 여부
+                editable: record.row_data_type === SheetDataTypeKind.Node, // 행 조건에 따른 편집 여부
                 dataIndex: 'node_title',
                 title: 'node_title',
                 handleSave, // 상위의 저장 핸들러
@@ -227,7 +227,7 @@ const AccountEntrySheet: React.FC = () => {
             editable: true,
             onCell: (record: DataType) => ({
                 record,
-                editable: record.row_data_type === DataTypeKind.Linked,
+                editable: record.row_data_type === SheetDataTypeKind.Linked,
                 dataIndex: 'connected_node_title',
                 title: 'connected_node_title',
                 handleSave,
@@ -258,7 +258,7 @@ const AccountEntrySheet: React.FC = () => {
             render: (_, record) => (
                 <div>
                     {(() => {
-                        if (record.row_data_type === DataTypeKind.Node) {
+                        if (record.row_data_type === SheetDataTypeKind.Node) {
                             return (
                                 <Space split="|">
                                     <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
@@ -277,7 +277,7 @@ const AccountEntrySheet: React.FC = () => {
                             );
                         }
                         // TODO 여기 링크 삭제하도록 기능 수정 필요 지금은 그냥 항목 삭제함
-                        else if (record.row_data_type === DataTypeKind.Linked) {
+                        else if (record.row_data_type === SheetDataTypeKind.Linked) {
                             return (
                                 <Space split="|">
                                     <Popconfirm title="Sure to delete?"
@@ -303,7 +303,7 @@ const AccountEntrySheet: React.FC = () => {
             node_title: `Edward King ${count}`,
             connected_node_id: count.toString(),
             connected_node_title: '32',
-            row_data_type: DataTypeKind.Node,
+            row_data_type: SheetDataTypeKind.Node,
         };
 
         createAccountEntry.mutate({
@@ -322,14 +322,14 @@ const AccountEntrySheet: React.FC = () => {
             //console.log("values");
             //console.log(row)
 
-            if (row.row_data_type == DataTypeKind.Node) {
+            if (row.row_data_type == SheetDataTypeKind.Node) {
                 patchAccountEntry.mutate({
                     "id": row.id,
                     "body": {
                         "title": row.node_title,
                     }
                 })
-            } else if (row.row_data_type === DataTypeKind.Linked) {
+            } else if (row.row_data_type === SheetDataTypeKind.Linked) {
                 patchAccountEntry.mutate({
                     "id": row.id,
                     "body": {

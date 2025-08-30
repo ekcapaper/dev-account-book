@@ -1,6 +1,6 @@
 import {http} from "../lib/fetch.ts";
 import type {AccountEntryTree} from "../types/account-entry.ts";
-import {DataTypeKind} from "../constants/data-type-kind.ts";
+import {SheetDataTypeKind} from "../constants/sheet-data-type-kind.ts";
 import {getAccountEntries, getAccountEntry, getAccountRelationships} from "./api.ts";
 
 export const getConvertedFullAccountEntriesAndRelationships = async () => {
@@ -9,13 +9,13 @@ export const getConvertedFullAccountEntriesAndRelationships = async () => {
     for (const entry of data) {
         //console.log(entry)
         result.push({
-            key: entry.id + DataTypeKind.Node,
+            key: entry.id + SheetDataTypeKind.Node,
             id: entry.id,
             node_id: entry.id,
             node_title: entry.title,
             connected_node_title: "",
             connected_node_id: "",
-            row_data_type: DataTypeKind.Node
+            row_data_type: SheetDataTypeKind.Node
         });
 
         const entry_relationships = await getAccountRelationships(entry.id)
@@ -25,13 +25,13 @@ export const getConvertedFullAccountEntriesAndRelationships = async () => {
             const connectedEntry = await getAccountEntry(relationship.toId);
             //console.log(targetEntry)
             result.push({
-                key: entry.title + connectedEntry.id + DataTypeKind.Linked,
+                key: entry.title + connectedEntry.id + SheetDataTypeKind.Linked,
                 id: connectedEntry.id,
                 node_id: entry.id,
                 node_title: entry.title,
                 connected_node_id: connectedEntry.id,
                 connected_node_title: connectedEntry.title,
-                row_data_type: DataTypeKind.Linked
+                row_data_type: SheetDataTypeKind.Linked
             });
         }
     }

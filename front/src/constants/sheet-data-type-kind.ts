@@ -1,4 +1,4 @@
-export enum DataTypeKind {
+export enum SheetDataTypeKind {
     Node = 'node',
     Linked = 'linked',
 }
