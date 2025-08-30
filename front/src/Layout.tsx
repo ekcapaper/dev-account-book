@@ -16,12 +16,12 @@ const items2: MenuProps['items'] = [
     {
         key: `sub-tech-entry-sheet`,
         icon: React.createElement(NotificationOutlined),
-        label: <Link to={"/tech-entry-sheet"}>Tech Sheet</Link>
+        label: <Link to={"/tech-entry-sheet"}>장부 시트</Link>
     },
     {
         key: `sub-tech-entry-explore`,
         icon: React.createElement(NotificationOutlined),
-        label: <Link to={"/tech-entry-explore"}>Tech Explorer</Link>
+        label: <Link to={"/tech-entry-explore"}>장부 탐색</Link>
     },
     /*
     {
