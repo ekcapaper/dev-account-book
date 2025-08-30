@@ -12,23 +12,28 @@ const items2: MenuProps['items'] = [
         icon: React.createElement(LaptopOutlined),
         label: <Link to={"/"}>홈 화면</Link>,
     },
+
+    {
+        key: `sub-tech-entry-sheet`,
+        icon: React.createElement(NotificationOutlined),
+        label: <Link to={"/tech-entry-sheet"}>Tech Sheet</Link>
+    },
+    {
+        key: `sub-tech-entry-explore`,
+        icon: React.createElement(NotificationOutlined),
+        label: <Link to={"/tech-entry-explore"}>Tech Explorer</Link>
+    },
+    /*
     {
         key: `menu-data-crud`,
         icon: React.createElement(LaptopOutlined),
         label: `데이터`,
         children: [
-            {
-                key: `sub-tech-entry-sheet`,
-                icon: React.createElement(NotificationOutlined),
-                label: <Link to={"/tech-entry-sheet"}>Tech Sheet</Link>
-            },
-            {
-                key: `sub-tech-entry-explore`,
-                icon: React.createElement(NotificationOutlined),
-                label: <Link to={"/tech-entry-explore"}>Tech Explorer</Link>
-            },
+
         ]
     }
+
+     */
 ]
 
 const App: React.FC = () => {
