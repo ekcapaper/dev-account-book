@@ -119,7 +119,7 @@ const rowSelection: TableRowSelection<DataType> = {
 };
 
 
-const TechExplorerTable: React.FC = () => {
+const AccountEntryExplorerTable: React.FC = () => {
     const [checkStrictly, setCheckStrictly] = useState(false);
 
     const {data: data2, isLoading, error} = useQuery({
@@ -149,4 +149,4 @@ const TechExplorerTable: React.FC = () => {
     );
 };
 
-export default TechExplorerTable;
+export default AccountEntryExplorerTable;

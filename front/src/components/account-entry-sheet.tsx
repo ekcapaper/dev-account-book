@@ -127,7 +127,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
-const TechSheet: React.FC = () => {
+const AccountEntrySheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([]);
     const [count, setCount] = useState(2);
     const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
@@ -371,4 +371,4 @@ const TechSheet: React.FC = () => {
     );
 };
 
-export default TechSheet;
+export default AccountEntrySheet;

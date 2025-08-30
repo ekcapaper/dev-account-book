@@ -1,10 +1,10 @@
-import TechSheet from "../components/TechSheet.tsx";
+import AccountEntrySheet from "../components/account-entry-sheet.tsx";
 
 function TechEntrySheetPage() {
     return (
         <div>
             <h1>Tech Sheet 페이지</h1>
-            <TechSheet/>
+            <AccountEntrySheet/>
         </div>
     );
 }
