@@ -145,7 +145,7 @@ class AccountEntryRepository:
     # Function
     def get_entry_tree(self, start_id) -> AccountEntryTreeNodeDTO | None:
         q = Q_TREE = """
-        MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
+        MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*0..]->(n:AccountEntry)
         WITH collect(p) AS paths
         CALL apoc.paths.toJsonTree(paths) YIELD value
         RETURN value
