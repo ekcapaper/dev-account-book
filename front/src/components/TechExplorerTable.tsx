@@ -3,9 +3,9 @@ import { Space, Switch, Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {useQuery} from "@tanstack/react-query";
-import {explorerAccountEntryStartLeaf} from "../features/accountentry/api.ts";
 import {http} from "../lib/fetch.ts";
 import type {AccountEntryTree} from "../features/accountentry/types.ts";
+import {explorerAccountEntryStartLeaf} from "../features/accountentry/apiFacade.ts";
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 

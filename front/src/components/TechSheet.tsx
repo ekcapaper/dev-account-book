@@ -2,9 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import {type GetRef, Space, type TableProps} from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import {useQuery} from "@tanstack/react-query";
-import {
-    getConvertedFullAccountEntriesAndRelationships
-} from "../features/accountentry/api.ts";
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {
     useCreateAccountEntry, useCreateAccountEntryRelationship,
@@ -12,6 +9,7 @@ import {
     useUpdateAccountEntry
 } from "../features/accountentry/mutations.ts";
 import {DataTypeKind} from "../features/accountentry/dataTypeKind.ts";
+import {getConvertedFullAccountEntriesAndRelationships} from "../features/accountentry/apiFacade.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
