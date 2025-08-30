@@ -187,25 +187,11 @@ const AccountEntrySheet: React.FC = () => {
 
 
     const handleAdd = () => {
-        const newData: DataType = {
-            key: count,
-            id: count.toString(),
-            node_id: count.toString(),
-            node_title: `Edward King ${count}`,
-            connected_node_id: count.toString(),
-            connected_node_title: '32',
-            row_data_type: SheetDataTypeKind.Node,
-        };
-
         createAccountEntry.mutate({
-            title: newData.node_title,
+            title: "New",
             desc: "",
             tags: ["TAG"]
         })
-
-
-        setDataSource((prev) => [...prev, newData]);
-        setCount((c) => c + 1);
     };
 
     const handleSave = (row: DataType) => {
