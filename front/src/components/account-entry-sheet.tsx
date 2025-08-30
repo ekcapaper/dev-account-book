@@ -72,11 +72,11 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
     let childNode = children;
 
-    if (dataIndex == "node_title" && (record.row_data_type === SheetDataTypeKind.Linked)) {
+    if ((dataIndex == "node_title" || dataIndex == "node_desc") && (record.row_data_type === SheetDataTypeKind.Linked)) {
         return <td style={{ padding: 0, margin: 0 , marginLeft: 4}}></td>;
     }
 
-    if (dataIndex == "connected_node_title" && (record.row_data_type === SheetDataTypeKind.Node)) {
+    if ((dataIndex == "connected_node_title" || dataIndex == "connected_node_desc") && (record.row_data_type === SheetDataTypeKind.Node)) {
         return <td style={{ padding: 0, margin: 0 , marginLeft: 4}}></td>;
     }
 
