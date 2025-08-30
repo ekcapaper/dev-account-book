@@ -26,13 +26,7 @@ const columns: TableColumnsType<DataType> = [
         title: 'desc',
         dataIndex: 'desc',
         key: 'desc'
-    },
-    {
-        title: 'tags',
-        dataIndex: 'tags',
-        key: 'tags',
-    }
-];
+    }];
 
 
 const AccountEntryExplorerTable: React.FC = () => {
@@ -56,6 +50,7 @@ const AccountEntryExplorerTable: React.FC = () => {
                 dataSource={convert_data}
                 expandable={{
                     defaultExpandAllRows: true,   // ← 여기로 이동
+                    
                 }}
             />
         </>
