@@ -8,11 +8,11 @@ export interface DataType extends AccountEntryTree {
     key: React.ReactNode;
 }
 
-function mapToDataType(node: AccountEntryTree): DataType {
+function mapToDataType(node: AccountEntryTree, depth: string = ""): DataType {
     return {
         ...node,
-        key: node.id,
-        children: node.children.map(mapToDataType),
+        key: node.id + depth,
+        children: node.children.map((child)=> mapToDataType(child, depth + "-" + node.id)),
     };
 }
 
