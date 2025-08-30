@@ -101,5 +101,5 @@ export type AccountEntryTree = {
     title: string;
     desc: string | null;
     tags: string[];
-    children?: AccountEntryTree[];
+    children: AccountEntryTree[];
 };
