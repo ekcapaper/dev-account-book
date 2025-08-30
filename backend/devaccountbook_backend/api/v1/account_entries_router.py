@@ -35,6 +35,10 @@ def list_account_entries(
 def get_start_to_end_node(start_account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
     return svc.get_start_to_end_node(start_account_entry_id)
 
+@router.get("/{start_account_entry_id}/explore-start-leaf-reverse")
+def get_start_to_end_node_reverse(start_account_entry_id: str, svc: AccountEntryService = Depends(get_account_entry_service)):
+    return svc.get_start_to_end_node_reverse(start_account_entry_id)
+
 
 @router.get("/count", response_model=CountOut)
 def count_account_entries(

@@ -4,7 +4,7 @@ from fastapi import Depends
 
 from devaccountbook_backend.db.neo import get_neo4j_session
 from devaccountbook_backend.dtos.account_entry_dto import AccountEntryNodeCreateDTO, AccountEntryNodePatchDTO, \
-    AccountEntryRelationCreateDTO, AccountEntryRelationDeleteDTO, AccountEntryRelationPropsDTO
+    AccountEntryRelationCreateDTO, AccountEntryRelationDeleteDTO, AccountEntryRelationPropsDTO, AccountEntryTreeNodeDTO
 from devaccountbook_backend.repositories.account_entry_repo import AccountEntryRepository
 from devaccountbook_backend.schemas.account_entry_schemas import AccountEntryCreate, AccountEntryPatch, RelationCreate, \
     RelKind, AccountEntryOut, RelationList
@@ -76,6 +76,8 @@ class AccountEntryService:
     def get_start_to_end_node(self, start_id):
         return self.repo.get_entry_tree(start_id)
 
+    def get_start_to_end_node_reverse(self, start_id):
+        return self.repo.get_entry_tree_reverse(start_id)
 
 def get_account_entry_service(session=Depends(get_neo4j_session)) -> AccountEntryService:
     return AccountEntryService(AccountEntryRepository(session))
