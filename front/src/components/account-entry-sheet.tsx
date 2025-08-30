@@ -204,6 +204,7 @@ const AccountEntrySheet: React.FC = () => {
                     "id": row.id,
                     "body": {
                         "title": row.node_title,
+                        "desc": row.node_desc,
                     }
                 })
             } else if (row.row_data_type === SheetDataTypeKind.Linked) {
@@ -211,6 +212,7 @@ const AccountEntrySheet: React.FC = () => {
                     "id": row.id,
                     "body": {
                         "title": row.connected_node_title,
+                        "desc": row.connected_node_desc,
                     }
                 })
             }
