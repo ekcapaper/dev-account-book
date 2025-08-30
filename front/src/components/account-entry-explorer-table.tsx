@@ -46,7 +46,7 @@ const AccountEntryExplorerTable: React.FC = () => {
     }
     if (!data) return null;
     //console.log(data)
-    const convert_data = data.map(mapToDataType);
+    const convert_data = data.map((dataOne) => mapToDataType(dataOne));
     //console.log(convert_data)
 
     return (
