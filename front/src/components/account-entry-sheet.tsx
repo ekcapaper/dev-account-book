@@ -354,7 +354,7 @@ const AccountEntrySheet: React.FC = () => {
 
     return (
         <div>
-            <Button onClick={handleAdd} type="primary" style={{marginBottom: 16}}>
+            <Button onClick={handleAdd} type="dashed" style={{marginBottom: 16}}>
                 노드 항목 추가
             </Button>
             <Table<DataType>
