@@ -83,7 +83,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     if (editable) {
         childNode = (
             <Form.Item
-                style={{margin: 0, padding: 0}}
+                style={{margin: 0, padding: 0, marginLeft: 4}}
                 name={dataIndex as string}
                 rules={[{required: false, message: `${title} is required.`}]}
             >
