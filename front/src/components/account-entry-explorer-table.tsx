@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import type {TableColumnsType, TableProps} from 'antd';
 import {Table} from 'antd';
-import {accountEntryKeys} from "../hooks/keys.ts";
+import {accountEntryKeys} from "../hooks/query-keys.ts";
 import {useQuery} from "@tanstack/react-query";
 import {explorerAccountEntryStartLeaf} from "../services/apiFacade.ts";
 

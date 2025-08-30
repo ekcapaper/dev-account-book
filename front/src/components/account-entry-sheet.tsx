@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Form, type GetRef, Input, Popconfirm, Space, Table, type TableProps} from 'antd';
 import {useQuery} from "@tanstack/react-query";
-import {accountEntryKeys} from "../hooks/keys.ts";
+import {accountEntryKeys} from "../hooks/query-keys.ts";
 import {
     useCreateAccountEntry,
     useCreateAccountEntryRelationship,
