@@ -14,15 +14,18 @@ import {getConvertedFullAccountEntriesAndRelationships} from "../services/accoun
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
-
 // 행 타입 단일화
 interface DataType {
     key: React.Key;
     id: string;
     node_id: string;
     node_title: string;
+    node_desc: string;
+    node_tags: Array<string>;
     connected_node_id: string;
     connected_node_title: string;
+    connected_node_desc: string;
+    connected_node_tags: Array<string>;
     row_data_type: SheetDataTypeKind;
 }
 
