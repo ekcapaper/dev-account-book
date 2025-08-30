@@ -1,4 +1,4 @@
-// features/account/mutations.ts
+// features/account/use-account-entry-mutations.ts
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {accountEntryKeys} from "./query-keys.ts";
 import {

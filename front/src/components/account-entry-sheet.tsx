@@ -8,7 +8,7 @@ import {
     useDeleteAccountEntry,
     useDeleteAccountEntryRelationship,
     useUpdateAccountEntry
-} from "../hooks/mutations.ts";
+} from "../hooks/use-account-entry-mutations.ts";
 import {SheetDataTypeKind} from "../constants/sheet-data-type-kind.ts";
 import {getConvertedFullAccountEntriesAndRelationships} from "../services/apiFacade.ts";
 
