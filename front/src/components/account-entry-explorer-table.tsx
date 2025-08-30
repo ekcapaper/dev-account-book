@@ -12,7 +12,7 @@ function mapToDataType(node: AccountEntryTree): DataType {
     return {
         ...node,
         key: node.id, // 보통 key는 id로 대체
-        children: node.children?.map(mapToDataType),
+        children: node.children.map(mapToDataType),
     };
 }
 
@@ -44,7 +44,7 @@ const AccountEntryExplorerTable: React.FC = () => {
     if (error) {
         return <p>{error.message}</p>;
     }
-
+    if (!data) return null;
     const convert_data = mapToDataType(data)
 
     console.log(convert_data)
