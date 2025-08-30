@@ -131,7 +131,6 @@ type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
 const AccountEntrySheet: React.FC = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([]);
-    const [count, setCount] = useState(2);
     const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
 
     // AccountEntry CRUD
