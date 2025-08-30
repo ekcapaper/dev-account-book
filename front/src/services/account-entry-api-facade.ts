@@ -44,10 +44,11 @@ export async function explorerAccountEntryStartLeaf(startId: string) {
 }
 
 export async function explorerAllAccountEntryStartLeaf() {
-    const startIdList = ["557c8810-edbf-46ce-86ac-85c306ac75a6"];
+    const accountEntries = await getAccountEntries()
+    console.log(accountEntries)
     const allStartLeaf = [];
-    for(const startId of startIdList) {
-        allStartLeaf.push(await explorerAccountEntryStartLeaf(startId));
+    for(const accountEntry of accountEntries) {
+        allStartLeaf.push(await explorerAccountEntryStartLeaf(accountEntry.id));
     }
     return allStartLeaf;
 }
