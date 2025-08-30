@@ -9,7 +9,7 @@ import {
     useDeleteAccountEntryRelationship,
     useUpdateAccountEntry
 } from "../hooks/mutations.ts";
-import {DataTypeKind} from "../constants/dataTypeKind.ts";
+import {DataTypeKind} from "../constants/data-type-kind.ts";
 import {getConvertedFullAccountEntriesAndRelationships} from "../services/apiFacade.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
