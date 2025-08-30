@@ -47,13 +47,13 @@ const AccountEntryExplorerTable: React.FC = () => {
 
     const convert_data = mapToDataType(data)
 
-    console.log(data)
+    console.log(convert_data)
 
     return (
         <>
             <Table<DataType>
                 columns={columns}
-                dataSource={[data]}
+                dataSource={[convert_data]}
                 expandable={{
                     defaultExpandAllRows: true,   // ← 여기로 이동
                 }}
