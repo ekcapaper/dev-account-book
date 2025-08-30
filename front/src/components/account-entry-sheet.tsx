@@ -296,16 +296,16 @@ const AccountEntrySheet: React.FC = () => {
                         if (record.row_data_type === SheetDataTypeKind.Node) {
                             return (
                                 <Space split="|">
-                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
-                                        <a>항목 삭제</a>
-                                    </Popconfirm>
+                                    <Button onClick={() => handleDelete(record.id)}>
+                                        항목 삭제
+                                    </Button>
                                     <div>
                                         <Space>
                                             <Input value={connectedNodeTitleValue}
                                                    onChange={(e) => setConnectedNodeTitleValue(e.target.value)}></Input>
-                                            <a onClick={() => handleAddConnectedNode(record)}>
+                                            <Button onClick={() => handleAddConnectedNode(record)}>
                                                 연결된 항목 추가
-                                            </a>
+                                            </Button>
                                         </Space>
                                     </div>
                                 </Space>
