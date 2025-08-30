@@ -27,6 +27,7 @@ interface DataType {
     connected_node_desc: string;
     connected_node_tags: Array<string>;
     row_data_type: SheetDataTypeKind;
+    operation?: React.ReactNode;
 }
 
 const EditableContext = React.createContext<FormInstance<DataType> | null>(null);
@@ -170,9 +171,7 @@ const AccountEntrySheet: React.FC = () => {
 
     // 특정 행(record) 아래에 연결 노드 추가
     const handleAddConnectedNode = (record: DataType) => {
-        console.log(data);
-        console.log(connectedNodeTitleValue)
-
+        if (!data) return;
         for (const nodeData of data) {
             //console.log(nodeData);
             if (nodeData.node_title == connectedNodeTitleValue) {
@@ -232,7 +231,7 @@ const AccountEntrySheet: React.FC = () => {
         {
             title: 'node_title',
             dataIndex: 'node_title',
-            width: '20%',
+            width: '10%',
             editable: true,
             onCell: (record: DataType) => ({
                 record,
@@ -245,7 +244,7 @@ const AccountEntrySheet: React.FC = () => {
         {
             title: 'node_desc',
             dataIndex: 'node_desc',
-            width: '20%',
+            width: '10%',
             editable: true,
             onCell: (record: DataType) => ({
                 record,
@@ -258,7 +257,7 @@ const AccountEntrySheet: React.FC = () => {
         {
             title: 'connected_node_title',
             dataIndex: 'connected_node_title',
-            width: '20%',
+            width: '10%',
             editable: true,
             onCell: (record: DataType) => ({
                 record,
@@ -271,7 +270,7 @@ const AccountEntrySheet: React.FC = () => {
         {
             title: 'connected_node_desc',
             dataIndex: 'connected_node_desc',
-            width: '20%',
+            width: '10%',
             editable: true,
             onCell: (record: DataType) => ({
                 record,
@@ -285,6 +284,7 @@ const AccountEntrySheet: React.FC = () => {
         {
             title: 'row_data_type',
             dataIndex: 'row_data_type',
+            width: '10%',
             editable: false,
             onCell: (record: DataType) => ({
                 record,
@@ -297,6 +297,7 @@ const AccountEntrySheet: React.FC = () => {
         {
             title: 'operation',
             dataIndex: 'operation',
+            width: '25%',
             onCell: (record: DataType) => ({
                 record,
                 editable: false,
