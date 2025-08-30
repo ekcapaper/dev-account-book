@@ -15,7 +15,7 @@ import {getConvertedFullAccountEntriesAndRelationships} from "../services/accoun
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
 // 행 타입 단일화
-interface DataType {
+interface AccountEntryTableDataType {
     key: React.Key;
     id: string;
     node_id: string;
@@ -30,7 +30,7 @@ interface DataType {
     operation?: React.ReactNode;
 }
 
-const EditableContext = React.createContext<FormInstance<DataType> | null>(null);
+const EditableContext = React.createContext<FormInstance<AccountEntryTableDataType> | null>(null);
 
 // Editable Row
 interface EditableRowProps {
@@ -38,7 +38,7 @@ interface EditableRowProps {
 }
 
 const EditableRow: React.FC<EditableRowProps> = ({index, ...props}) => {
-    const [form] = Form.useForm<DataType>();
+    const [form] = Form.useForm<AccountEntryTableDataType>();
     return (
         <Form form={form} component={false}>
             <EditableContext.Provider value={form}>
@@ -52,9 +52,9 @@ const EditableRow: React.FC<EditableRowProps> = ({index, ...props}) => {
 interface EditableCellProps {
     title: React.ReactNode;
     editable: boolean;
-    dataIndex: keyof DataType;
-    record: DataType;
-    handleSave: (record: DataType) => void;
+    dataIndex: keyof AccountEntryTableDataType;
+    record: AccountEntryTableDataType;
+    handleSave: (record: AccountEntryTableDataType) => void;
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
@@ -128,10 +128,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     return <td {...restProps} style={{ padding: 0, margin: 0 }}>{childNode}</td>;
 };
 
-type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
+type ColumnTypes = Exclude<TableProps<AccountEntryTableDataType>['columns'], undefined>;
 
 const AccountEntrySheet: React.FC = () => {
-    const [dataSource, setDataSource] = useState<DataType[]>([]);
+    const [dataSource, setDataSource] = useState<AccountEntryTableDataType[]>([]);
     const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
 
     // AccountEntry CRUD
@@ -170,7 +170,7 @@ const AccountEntrySheet: React.FC = () => {
     }
 
     // 특정 행(record) 아래에 연결 노드 추가
-    const handleAddConnectedNode = (record: DataType) => {
+    const handleAddConnectedNode = (record: AccountEntryTableDataType) => {
         if (!data) return;
         for (const nodeData of data) {
             //console.log(nodeData);
@@ -192,7 +192,7 @@ const AccountEntrySheet: React.FC = () => {
         })
     };
 
-    const handleSave = (row: DataType) => {
+    const handleSave = (row: AccountEntryTableDataType) => {
         setDataSource((prev) => {
             //console.log("values");
             //console.log(row)
@@ -226,14 +226,14 @@ const AccountEntrySheet: React.FC = () => {
 
     const defaultColumns: (ColumnTypes[number] & {
         editable?: boolean;
-        dataIndex: keyof DataType;
+        dataIndex: keyof AccountEntryTableDataType;
     })[] = [
         {
             title: 'node_title',
             dataIndex: 'node_title',
             width: '10%',
             editable: true,
-            onCell: (record: DataType) => ({
+            onCell: (record: AccountEntryTableDataType) => ({
                 record,
                 editable: record.row_data_type === SheetDataTypeKind.Node, // 행 조건에 따른 편집 여부
                 dataIndex: 'node_title',
@@ -246,7 +246,7 @@ const AccountEntrySheet: React.FC = () => {
             dataIndex: 'node_desc',
             width: '10%',
             editable: true,
-            onCell: (record: DataType) => ({
+            onCell: (record: AccountEntryTableDataType) => ({
                 record,
                 editable: record.row_data_type === SheetDataTypeKind.Node, // 행 조건에 따른 편집 여부
                 dataIndex: 'node_desc',
@@ -259,7 +259,7 @@ const AccountEntrySheet: React.FC = () => {
             dataIndex: 'connected_node_title',
             width: '10%',
             editable: true,
-            onCell: (record: DataType) => ({
+            onCell: (record: AccountEntryTableDataType) => ({
                 record,
                 editable: record.row_data_type === SheetDataTypeKind.Linked,
                 dataIndex: 'connected_node_title',
@@ -272,7 +272,7 @@ const AccountEntrySheet: React.FC = () => {
             dataIndex: 'connected_node_desc',
             width: '10%',
             editable: true,
-            onCell: (record: DataType) => ({
+            onCell: (record: AccountEntryTableDataType) => ({
                 record,
                 editable: record.row_data_type === SheetDataTypeKind.Linked,
                 dataIndex: 'connected_node_desc',
@@ -286,7 +286,7 @@ const AccountEntrySheet: React.FC = () => {
             dataIndex: 'row_data_type',
             width: '10%',
             editable: false,
-            onCell: (record: DataType) => ({
+            onCell: (record: AccountEntryTableDataType) => ({
                 record,
                 editable: false,
                 dataIndex: 'row_data_type',
@@ -298,7 +298,7 @@ const AccountEntrySheet: React.FC = () => {
             title: 'operation',
             dataIndex: 'operation',
             width: '25%',
-            onCell: (record: DataType) => ({
+            onCell: (record: AccountEntryTableDataType) => ({
                 record,
                 editable: false,
                 dataIndex: 'operation',
@@ -356,7 +356,7 @@ const AccountEntrySheet: React.FC = () => {
             <Button onClick={handleAdd} type="dashed" style={{marginBottom: 16}}>
                 노드 항목 추가
             </Button>
-            <Table<DataType>
+            <Table<AccountEntryTableDataType>
                 components={components}
                 rowClassName={() => 'editable-row'}
                 bordered
