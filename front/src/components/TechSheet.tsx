@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {type GetRef, Space, type TableProps} from 'antd';
-import { Button, Form, Input, Popconfirm, Table } from 'antd';
+import React, {useContext, useEffect, useState} from 'react';
+import {Button, Form, type GetRef, Input, Popconfirm, Space, Table, type TableProps} from 'antd';
 import {useQuery} from "@tanstack/react-query";
 import {accountEntryKeys} from "../features/accountentry/keys.ts";
 import {
-    useCreateAccountEntry, useCreateAccountEntryRelationship,
-    useDeleteAccountEntry, useDeleteAccountEntryRelationship,
+    useCreateAccountEntry,
+    useCreateAccountEntryRelationship,
+    useDeleteAccountEntry,
+    useDeleteAccountEntryRelationship,
     useUpdateAccountEntry
 } from "../features/accountentry/mutations.ts";
 import {DataTypeKind} from "../features/accountentry/dataTypeKind.ts";
@@ -33,7 +34,7 @@ interface EditableRowProps {
     index: number;
 }
 
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
+const EditableRow: React.FC<EditableRowProps> = ({index, ...props}) => {
     const [form] = Form.useForm<DataType>();
     return (
         <Form form={form} component={false}>
@@ -66,7 +67,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
     useEffect(() => {
         if (editable) {
-            form.setFieldsValue({ [dataIndex]: record[dataIndex] } as any);
+            form.setFieldsValue({[dataIndex]: record[dataIndex]} as any);
         }
     }, [form, dataIndex, record, editable]);
 
@@ -75,7 +76,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
         try {
             const values = await form.validateFields();
-            handleSave({ ...record, ...values });
+            handleSave({...record, ...values});
         } catch (errInfo) {
             console.log('Save failed:', errInfo);
         }
@@ -83,20 +84,20 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
     let childNode = children;
 
-    if(dataIndex == "node_title" && (record.row_data_type === DataTypeKind.Linked)) {
+    if (dataIndex == "node_title" && (record.row_data_type === DataTypeKind.Linked)) {
         return <td></td>;
     }
 
-    if(dataIndex == "connected_node_title" && (record.row_data_type === DataTypeKind.Node)) {
+    if (dataIndex == "connected_node_title" && (record.row_data_type === DataTypeKind.Node)) {
         return <td></td>;
     }
 
     if (editable) {
         childNode = (
             <Form.Item
-                style={{ margin: 0 }}
+                style={{margin: 0}}
                 name={dataIndex as string}
-                rules={[{ required: false, message: `${title} is required.` }]}
+                rules={[{required: false, message: `${title} is required.`}]}
             >
                 <Input.TextArea
                     id={`${record.key}_${String(dataIndex)}`}
@@ -105,7 +106,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
                         save();
                     }}
                     onBlur={save}
-                    autoSize={{ minRows: 1, maxRows: 6 }}
+                    autoSize={{minRows: 1, maxRows: 6}}
                     style={{
                         width: '100%',
                         margin: 0,
@@ -127,12 +128,11 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
 const TechSheet: React.FC = () => {
-    const [dataSource, setDataSource] = useState<DataType[]>([
-    ]);
+    const [dataSource, setDataSource] = useState<DataType[]>([]);
     const [count, setCount] = useState(2);
     const [connectedNodeTitleValue, setConnectedNodeTitleValue] = useState<string>();
 
-    const { data, isLoading, error } = useQuery({
+    const {data, isLoading, error} = useQuery({
         queryKey: accountEntryKeys.all,     // 캐싱 키
         queryFn: getConvertedFullAccountEntriesAndRelationships,     // 실제 호출 함수
     });
@@ -145,7 +145,7 @@ const TechSheet: React.FC = () => {
     const deleteAccountEntryRelationship = useDeleteAccountEntryRelationship();
 
     useEffect(() => {
-        if(data) {
+        if (data) {
             setDataSource(data)
         }
     }, [data]);
@@ -164,7 +164,6 @@ const TechSheet: React.FC = () => {
     }
 
 
-
     // 특정 행(record) 아래에 연결 노드 추가
     const handleAddConnectedNode = (record: DataType) => {
         console.log(data);
@@ -172,7 +171,7 @@ const TechSheet: React.FC = () => {
 
         for (const nodeData of data) {
             //console.log(nodeData);
-            if(nodeData.node_title == connectedNodeTitleValue) {
+            if (nodeData.node_title == connectedNodeTitleValue) {
                 console.log(record.id)
                 console.log(nodeData.id)
                 createAccountEntryRelationship.mutate({
@@ -267,7 +266,8 @@ const TechSheet: React.FC = () => {
                                     </Popconfirm>
                                     <div>
                                         <Space>
-                                            <Input value={connectedNodeTitleValue} onChange={(e) => setConnectedNodeTitleValue(e.target.value)}></Input>
+                                            <Input value={connectedNodeTitleValue}
+                                                   onChange={(e) => setConnectedNodeTitleValue(e.target.value)}></Input>
                                             <a onClick={() => handleAddConnectedNode(record)}>
                                                 연결된 항목 추가
                                             </a>
@@ -277,10 +277,11 @@ const TechSheet: React.FC = () => {
                             );
                         }
                         // TODO 여기 링크 삭제하도록 기능 수정 필요 지금은 그냥 항목 삭제함
-                        else if(record.row_data_type === DataTypeKind.Linked){
+                        else if (record.row_data_type === DataTypeKind.Linked) {
                             return (
                                 <Space split="|">
-                                    <Popconfirm title="Sure to delete?" onConfirm={() => handleLinkDelete(record.node_id, record.connected_node_id)}>
+                                    <Popconfirm title="Sure to delete?"
+                                                onConfirm={() => handleLinkDelete(record.node_id, record.connected_node_id)}>
                                         <a>링크 삭제</a>
                                     </Popconfirm>
                                 </Space>
@@ -321,18 +322,17 @@ const TechSheet: React.FC = () => {
             //console.log("values");
             //console.log(row)
 
-            if(row.row_data_type == DataTypeKind.Node) {
+            if (row.row_data_type == DataTypeKind.Node) {
                 patchAccountEntry.mutate({
                     "id": row.id,
-                    "body" : {
+                    "body": {
                         "title": row.node_title,
                     }
                 })
-            }
-            else if(row.row_data_type === DataTypeKind.Linked) {
+            } else if (row.row_data_type === DataTypeKind.Linked) {
                 patchAccountEntry.mutate({
                     "id": row.id,
-                    "body" : {
+                    "body": {
                         "title": row.connected_node_title,
                     }
                 })
@@ -341,7 +341,7 @@ const TechSheet: React.FC = () => {
             const idx = prev.findIndex((item) => item.key === row.key);
             if (idx === -1) return prev;
             const next = prev.slice();
-            next.splice(idx, 1, { ...prev[idx], ...row });
+            next.splice(idx, 1, {...prev[idx], ...row});
             return next;
         });
     };
@@ -357,7 +357,7 @@ const TechSheet: React.FC = () => {
 
     return (
         <div>
-            <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
+            <Button onClick={handleAdd} type="primary" style={{marginBottom: 16}}>
                 노드 항목 추가
             </Button>
             <Table<DataType>
