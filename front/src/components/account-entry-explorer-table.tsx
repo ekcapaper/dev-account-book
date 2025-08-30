@@ -11,7 +11,7 @@ export interface DataType extends AccountEntryTree {
 function mapToDataType(node: AccountEntryTree): DataType {
     return {
         ...node,
-        key: node.id, // 보통 key는 id로 대체
+        key: node.id,
         children: node.children.map(mapToDataType),
     };
 }
