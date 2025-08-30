@@ -2,13 +2,13 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {accountEntryKeys} from "./query-keys.ts";
 import {
-    type AccountEntry,
     createAccountEntry,
     createAccountEntryRelationshipApi,
     deleteAccountEntry,
     deleteAccountEntryRelationshipApi,
     updateAccountEntry
 } from "../services/account-entry-api.ts";
+import type {AccountEntry} from "../types/account-entry.ts";
 
 export function useCreateAccountEntry() {
     const qc = useQueryClient();
@@ -41,7 +41,7 @@ export function useUpdateAccountEntry() {
         mutationFn: ({id, body}: { id: string; body: Partial<Omit<AccountEntry, "id">> }) =>
             updateAccountEntry(id, body),
 
-        onSuccess: (_data, {id}) => {
+        onSuccess: () => {
             qc.invalidateQueries({queryKey: accountEntryKeys.all});
         },
     });
