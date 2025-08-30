@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import Home from "./pages/Home";
-import About from "./pages/About";
 import TechEntrySheetPage from "./pages/TechEntrySheetPage.tsx";
 import TechEntryExplorePage from "./pages/TechEntryExplorePage.tsx";
 
@@ -15,7 +14,6 @@ function App() {
                     <Route index element={<Home />} />          {/* "/" */}
                     <Route path={"tech-entry-sheet"} element={<TechEntrySheetPage/>}/>
                     <Route path={"tech-entry-explore"} element={<TechEntryExplorePage/>}/>
-                    <Route path="about" element={<About />} />  {/* "/about" */}
                 </Route>
             </Routes>
         </BrowserRouter>
