@@ -1,9 +1,7 @@
 import React from 'react';
 import type {TableColumnsType} from 'antd';
 import {Table} from 'antd';
-import {accountEntryKeys} from "../hooks/query-keys.ts";
-import {useQuery} from "@tanstack/react-query";
-import {explorerAccountEntryStartLeaf} from "../services/account-entry-api-facade.ts";
+import {useExplorerAccountEntryTreeQuery} from "../hooks/use-account-entry-query.ts";
 
 interface DataType {
     key: React.ReactNode;
@@ -33,10 +31,7 @@ const columns: TableColumnsType<DataType> = [
 
 
 const AccountEntryExplorerTable: React.FC = () => {
-    const {data: data2, isLoading, error} = useQuery({
-        queryKey: accountEntryKeys.tree_all,     // 캐싱 키
-        queryFn: explorerAccountEntryStartLeaf,     // 실제 호출 함수
-    });
+    const {data, isLoading, error} = useExplorerAccountEntryTreeQuery()
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -45,13 +40,11 @@ const AccountEntryExplorerTable: React.FC = () => {
         return <p>{error.message}</p>;
     }
 
-    console.log(data2);
-
     return (
         <>
             <Table<DataType>
                 columns={columns}
-                dataSource={[data2]}
+                dataSource={[data]}
                 expandable={{
                     defaultExpandAllRows: true,   // ← 여기로 이동
                 }}
