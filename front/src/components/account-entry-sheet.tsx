@@ -11,24 +11,9 @@ import {
 } from "../hooks/use-account-entry-mutations.ts";
 import {SheetDataTypeKind} from "../constants/sheet-data-type-kind.ts";
 import {getConvertedFullAccountEntriesAndRelationships} from "../services/account-entry-api-facade.ts";
+import type {AccountEntryTableDataType} from "../types/account-entry-table-data-type.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
-
-// 행 타입 단일화
-interface AccountEntryTableDataType {
-    key: React.Key;
-    id: string;
-    node_id: string;
-    node_title: string;
-    node_desc: string;
-    node_tags: Array<string>;
-    connected_node_id: string;
-    connected_node_title: string;
-    connected_node_desc: string;
-    connected_node_tags: Array<string>;
-    row_data_type: SheetDataTypeKind;
-    operation?: React.ReactNode;
-}
 
 const EditableContext = React.createContext<FormInstance<AccountEntryTableDataType> | null>(null);
 
