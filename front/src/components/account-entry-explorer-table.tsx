@@ -4,22 +4,15 @@ import {Table} from 'antd';
 import {useExplorerAccountEntryTreeQuery} from "../hooks/use-account-entry-query.ts";
 import type {AccountEntryTree} from "../types/account-entry.ts";
 
-interface DataType {
+export interface DataType extends AccountEntryTree {
     key: React.ReactNode;
-    id: string;
-    title: string;
-    desc: string | null;
-    tags: string[];
-    children?: DataType[];
 }
 
-function mapApiToDataType(apiData: AccountEntryTrees): DataType {
+function mapToDataType(node: AccountEntryTree): DataType {
     return {
-        key: apiData.id,             // ReactNode → string도 가능
-        name: apiData.title,         // title → name
-        age: 0,                      // age 없음 → 더미 값 or 제거 필요
-        address: apiData.desc ?? "", // desc → address
-        children: apiData.children?.map(mapApiToDataType),
+        ...node,
+        key: node.id, // 보통 key는 id로 대체
+        children: node.children?.map(mapToDataType),
     };
 }
 
@@ -52,7 +45,7 @@ const AccountEntryExplorerTable: React.FC = () => {
         return <p>{error.message}</p>;
     }
 
-    const convert_data = map()
+    const convert_data = mapToDataType(data)
 
     console.log(data)
 
