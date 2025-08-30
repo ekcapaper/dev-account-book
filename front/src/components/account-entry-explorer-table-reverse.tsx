@@ -2,7 +2,7 @@ import React from 'react';
 import type {TableColumnsType} from 'antd';
 import {Table} from 'antd';
 import {
-    useExplorerAccountEntryTreeQuery,
+    useExplorerAccountEntryTreeQueryReverse,
 } from "../hooks/use-account-entry-query.ts";
 import type {AccountEntryTree} from "../types/account-entry.ts";
 
@@ -32,7 +32,7 @@ const columns: TableColumnsType<DataType> = [
 
 
 const AccountEntryExplorerTable: React.FC = () => {
-    const {data, isLoading, error} = useExplorerAccountEntryTreeQuery()
+    const {data, isLoading, error} = useExplorerAccountEntryTreeQueryReverse()
 
     if (isLoading) {
         return <p>Loading...</p>;
