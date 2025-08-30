@@ -62,4 +62,17 @@ export async function explorerAllAccountEntryStartLeaf() {
     return allStartLeaf;
 }
 
+export async function explorerAccountEntryStartLeafReverse(startId: string) {
+    return http<AccountEntryTree>(`http://127.0.0.1:8000/v1/account-entries/${startId}/explore-start-leaf-reverse`);
+}
+
+export async function explorerAllAccountEntryStartLeafReverse() {
+    const accountEntries = await getAccountEntries()
+    console.log(accountEntries)
+    const allStartLeaf = [];
+    for(const accountEntry of accountEntries) {
+        allStartLeaf.push(await explorerAccountEntryStartLeafReverse(accountEntry.id));
+    }
+    return allStartLeaf;
+}
 
