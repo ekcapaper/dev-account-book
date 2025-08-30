@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Form, type GetRef, Input, Popconfirm, Space, Table, type TableProps} from 'antd';
+import {Button, Form, type GetRef, Inputs, Space, Table, type TableProps} from 'antd';
 import {useQuery} from "@tanstack/react-query";
 import {accountEntryKeys} from "../hooks/query-keys.ts";
 import {
@@ -345,6 +345,7 @@ const AccountEntrySheet: React.FC = () => {
                 dataSource={dataSource}
                 columns={defaultColumns as ColumnTypes}
                 style={{ borderCollapse: 'collapse' }}
+                pagination={false}
             />
         </div>
     );
