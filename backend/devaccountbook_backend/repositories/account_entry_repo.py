@@ -145,7 +145,7 @@ class AccountEntryRepository:
     # Function
     def get_entry_tree(self, start_id) -> AccountEntryTreeNodeDTO | None:
         q = Q_TREE = """
-        MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*1..]->(n:AccountEntry)
+        MATCH p = (root:AccountEntry {id:$id})-[:RELATES_TO*0..]->(n:AccountEntry)
         WITH collect(p) AS paths
         CALL apoc.paths.toJsonTree(paths) YIELD value
         RETURN value
@@ -159,6 +159,24 @@ class AccountEntryRepository:
             return None
         else:
             return convert_account_entry_tree_node(rec["value"]) if rec else None
+
+    def get_entry_tree_reverse(self, start_id) -> AccountEntryTreeNodeDTO | None:
+        q = Q_TREE = """
+        MATCH p = (root:AccountEntry)-[:RELATES_TO*0..]->(n:AccountEntry{id:$id})
+        WITH collect(p) AS paths
+        CALL apoc.paths.toJsonTree(paths) YIELD value
+        RETURN value
+        """
+        rec = self.s.execute_read(lambda tx: tx.run(Q_TREE, id=start_id).single())
+        # print(rec["value"])
+        # print(type(rec["value"]))
+        # return normalize_to_children(rec["value"]) if rec else None
+
+        if len(rec["value"].keys()) == 0:
+            return None
+        else:
+            return convert_account_entry_tree_node(rec["value"]) if rec else None
+
 
 
 # Depends 팩토리

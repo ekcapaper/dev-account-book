@@ -1,10 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import type {ReactNode} from "react";
 // (선택) Devtools
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 
-export default function ReactQueryProvider({ children }: { children: ReactNode }) {
+export default function ReactQueryProvider({children}: { children: ReactNode }) {
     const client = new QueryClient({
         defaultOptions: {
             queries: {
@@ -13,7 +13,7 @@ export default function ReactQueryProvider({ children }: { children: ReactNode }
                 retry: 1,
                 refetchOnWindowFocus: false,
             },
-            mutations: { retry: 0 },
+            mutations: {retry: 0},
         },
     });
 
