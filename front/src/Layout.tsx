@@ -1,10 +1,9 @@
 import React from 'react';
-import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
-import {type MenuProps} from 'antd';
-import { Layout, Menu, theme } from 'antd';
+import {LaptopOutlined, NotificationOutlined} from '@ant-design/icons';
+import {Layout, Menu, type MenuProps, theme} from 'antd';
 import {Link, Outlet} from "react-router-dom";
 
-const { Header, Content, Sider } = Layout;
+const {Header, Content, Sider} = Layout;
 
 
 const items2: MenuProps['items'] = [
@@ -29,30 +28,31 @@ const items2: MenuProps['items'] = [
                 label: <Link to={"/tech-entry-explore"}>Tech Explorer</Link>
             },
         ]
-    }]
+    }
+]
 
 const App: React.FC = () => {
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
 
     return (
-        <Layout style={{ minHeight: '100vh' }}>
-            <Header style={{ display: 'flex', alignItems: 'center', padding: 15, }}>
+        <Layout style={{minHeight: '100vh'}}>
+            <Header style={{display: 'flex', alignItems: 'center', padding: 15,}}>
                 <h2 style={{color: 'white'}}>DevAccountBook</h2>
             </Header>
 
             <Layout>
-                <Sider width={200} style={{ background: colorBgContainer }}>
+                <Sider width={200} style={{background: colorBgContainer}}>
                     <Menu
                         mode="inline"
                         defaultSelectedKeys={['1']}
                         defaultOpenKeys={['sub1']}
-                        style={{ height: '100%', borderInlineEnd: 0 }}
+                        style={{height: '100%', borderInlineEnd: 0}}
                         items={items2}
                     />
                 </Sider>
-                <Layout style={{ padding: '0 24px 24px' }}>
+                <Layout style={{padding: '0 24px 24px'}}>
                     <Content
                         style={{
                             padding: 24,
