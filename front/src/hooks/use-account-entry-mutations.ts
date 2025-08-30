@@ -8,7 +8,7 @@ import {
     deleteAccountEntry,
     deleteAccountEntryRelationshipApi,
     updateAccountEntry
-} from "../services/api.ts";
+} from "../services/account-entry-api.ts";
 
 export function useCreateAccountEntry() {
     const qc = useQueryClient();

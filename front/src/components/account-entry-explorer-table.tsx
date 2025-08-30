@@ -3,7 +3,7 @@ import type {TableColumnsType, TableProps} from 'antd';
 import {Table} from 'antd';
 import {accountEntryKeys} from "../hooks/query-keys.ts";
 import {useQuery} from "@tanstack/react-query";
-import {explorerAccountEntryStartLeaf} from "../services/apiFacade.ts";
+import {explorerAccountEntryStartLeaf} from "../services/account-entry-api-facade.ts";
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 

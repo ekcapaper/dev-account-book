@@ -10,7 +10,7 @@ import {
     useUpdateAccountEntry
 } from "../hooks/use-account-entry-mutations.ts";
 import {SheetDataTypeKind} from "../constants/sheet-data-type-kind.ts";
-import {getConvertedFullAccountEntriesAndRelationships} from "../services/apiFacade.ts";
+import {getConvertedFullAccountEntriesAndRelationships} from "../services/account-entry-api-facade.ts";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 

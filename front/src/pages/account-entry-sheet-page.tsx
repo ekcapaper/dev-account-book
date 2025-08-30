@@ -1,6 +1,6 @@
 import AccountEntrySheet from "../components/account-entry-sheet.tsx";
 
-function TechEntrySheetPage() {
+function AccountEntrySheetPage() {
     return (
         <div>
             <h1>Tech Sheet 페이지</h1>
@@ -9,4 +9,4 @@ function TechEntrySheetPage() {
     );
 }
 
-export default TechEntrySheetPage;
+export default AccountEntrySheetPage;

@@ -1,8 +1,8 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Layout from "./Layout";
 import Home from "./pages/Home";
-import TechEntrySheetPage from "./pages/TechEntrySheetPage.tsx";
-import TechEntryExplorePage from "./pages/TechEntryExplorePage.tsx";
+import AccountEntrySheetPage from "./pages/account-entry-sheet-page.tsx";
+import TechEntryExplorePage from "./pages/account-entry-explore-page.tsx";
 
 function App() {
     return (
@@ -12,7 +12,7 @@ function App() {
                 <Route path="/" element={<Layout/>}>
                     {/* Outlet 안에 표시될 것들 */}
                     <Route index element={<Home/>}/> {/* "/" */}
-                    <Route path={"tech-entry-sheet"} element={<TechEntrySheetPage/>}/>
+                    <Route path={"tech-entry-sheet"} element={<AccountEntrySheetPage/>}/>
                     <Route path={"tech-entry-explore"} element={<TechEntryExplorePage/>}/>
                 </Route>
             </Routes>
