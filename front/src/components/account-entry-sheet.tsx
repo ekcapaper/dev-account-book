@@ -231,7 +231,7 @@ const AccountEntrySheet: React.FC = () => {
         {
             title: 'node_title',
             dataIndex: 'node_title',
-            width: '30%',
+            width: '20%',
             editable: true,
             onCell: (record: DataType) => ({
                 record,
@@ -242,8 +242,22 @@ const AccountEntrySheet: React.FC = () => {
             }),
         },
         {
+            title: 'node_desc',
+            dataIndex: 'node_desc',
+            width: '20%',
+            editable: true,
+            onCell: (record: DataType) => ({
+                record,
+                editable: record.row_data_type === SheetDataTypeKind.Node, // 행 조건에 따른 편집 여부
+                dataIndex: 'node_desc',
+                title: 'node_desc',
+                handleSave, // 상위의 저장 핸들러
+            }),
+        },
+        {
             title: 'connected_node_title',
             dataIndex: 'connected_node_title',
+            width: '20%',
             editable: true,
             onCell: (record: DataType) => ({
                 record,
@@ -253,6 +267,20 @@ const AccountEntrySheet: React.FC = () => {
                 handleSave,
             }),
         },
+        {
+            title: 'connected_node_desc',
+            dataIndex: 'connected_node_desc',
+            width: '20%',
+            editable: true,
+            onCell: (record: DataType) => ({
+                record,
+                editable: record.row_data_type === SheetDataTypeKind.Linked,
+                dataIndex: 'connected_node_desc',
+                title: 'connected_node_desc',
+                handleSave,
+            }),
+        },
+
         {
             title: 'row_data_type',
             dataIndex: 'row_data_type',
