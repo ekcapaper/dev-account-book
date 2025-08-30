@@ -31,7 +31,7 @@ const columns: TableColumnsType<DataType> = [
     }];
 
 
-const AccountEntryExplorerTable: React.FC = () => {
+const AccountEntryExplorerTableReverse: React.FC = () => {
     const {data, isLoading, error} = useExplorerAccountEntryTreeQueryReverse()
 
     if (isLoading) {
@@ -59,4 +59,4 @@ const AccountEntryExplorerTable: React.FC = () => {
     );
 };
 
-export default AccountEntryExplorerTable;
+export default AccountEntryExplorerTableReverse;
