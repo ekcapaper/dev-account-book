@@ -1,6 +1,6 @@
-import {http} from "../../lib/fetch.ts";
-import type {AccountEntryTree} from "./types.ts";
-import {DataTypeKind} from "./dataTypeKind.ts";
+import {http} from "../lib/fetch.ts";
+import type {AccountEntryTree} from "../features/accountentry/account-entry.ts";
+import {DataTypeKind} from "../constants/dataTypeKind.ts";
 import {getAccountEntries, getAccountEntry, getAccountRelationships} from "./api.ts";
 
 export const getConvertedFullAccountEntriesAndRelationships = async () => {

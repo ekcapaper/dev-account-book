@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import type {TableColumnsType, TableProps} from 'antd';
 import {Table} from 'antd';
-import {accountEntryKeys} from "../features/accountentry/keys.ts";
+import {accountEntryKeys} from "../hooks/keys.ts";
 import {useQuery} from "@tanstack/react-query";
-import {explorerAccountEntryStartLeaf} from "../features/accountentry/apiFacade.ts";
+import {explorerAccountEntryStartLeaf} from "../services/apiFacade.ts";
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 

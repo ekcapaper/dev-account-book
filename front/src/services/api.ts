@@ -1,5 +1,5 @@
-import {http} from "../../lib/fetch";
-import type {AccountEntry, RelationList, RelationResponseDTO} from "./types.ts";
+import {http} from "../lib/fetch.ts";
+import type {AccountEntry, RelationList, RelationResponseDTO} from "../features/accountentry/account-entry.ts";
 
 
 export const getAccountEntries = () => {

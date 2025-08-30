@@ -1,6 +1,6 @@
 // features/account/mutations.ts
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {accountEntryKeys} from "./keys";
+import {accountEntryKeys} from "./keys.ts";
 import {
     type AccountEntry,
     createAccountEntry,
@@ -8,7 +8,7 @@ import {
     deleteAccountEntry,
     deleteAccountEntryRelationshipApi,
     updateAccountEntry
-} from "./api.ts";
+} from "../services/api.ts";
 
 export function useCreateAccountEntry() {
     const qc = useQueryClient();
