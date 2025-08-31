@@ -23,7 +23,7 @@ function mapToDataType(node: AccountEntryTree, depth: string = "", visitSet:Set<
     return {
         ...node,
         key: node.id + depth,
-        children: node.children.map((child)=> mapToDataType(child, depth + "-" + node.id, visitSet)),
+        children: node.children.map((child)=> mapToDataType(child, node.id + depth + "-" + node.id, visitSet)),
     };
 }
 

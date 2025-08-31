@@ -14,7 +14,7 @@ function mapToDataType(node: AccountEntryTree, depth: string = ""): DataType {
     return {
         ...node,
         key: node.id + depth,
-        children: node.children.map((child)=> mapToDataType(child, depth + "-" + node.id)),
+        children: node.children.map((child)=> mapToDataType(child, node.id + depth + "-" + node.id)),
     };
 }
 
