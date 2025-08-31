@@ -44,8 +44,9 @@ NEO4J_PASSWORD=neo4jneo4j
 ### 개발 환경에서 직접 실행
 ```
 python run_server.py
-
-
+```
+```
+uvicorn devaccountbook_backend.main:app --host 127.0.0.1 --port 8000
 ```
 
 ### 패키징된 실행 파일 실행
