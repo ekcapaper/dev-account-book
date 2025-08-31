@@ -12,6 +12,7 @@ import {data} from "react-router-dom";
 
 interface InnerDataType{
     key: React.Key;
+    depth: number;
     id: string;
     title: string;
     desc: string | null;
@@ -33,17 +34,19 @@ function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDa
             result.push(
                 {
                     key: child.id + depth,
+                    depth: depth,
                     id: child.id,
                     title: child.title,
                     desc: child.desc,
                     tags: child.tags,
                 }
             )
-            const result_inner = toInnerDataType(child);
+            const result_inner = toInnerDataType(child, depth+1, result);
             for (const childInner of result_inner) {
                 result.push(
                     {
-                        key: childInner.id + depth,
+                        key: childInner.id + childInner.depth,
+                        depth: childInner.depth,
                         id: childInner.id,
                         title: childInner.title,
                         desc: childInner.desc,
