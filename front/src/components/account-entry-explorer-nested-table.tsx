@@ -69,13 +69,20 @@ const columns: TableColumnsType<DataType> = [
     { title: 'Description', dataIndex: 'desc', key: 'desc' },
 ];
 
+const Innercolumns: TableColumnsType<InnerDataType> = [
+    { title: "depth", dataIndex: 'depth', key: 'depths' },
+    { title: 'Title', dataIndex: 'title', key: 'title' },
+    { title: 'Description', dataIndex: 'desc', key: 'desc' },
+];
+
+
 // 하위(확장) 테이블도 다시 중첩 테이블 형태로 렌더 (재귀)
 const expandedRowRender = (record: DataType) => {
     if (!record.children || record.children.length === 0) return null;
 
     return (
-        <Table<DataType>
-            columns={columns}
+        <Table<InnerDataType>
+            columns={Innercolumns}
             dataSource={record.children}
             rowKey="key"
             pagination={false}
@@ -83,7 +90,6 @@ const expandedRowRender = (record: DataType) => {
             childrenColumnName="__children"
             expandable={{
                 expandedRowRender,
-                rowExpandable: (r) => !!(r.children && r.children.length),
                 defaultExpandAllRows: true, // ✅ 내부 테이블도 기본 전체 펼침
             }}
         />
