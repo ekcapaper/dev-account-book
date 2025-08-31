@@ -45,7 +45,7 @@ function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDa
                     tags: child.tags,
                 }
             )
-            const result_inner = toInnerDataType(child, depth+1);
+            const result_inner = toInnerDataType(child, depth+1, [], visitSet);
             result.push(...result_inner);
         }
     }
