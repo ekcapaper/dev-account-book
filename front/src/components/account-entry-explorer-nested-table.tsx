@@ -7,8 +7,12 @@ import {
 } from "../hooks/use-account-entry-query.ts";
 import type { AccountEntryTree } from "../types/account-entry.ts";
 
-interface DataType extends AccountEntryTree {
+interface DataType{
     key: React.Key;
+    id: string;
+    title: string;
+    desc: string | null;
+    tags: string[];
     children?: DataType[];
 }
 
