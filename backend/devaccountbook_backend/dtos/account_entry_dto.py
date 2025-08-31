@@ -91,7 +91,6 @@ AccountEntryTreeNodeDTO.model_rebuild()
 
 
 def convert_account_entry_tree_node(input_data: dict):
-    print(type(input_data))
     id_data = input_data.get("id")
     title = input_data.get("title")
     desc = input_data.get("desc")
