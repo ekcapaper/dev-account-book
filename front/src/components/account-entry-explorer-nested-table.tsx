@@ -1,7 +1,7 @@
 // AccountEntryExplorerNestedTable.tsx
-import React from 'react';
+import React, {useMemo, useState} from 'react';
 import type { TableColumnsType } from 'antd';
-import { Table } from 'antd';
+import {Input, Table } from 'antd';
 
 import {
     useExplorerAccountEntryTreeQuery,
@@ -98,6 +98,7 @@ const expandedRowRender = (record: DataType) => {
 
 const AccountEntryExplorerNestedTable: React.FC = () => {
     const { data, isLoading, error } = useExplorerAccountEntryTreeQuery();
+    const [q, setQ] = useState('');
 
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>{(error as Error).message}</p>;
@@ -105,11 +106,28 @@ const AccountEntryExplorerNestedTable: React.FC = () => {
 
     const dataSource = data.map(toDataType);
 
+    const s = q.trim().toLowerCase();
+    const filteredDataSource = s
+        ? dataSource.filter((parent) =>
+            String(parent.title ?? '').toLowerCase().includes(s)
+        )
+        : dataSource;
+
     return (
         <>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Input.Search
+                    placeholder="전체 검색 (제목/설명/태그)"
+                    allowClear
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    style={{ width: 320 }}
+                />
+                <span style={{ opacity: 0.7 }}>{q ? `검색 결과: ${filteredDataSource.length}건` : ''}</span>
+            </div>
             <Table<DataType>
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={filteredDataSource}
                 rowKey="key"
                 // 트리 모드 비활성화 (children을 트리로 쓰지 않도록)
                 childrenColumnName="__children"
