@@ -129,6 +129,7 @@ const AccountEntryExplorerNestedTable: React.FC = () => {
                 columns={columns}
                 dataSource={filteredDataSource}
                 rowKey="key"
+                pagination={false}
                 // 트리 모드 비활성화 (children을 트리로 쓰지 않도록)
                 childrenColumnName="__children"
                 expandable={{
