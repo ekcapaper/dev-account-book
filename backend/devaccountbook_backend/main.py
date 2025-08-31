@@ -13,12 +13,6 @@ from devaccountbook_backend.api.v1.account_entries_router import router as items
 from devaccountbook_backend.core.config import settings
 from devaccountbook_backend.db.driver import init_driver, close_driver
 
-def resource_path(*parts: str) -> Path:
-    # ✅ PyInstaller(onefile)와 개발 환경 모두에서 동일하게 동작
-    if hasattr(sys, "_MEIPASS"):
-        return Path(sys._MEIPASS).joinpath("devaccountbook_backend", *parts)
-    import devaccountbook_backend as pkg
-    return Path(pkg.__file__).resolve().parent.joinpath(*parts)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -37,7 +31,17 @@ app.add_middleware(
 )
 app.add_middleware(GZipMiddleware, minimum_size=512)
 
-# React 빌드물이 위치할 곳
+# API
+app.include_router(items_router, prefix="/v1")
+
+# STATIC 파일 배포
+def resource_path(*parts: str) -> Path:
+    # ✅ PyInstaller(onefile)와 개발 환경 모두에서 동일하게 동작
+    if hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS).joinpath("devaccountbook_backend", *parts)
+    import devaccountbook_backend as pkg
+    return Path(pkg.__file__).resolve().parent.joinpath(*parts)
+
 static_dir = resource_path("static")
 
 # 정적 파일 서빙 (Vite base를 /static/로 맞출 예정)
@@ -69,9 +73,6 @@ def spa_fallback(full_path: str):
     if index.exists():
         return FileResponse(index)
     raise HTTPException(status_code=404)
-
-# API
-app.include_router(items_router, prefix="/v1")
 
 @app.get("/healthz")
 def healthz():
