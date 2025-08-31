@@ -1,111 +1,72 @@
 import React from 'react';
-import { DownOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
-import { Badge, Dropdown, Space, Table } from 'antd';
+import { Table } from 'antd';
 
-interface ExpandedDataType {
+import {
+    useExplorerAccountEntryTreeQuery,
+} from "../hooks/use-account-entry-query.ts";
+import type { AccountEntryTree } from "../types/account-entry.ts";
+
+interface DataType extends AccountEntryTree {
     key: React.Key;
-    date: string;
-    name: string;
-    upgradeNum: string;
+    children?: DataType[];
 }
 
-interface DataType {
-    key: React.Key;
-    name: string;
-    platform: string;
-    version: string;
-    upgradeNum: number;
-    creator: string;
-    createdAt: string;
+function mapToDataType(node: AccountEntryTree, depth: number = 0): DataType {
+    return {
+        ...node,
+        key: `${node.id}${depth}`,
+        children: (node.children || []).map((child) => mapToDataType(child, depth + 1)),
+    };
 }
-
-const items = [
-    { key: '1', label: 'Action 1' },
-    { key: '2', label: 'Action 2' },
-];
-
-const expandDataSource = Array.from({ length: 3 }).map<ExpandedDataType>((_, i) => ({
-    key: i.toString(),
-    date: '2014-12-24 23:12:00',
-    name: 'This is production name',
-    upgradeNum: 'Upgraded: 56',
-}));
-
-const dataSource = Array.from({ length: 3 }).map<DataType>((_, i) => ({
-    key: i.toString(),
-    name: 'Screen',
-    platform: 'iOS',
-    version: '10.3.4.5654',
-    upgradeNum: 500,
-    creator: 'Jack',
-    createdAt: '2014-12-24 23:12:00',
-}));
-
-const expandColumns: TableColumnsType<ExpandedDataType> = [
-    { title: 'Date', dataIndex: 'date', key: 'date' },
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    {
-        title: 'Status',
-        key: 'state',
-        render: () => <Badge status="success" text="Finished" />,
-    },
-    { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-    {
-        title: 'Action',
-        key: 'operation',
-        render: () => (
-            <Space size="middle">
-                <a>Pause</a>
-                <a>Stop</a>
-                <Dropdown menu={{ items }}>
-                    <a>
-                        More <DownOutlined />
-                    </a>
-                </Dropdown>
-            </Space>
-        ),
-    },
-];
 
 const columns: TableColumnsType<DataType> = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Platform', dataIndex: 'platform', key: 'platform' },
-    { title: 'Version', dataIndex: 'version', key: 'version' },
-    { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
-    { title: 'Creator', dataIndex: 'creator', key: 'creator' },
-    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
-    { title: 'Action', key: 'operation', render: () => <a>Publish</a> },
+    { title: 'Title', dataIndex: 'title', key: 'title' },
+    { title: 'Description', dataIndex: 'desc', key: 'desc' }
 ];
 
-const expandedRowRender = () => (
-    <Table<ExpandedDataType>
-        columns={expandColumns}
-        dataSource={expandDataSource}
-        pagination={false}
-    />
-);
+// Recursively render nested tables for children, similar to AntD demo's expandedRowRender
+const expandedRowRender = (record: DataType) => {
+    if (!record.children || record.children.length === 0) return null;
+    return (
+        <Table<DataType>
+            columns={columns}
+            dataSource={record.children}
+            rowKey="key"
+            pagination={false}
+            expandable={{
+                expandedRowRender,
+                rowExpandable: (r) => !!(r.children && r.children.length),
+            }}
+        />
+    );
+};
 
-const AccountEntryExplorerNestedTable: React.FC = () => (
-    <>
-        <Table<DataType>
-            columns={columns}
-            expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
-            dataSource={dataSource}
-        />
-        <Table<DataType>
-            columns={columns}
-            expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
-            dataSource={dataSource}
-            size="middle"
-        />
-        <Table<DataType>
-            columns={columns}
-            expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
-            dataSource={dataSource}
-            size="small"
-        />
-    </>
-);
+const AccountEntryExplorerNestedTable: React.FC = () => {
+    const { data, isLoading, error } = useExplorerAccountEntryTreeQuery();
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>{(error as Error).message}</p>;
+    if (!data) return null;
+
+    const dataSource = data.map(mapToDataType);
+    // Match the demo behavior: expand only the first row by default
+    const defaultExpandedRowKeys = dataSource[0] ? [String(dataSource[0].key)] : [];
+
+    return (
+        <>
+            <Table<DataType>
+                columns={columns}
+                dataSource={dataSource}
+                rowKey="key"
+                expandable={{
+                    expandedRowRender,
+                    rowExpandable: (record) => !!(record.children && record.children.length),
+                    defaultExpandedRowKeys,
+                }}
+            />
+        </>
+    );
+};
 
 export default AccountEntryExplorerNestedTable;
