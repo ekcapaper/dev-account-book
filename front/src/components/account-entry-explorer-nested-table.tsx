@@ -57,16 +57,6 @@ function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDa
         }
     }
     return result;
-
-    /*
-    if(node.children){
-        for (const child of node.children) {
-            const dataInner = toInnerDataType(child);
-
-        }
-    }
-
-     */
 }
 
 // AccountEntryTree -> DataType로 변환 (재귀)
