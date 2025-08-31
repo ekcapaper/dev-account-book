@@ -68,7 +68,7 @@ export async function explorerAccountEntryStartLeafReverse(startId: string) {
 
 export async function explorerAllAccountEntryStartLeafReverse() {
     const accountEntries = await getAccountEntries()
-    console.log(accountEntries)
+    //console.log(accountEntries)
     const allStartLeaf = [];
     for(const accountEntry of accountEntries) {
         allStartLeaf.push(await explorerAccountEntryStartLeafReverse(accountEntry.id));
