@@ -11,7 +11,14 @@ export interface DataType extends AccountEntryTree {
 }
 
 function mapToDataType(node: AccountEntryTree, depth: string = "", visitSet:Set<string> = new Set()): DataType {
-
+    if(visitSet.has(node.id)){
+        return {
+            ...node,
+            key: node.id + depth,
+            children: []
+        }
+    }
+    visitSet.add(node.id);
 
     return {
         ...node,
