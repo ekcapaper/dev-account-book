@@ -27,7 +27,12 @@ interface DataType{
     children?: InnerDataType[];
 }
 
-function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDataType[] = []):InnerDataType[]{
+function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDataType[] = [], visitSet:Set<string> = new Set()):InnerDataType[]{
+    if(visitSet.has(node.id)){
+        return result;
+    }
+    visitSet.add(node.id);
+
     if(node.children){
         for (const child of node.children) {
             result.push(
