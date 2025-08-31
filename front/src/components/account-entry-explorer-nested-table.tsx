@@ -1,8 +1,7 @@
 // AccountEntryExplorerNestedTable.tsx
 import React from 'react';
 import type { TableColumnsType } from 'antd';
-import { Table, Space, Dropdown } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Table } from 'antd';
 
 import {
     useExplorerAccountEntryTreeQuery,
