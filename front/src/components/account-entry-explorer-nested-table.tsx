@@ -7,7 +7,6 @@ import {
     useExplorerAccountEntryTreeQuery,
 } from '../hooks/use-account-entry-query.ts';
 import type { AccountEntryTree } from '../types/account-entry.ts';
-import {data} from "react-router-dom";
 
 
 interface InnerDataType{
@@ -33,7 +32,7 @@ function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDa
         for (const child of node.children) {
             result.push(
                 {
-                    key: child.id + depth,
+                    key: node.id + child.id + depth,
                     depth: depth,
                     id: child.id,
                     title: child.title,
@@ -41,19 +40,8 @@ function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDa
                     tags: child.tags,
                 }
             )
-            const result_inner = toInnerDataType(child, depth+1, result);
-            for (const childInner of result_inner) {
-                result.push(
-                    {
-                        key: childInner.id + childInner.depth,
-                        depth: childInner.depth,
-                        id: childInner.id,
-                        title: childInner.title,
-                        desc: childInner.desc,
-                        tags: childInner.tags,
-                    }
-                )
-            }
+            const result_inner = toInnerDataType(child, depth+1);
+            result.push(...result_inner);
         }
     }
     return result;
