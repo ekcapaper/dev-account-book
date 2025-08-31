@@ -1,5 +1,4 @@
 import AccountEntryExplorerTable from "../components/account-entry-explorer-table.tsx";
-import AccountEntryExplorerTableReverse from "../components/account-entry-explorer-table-reverse.tsx";
 import AccountEntryExplorerNestedTable from "../components/account-entry-explorer-nested-table.tsx";
 
 function TechEntrySheetPage() {

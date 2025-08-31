@@ -138,7 +138,7 @@ const AccountEntrySheet: React.FC = () => {
         }
     }, [data]);
 
-    console.log(data)
+    //console.log(data)
 
     if (isLoading) return <p>로딩중...</p>;
     if (error) return <p>에러 발생!</p>;
@@ -150,7 +150,7 @@ const AccountEntrySheet: React.FC = () => {
     };
 
     const handleLinkDelete = (from_id: string, to_id: string) => {
-        console.log(from_id, to_id);
+        //console.log(from_id, to_id);
         deleteAccountEntryRelationship.mutate({from_id, to_id});
     }
 
