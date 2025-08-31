@@ -89,7 +89,6 @@ const expandedRowRender = (record: DataType) => {
             // 트리 모드 비활성화 (children을 트리로 쓰지 않도록)
             childrenColumnName="__children"
             expandable={{
-                expandedRowRender,
                 defaultExpandAllRows: true, // ✅ 내부 테이블도 기본 전체 펼침
             }}
         />
