@@ -28,13 +28,32 @@ interface DataType{
 }
 
 function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDataType[] = []):InnerDataType[]{
-    return [{
-        key: "abcd",
-        id: "cddd",
-        title: "efg",
-        desc: "abcd",
-        tags: ["abcd"]
-    }]
+    if(node.children){
+        for (const child of node.children) {
+            result.push(
+                {
+                    key: child.id + depth,
+                    id: child.id,
+                    title: child.title,
+                    desc: child.desc,
+                    tags: child.tags,
+                }
+            )
+            const result_inner = toInnerDataType(child);
+            for (const childInner of result_inner) {
+                result.push(
+                    {
+                        key: childInner.id + depth,
+                        id: childInner.id,
+                        title: childInner.title,
+                        desc: childInner.desc,
+                        tags: childInner.tags,
+                    }
+                )
+            }
+        }
+    }
+    return result;
 
     /*
     if(node.children){
