@@ -10,14 +10,23 @@ export interface DataType extends AccountEntryTree {
     key: React.ReactNode;
 }
 
-function mapToDataType(node: AccountEntryTree, depth: string = ""): DataType {
+
+function mapToDataType(node: AccountEntryTree, depth: string = "", visitSet:Set<string> = new Set()): DataType {
+    if(visitSet.has(node.id)){
+        return {
+            ...node,
+            key: node.id + depth,
+            children: []
+        }
+    }
+    visitSet.add(node.id);
+
     return {
         ...node,
         key: node.id + depth,
-        children: node.children.map((child)=> mapToDataType(child, node.id + depth + "-" + node.id)),
+        children: node.children.map((child)=> mapToDataType(child, node.id + depth, visitSet)),
     };
 }
-
 const columns: TableColumnsType<DataType> = [
     {
         title: 'title',
