@@ -424,3 +424,6 @@ poetry.toml
 pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/java,jetbrains+all,python,node
+
+
+backend/devaccountbook_backend/static/*
