@@ -7,20 +7,54 @@ import {
     useExplorerAccountEntryTreeQuery,
 } from '../hooks/use-account-entry-query.ts';
 import type { AccountEntryTree } from '../types/account-entry.ts';
+import {data} from "react-router-dom";
 
-export interface DataType extends AccountEntryTree {
+
+interface InnerDataType{
     key: React.Key;
-    children?: DataType[];
+    id: string;
+    title: string;
+    desc: string | null;
+    tags: string[];
+}
+
+interface DataType{
+    key: React.Key;
+    id: string;
+    title: string;
+    desc: string | null;
+    tags: string[];
+    children?: InnerDataType[];
+}
+
+function toInnerDataType(node:AccountEntryTree, depth:number = 0, result:InnerDataType[] = []):InnerDataType[]{
+    return [{
+        key: "abcd",
+        id: "cddd",
+        title: "efg",
+        desc: "abcd",
+        tags: ["abcd"]
+    }]
+
+    /*
+    if(node.children){
+        for (const child of node.children) {
+            const dataInner = toInnerDataType(child);
+
+        }
+    }
+
+     */
 }
 
 // AccountEntryTree -> DataType로 변환 (재귀)
-function toDataType(node: AccountEntryTree, depth = ''): DataType {
+function toDataType(node: AccountEntryTree): DataType {
     return {
         ...node,
-        key: `${node.id}${depth}`,
-        children: (node.children ?? []).map((child) =>
-            toDataType(child, `${depth}-${node.id}`)
-        ),
+        key: `${node.id}`,
+        children: toInnerDataType(
+            node
+        )
     };
 }
 
@@ -58,21 +92,7 @@ const AccountEntryExplorerNestedTable: React.FC = () => {
     if (error) return <p>{(error as Error).message}</p>;
     if (!data) return null;
 
-    // 상위 테이블에는 '루트' 노드만 올리기 (중복 노출 방지)
-    // data에 자식 노드가 루트에도 중복 포함되어 있으면 바깥/안쪽에 둘 다 보이는 문제가 생김
-    const collectChildIds = (nodes: AccountEntryTree[], out = new Set<string>()) => {
-        nodes.forEach((n) => {
-            (n.children ?? []).forEach((c) => {
-                out.add(String(c.id));
-                collectChildIds([c], out);
-            });
-        });
-        return out;
-    };
-    const childIds = collectChildIds(data);
-    const rootsOnly = data.filter((n) => !childIds.has(String(n.id)));
-
-    const dataSource = rootsOnly.map(toDataType);
+    const dataSource = data.map(toDataType);
 
     return (
         <>
