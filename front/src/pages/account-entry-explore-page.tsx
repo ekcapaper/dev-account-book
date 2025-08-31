@@ -10,8 +10,6 @@ function TechEntrySheetPage() {
             <AccountEntryExplorerNestedTable/>
             <h2>정방향 트리</h2>
             <AccountEntryExplorerTable/>
-            <h2>역방향 트리</h2>
-            <AccountEntryExplorerTableReverse/>
         </div>
     );
 }
